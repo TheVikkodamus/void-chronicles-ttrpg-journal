@@ -23,9 +23,8 @@
 const {useState,useEffect} = React;
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[]});
+const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[],bestiary:[]});
 
-// Local storage shim for standalone use
 const storage = {
   get: async (key) => {
     try { const v = localStorage.getItem(key); return v ? {value:v} : null; } catch { return null; }
@@ -46,7 +45,7 @@ const THEMES={
     a:'#4ade80',rgb:'74,222,128',
     bg:'#0c0700',panel:'#130e01',card:'#1a1200',
     bd:'#321d00',tx:'#fde68a',mu:'#7a5a1a',
-    name:'ALIEN RPG',sub:'GAME MU / TH / UR. DATABANK',
+    name:'ALIEN RPG',sub:'GAME MU/TH/UR. DATABANK',
   }
 };
 
@@ -90,6 +89,25 @@ const FIELDS={
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','DEAD','BROKEN','MIA','INFECTED']},
     {k:'description',l:'NOTES',type:'textarea',rows:3},
   ],
+  bestiary_mothership:[
+    {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
+    {k:'category',l:'CATEGORY',type:'select',opts:['ALIEN','PARASITE','UNDEAD','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
+    {k:'wounds',l:'WOUNDS / HP',type:'text'},
+    {k:'speed',l:'SPEED',type:'text'},
+    {k:'instinct',l:'INSTINCT',type:'textarea',rows:2},
+    {k:'attacks',l:'COMBAT & DAMAGE',type:'textarea',rows:3},
+    {k:'notes',l:'SPECIAL ABILITIES / NOTES',type:'textarea',rows:4},
+  ],
+  bestiary_alien:[
+    {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
+    {k:'category',l:'CATEGORY',type:'select',opts:['XENOMORPH','FACEHUGGER','PREDATOR','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
+    {k:'health',l:'HEALTH',type:'text'},
+    {k:'speed',l:'SPEED',type:'text'},
+    {k:'armor',l:'ARMOR RATING',type:'text'},
+    {k:'skills',l:'SKILLS',type:'textarea',rows:2},
+    {k:'attacks',l:'ATTACKS & DICE',type:'textarea',rows:3},
+    {k:'notes',l:'SPECIAL ABILITIES / NOTES',type:'textarea',rows:4},
+  ],
 };
 
 const TABS=[
@@ -97,6 +115,7 @@ const TABS=[
   {id:'npcs',label:'CONTACTS'},
   {id:'locations',label:'SECTORS'},
   {id:'crew',label:'CREW'},
+  {id:'bestiary',label:'BESTIARY'},
   {id:'dice',label:'DICE'},
 ];
 
@@ -105,6 +124,19 @@ const STATUS_C={
   DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',
   PANICKING:'#fb923c',BROKEN:'#fb923c',
   UNKNOWN:'#94a3b8',MIA:'#94a3b8',
+};
+
+const CATEGORY_C={
+  XENOMORPH:'#f87171',
+  FACEHUGGER:'#fb923c',
+  PARASITE:'#fb923c',
+  SYNTHETIC:'#94a3b8',
+  ALIEN:'#c084fc',
+  PREDATOR:'#f87171',
+  MUTANT:'#fb923c',
+  INFECTED:'#f87171',
+  UNKNOWN:'#94a3b8',
+  UNDEAD:'#c084fc',
 };
 
 const DICE_TYPES=[5,6,10,100];
@@ -257,7 +289,16 @@ function App(){
 
   useEffect(()=>{
     (async()=>{
-      try{const r=await storage.get(STORAGE_KEY);if(r)setData(JSON.parse(r.value));}catch{}
+      try{
+        const r=await storage.get(STORAGE_KEY);
+        if(r){
+          const parsed=JSON.parse(r.value);
+          // Migrate old saves that don't have bestiary
+          if(!parsed.mothership.bestiary) parsed.mothership.bestiary=[];
+          if(!parsed.alien.bestiary) parsed.alien.bestiary=[];
+          setData(parsed);
+        }
+      }catch{}
       setLoaded(true);
     })();
   },[]);
@@ -265,7 +306,11 @@ function App(){
   const save=async(d)=>{try{await storage.set(STORAGE_KEY,JSON.stringify(d));}catch{}};
   const upd=(d)=>{setData(d);save(d);};
   const gd=()=>data[game];
-  const getFields=(tid)=>FIELDS[tid==='crew'?`crew_${game}`:tid]||[];
+  const getFields=(tid)=>{
+    if(tid==='crew') return FIELDS[`crew_${game}`]||[];
+    if(tid==='bestiary') return FIELDS[`bestiary_${game}`]||[];
+    return FIELDS[tid]||[];
+  };
 
   const openAdd=()=>{setForm({});setModal({mode:'add',tab});};
   const openEdit=(item)=>{setForm({...item});setModal({mode:'edit',tab,item});};
@@ -311,11 +356,16 @@ function App(){
     addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',cursor:'pointer'},
     card:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'14px 16px',marginBottom:'8px',cursor:'pointer',transition:'border-color 0.15s'},
     cardTitle:{fontSize:'14px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
-    cardMeta:{fontSize:'10px',color:t.mu,letterSpacing:'1px',lineHeight:'1.5'},
+    cardMeta:{fontSize:'10px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6'},
     badge:(s)=>({display:'inline-block',padding:'2px 6px',fontSize:'9px',letterSpacing:'1px',border:`1px solid ${STATUS_C[s]||t.mu}`,color:STATUS_C[s]||t.mu,borderRadius:'2px'}),
+    catBadge:(c)=>({display:'inline-block',padding:'2px 6px',fontSize:'9px',letterSpacing:'1px',border:`1px solid ${CATEGORY_C[c]||t.mu}`,color:CATEGORY_C[c]||t.mu,borderRadius:'2px'}),
+    statBlock:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'8px',margin:'10px 0'},
+    statCell:{background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'6px 8px'},
+    statLbl:{fontSize:'8px',letterSpacing:'2px',color:t.mu,marginBottom:'2px'},
+    statVal:{fontSize:'13px',color:t.tx,fontFamily:"'VT323',monospace"},
     empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
     overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'},
-    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'24px',width:'100%',maxWidth:'540px',maxHeight:'85vh',overflowY:'auto',boxShadow:`0 0 40px rgba(${t.rgb},0.15)`},
+    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'24px',width:'100%',maxWidth:'560px',maxHeight:'85vh',overflowY:'auto',boxShadow:`0 0 40px rgba(${t.rgb},0.15)`},
     mTitle:{fontSize:'13px',letterSpacing:'3px',color:t.a,marginBottom:'20px'},
     field:{marginBottom:'14px'},
     lbl:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'5px'},
@@ -324,9 +374,46 @@ function App(){
     sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
     btnRow:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'20px'},
     btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,background:'none',borderRadius:'2px',cursor:'pointer'}),
+    divider:{borderTop:`1px solid ${t.bd}`,margin:'14px 0'},
+    viewLbl:{fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px',display:'block'},
+    viewVal:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'},
+  };
+
+  const renderBestiaryCard=(item)=>{
+    const isMothership = game==='mothership';
+    const hpKey = isMothership?'wounds':'health';
+    const hpLabel = isMothership?'WOUNDS':'HP';
+    return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+      // Header row
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}},
+        React.createElement('div',null,
+          React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN CREATURE'),
+          item.instinct&&React.createElement('div',{style:{...S.cardMeta,fontStyle:'italic',marginTop:'2px'}},
+            `"${item.instinct.slice(0,60)}${item.instinct.length>60?'...':''}"`)
+        ),
+        item.category&&React.createElement('span',{style:S.catBadge(item.category)},item.category)
+      ),
+      // Stat strip
+      React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'6px'}},
+        item[hpKey]&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},
+          React.createElement('div',{style:S.statLbl},hpLabel),
+          React.createElement('div',{style:S.statVal},item[hpKey])
+        ),
+        item.speed&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},
+          React.createElement('div',{style:S.statLbl},'SPEED'),
+          React.createElement('div',{style:S.statVal},item.speed)
+        )
+      ),
+      // Attacks preview
+      item.attacks&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px',marginTop:'4px'}},
+        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'ATTACKS:'),
+        `${item.attacks.slice(0,80)}${item.attacks.length>80?'...':''}`
+      )
+    );
   };
 
   const renderCard=(item)=>{
+    if(tab==='bestiary') return renderBestiaryCard(item);
     if(tab==='sessions') return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
         React.createElement('div',null,
@@ -346,7 +433,7 @@ function App(){
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
         React.createElement('div',null,
           React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),
-          React.createElement('div',{style:S.cardMeta},[item.role,item.affiliation].filter(Boolean).join(' · '))
+          React.createElement('div',{style:S.cardMeta},[item.role,item.affiliation].filter(Boolean).join(' \u00b7 '))
         ),
         item.status&&React.createElement('span',{style:S.badge(item.status)},item.status)
       ),
@@ -383,14 +470,60 @@ function App(){
     return null;
   };
 
-  const renderViewContent=(item)=>getFields(modal?.tab||tab).map(f=>{
-    const val=item[f.k];
-    if(val===undefined||val===null||val==='')return null;
-    return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
-      React.createElement('div',{style:S.lbl},f.l),
-      React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'}},val)
+  // Special view layout for bestiary entries
+  const renderBestiaryView=(item)=>{
+    const isMothership=game==='mothership';
+    const hpKey=isMothership?'wounds':'health';
+    const hpLabel=isMothership?'WOUNDS / HP':'HEALTH';
+    const statFields=isMothership
+      ? [{k:'wounds',l:'WOUNDS / HP'},{k:'speed',l:'SPEED'}]
+      : [{k:'health',l:'HEALTH'},{k:'armor',l:'ARMOR RATING'},{k:'speed',l:'SPEED'}];
+    return React.createElement('div',null,
+      // Stat block row
+      React.createElement('div',{style:S.statBlock},
+        statFields.map(f=>item[f.k]?React.createElement('div',{key:f.k,style:S.statCell},
+          React.createElement('div',{style:S.statLbl},f.l),
+          React.createElement('div',{style:S.statVal},item[f.k])
+        ):null)
+      ),
+      // Category + instinct
+      item.category&&React.createElement('div',{style:{marginBottom:'12px'}},
+        React.createElement('span',{style:S.catBadge(item.category)},item.category)
+      ),
+      item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},
+        React.createElement('div',{style:S.viewLbl},'INSTINCT'),
+        React.createElement('div',{style:{...S.viewVal,fontStyle:'italic',color:t.mu}},item.instinct)
+      ),
+      React.createElement('div',{style:S.divider}),
+      // Attacks / Combat
+      item.attacks&&React.createElement('div',{style:{marginBottom:'12px'}},
+        React.createElement('div',{style:{...S.viewLbl,color:t.a}},isMothership?'COMBAT & DAMAGE':'ATTACKS & DICE'),
+        React.createElement('div',{style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}},item.attacks)
+      ),
+      // Skills (Alien only)
+      item.skills&&React.createElement('div',{style:{marginBottom:'12px'}},
+        React.createElement('div',{style:S.viewLbl},'SKILLS'),
+        React.createElement('div',{style:S.viewVal},item.skills)
+      ),
+      item.notes&&React.createElement('div',null,
+        React.createElement('div',{style:S.divider}),
+        React.createElement('div',{style:S.viewLbl},'SPECIAL ABILITIES / NOTES'),
+        React.createElement('div',{style:S.viewVal},item.notes)
+      )
     );
-  });
+  };
+
+  const renderViewContent=(item)=>{
+    if(modal?.tab==='bestiary') return [renderBestiaryView(item)];
+    return getFields(modal?.tab||tab).map(f=>{
+      const val=item[f.k];
+      if(val===undefined||val===null||val==='')return null;
+      return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
+        React.createElement('div',{style:S.lbl},f.l),
+        React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'}},val)
+      );
+    });
+  };
 
   const renderForm=()=>getFields(modal?.tab||tab).map(f=>
     React.createElement('div',{key:f.k,style:S.field},
@@ -422,7 +555,7 @@ function App(){
       React.createElement('div',{style:S.titleRow},
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
-        React.createElement('div',{style:{textAlign:'right'}},React.createElement('div',{style:S.sub},'v1.1 // ACTIVE'))
+        React.createElement('div',{style:{textAlign:'right'}},React.createElement('div',{style:S.sub},'v1.2 // ACTIVE'))
       ),
       React.createElement('div',{style:S.tabBar},
         TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label))
@@ -452,7 +585,7 @@ function App(){
         modal.mode==='view'
           ? React.createElement('div',null,
               React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
-                React.createElement('div',{style:S.mTitle},tab==='sessions'?(modal.item.title||'RECORD'):(modal.item.name||'RECORD')),
+                React.createElement('div',{style:S.mTitle},modal.item.title||modal.item.name||'RECORD'),
                 React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')
               ),
               ...renderViewContent(modal.item),
