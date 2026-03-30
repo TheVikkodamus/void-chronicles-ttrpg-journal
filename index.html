@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VOID CHRONICLES: A Sci-fi TTRPG Journal</title>
+<title>VOID CHRONICLES</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
   *{box-sizing:border-box;margin:0;padding:0}
@@ -122,8 +122,9 @@ function performRoll(sides,quantity,mode){
     const count=Math.max(quantity+1,2);
     const rolls=Array.from({length:count},()=>rollOne(sides));
     const sorted=[...rolls].sort((a,b)=>a-b);
-    const kept=mode==='advantage'?sorted.slice(1):sorted.slice(0,-1);
-    const dropped=mode==='advantage'?[sorted[0]]:[sorted[sorted.length-1]];
+    // Roll-under system: advantage = keep LOWEST (drop highest), disadvantage = keep HIGHEST (drop lowest)
+    const kept=mode==='advantage'?sorted.slice(0,quantity):sorted.slice(count-quantity);
+    const dropped=mode==='advantage'?[sorted[count-1]]:[sorted[0]];
     const total=kept.reduce((a,b)=>a+b,0);
     return {rolls,kept,dropped,total,mode,sides,quantity};
   } else {
@@ -202,8 +203,8 @@ function DiceTab({t}){
       ),
       mode!=='normal'&&React.createElement('div',{style:{marginTop:'10px',fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6'}},
         mode==='advantage'
-          ?`Rolls ${quantity+1} dice - drops the lowest, keeps the rest.`
-          :`Rolls ${quantity+1} dice - drops the highest, keeps the rest.`
+          ?`Roll-under: rolls ${quantity+1} dice, drops the highest, keeps the lowest.`
+          :`Roll-under: rolls ${quantity+1} dice, drops the lowest, keeps the highest.`
       )
     ),
     React.createElement('div',{style:S.panel},
