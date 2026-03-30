@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VOID CHRONICLES: A Sci-fi TTRPG Journal</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Share Tech Mono','Courier New',monospace;background:#020a04;color:#86efac;min-height:100vh}
+  ::-webkit-scrollbar{width:4px;background:transparent}
+  ::-webkit-scrollbar-thumb{background:#1a3320}
+  button{cursor:pointer;font-family:inherit}
+  button:hover{opacity:0.75}
+  select option{background:#071009}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script>
+const {useState,useEffect} = React;
+const STORAGE_KEY='void-chronicles-v1';
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[]});
+
+// Local storage shim for standalone use
+const storage = {
+  get: async (key) => {
+    try { const v = localStorage.getItem(key); return v ? {value:v} : null; } catch { return null; }
+  },
+  set: async (key, value) => {
+    try { localStorage.setItem(key, value); return {key,value}; } catch { return null; }
+  }
+};
+
+const THEMES={
+  mothership:{
+    a:'#4ade80',rgb:'74,222,128',
+    bg:'#020a04',panel:'#071009',card:'#0d150d',
+    bd:'#1e3d1e',tx:'#86efac',mu:'#3a5c3a',
+    name:'MOTHERSHIP RPG',sub:'WARDEN TERMINAL v2.1',
+  },
+  alien:{
+    a:'#fbbf24',rgb:'251,191,36',
+    bg:'#0c0700',panel:'#130e01',card:'#1a1200',
+    bd:'#321d00',tx:'#fde68a',mu:'#7a5a1a',
+    name:'ALIEN RPG',sub:'WEYLAND-YUTANI CORP. DATABANK',
+  }
+};
+
+const FIELDS={
+  sessions:[
+    {k:'sessionNumber',l:'SESSION #',type:'number'},
+    {k:'title',l:'MISSION TITLE',type:'text',req:true},
+    {k:'date',l:'DATE',type:'date'},
+    {k:'summary',l:'LOG ENTRY',type:'textarea',rows:5},
+    {k:'casualties',l:'CASUALTIES / LOSSES',type:'text'},
+    {k:'tags',l:'TAGS (comma separated)',type:'text'},
+  ],
+  npcs:[
+    {k:'name',l:'DESIGNATION',type:'text',req:true},
+    {k:'affiliation',l:'AFFILIATION',type:'text'},
+    {k:'role',l:'ROLE / FUNCTION',type:'text'},
+    {k:'status',l:'STATUS',type:'select',opts:['ALIVE','DEAD','HOSTILE','UNKNOWN','MIA']},
+    {k:'description',l:'PROFILE',type:'textarea',rows:4},
+    {k:'notes',l:'FIELD NOTES',type:'textarea',rows:3},
+  ],
+  locations:[
+    {k:'name',l:'DESIGNATION',type:'text',req:true},
+    {k:'type',l:'TYPE',type:'select',opts:['STATION','SHIP','PLANET','COLONY','DERELICT','FACILITY','VOID','OTHER']},
+    {k:'threat',l:'THREAT LEVEL',type:'select',opts:['1 - MINIMAL','2 - LOW','3 - MODERATE','4 - HIGH','5 - EXTREME']},
+    {k:'description',l:'SURVEY DATA',type:'textarea',rows:4},
+    {k:'notes',l:'FIELD NOTES',type:'textarea',rows:3},
+  ],
+  crew_mothership:[
+    {k:'name',l:'NAME',type:'text',req:true},
+    {k:'role',l:'CLASS',type:'select',opts:['MARINE','SCIENTIST','TEAMSTER','ANDROID','WARDEN NPC','OTHER']},
+    {k:'stress',l:'STRESS (0-20)',type:'number'},
+    {k:'wounds',l:'WOUNDS / CONDITIONS',type:'text'},
+    {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','DEAD','PANICKING','MIA','INFECTED']},
+    {k:'description',l:'NOTES',type:'textarea',rows:3},
+  ],
+  crew_alien:[
+    {k:'name',l:'NAME',type:'text',req:true},
+    {k:'role',l:'ARCHETYPE',type:'select',opts:['COLONIAL MARINE','ROUGHNECK','COMPANY AGENT','PILOT','MEDIC','SCIENTIST','ANDROID','OTHER']},
+    {k:'stress',l:'STRESS POINTS',type:'number'},
+    {k:'health',l:'HEALTH POINTS',type:'number'},
+    {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','DEAD','BROKEN','MIA','INFECTED']},
+    {k:'description',l:'NOTES',type:'textarea',rows:3},
+  ],
+};
+
+const TABS=[
+  {id:'sessions',label:'SESSIONS'},
+  {id:'npcs',label:'CONTACTS'},
+  {id:'locations',label:'SECTORS'},
+  {id:'crew',label:'CREW'},
+  {id:'dice',label:'DICE'},
+];
+
+const STATUS_C={
+  ACTIVE:'#4ade80',ALIVE:'#4ade80',
+  DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',
+  PANICKING:'#fb923c',BROKEN:'#fb923c',
+  UNKNOWN:'#94a3b8',MIA:'#94a3b8',
+};
+
+const DICE_TYPES=[5,6,10,100];
+const QUANTITY_OPTS=[1,2,3,4,5,6,8,10];
+const MODE_OPTS=[
+  {id:'normal',label:'NORMAL'},
+  {id:'advantage',label:'ADVANTAGE'},
+  {id:'disadvantage',label:'DISADVANTAGE'},
+];
+
+function rollOne(sides){ return Math.floor(Math.random()*sides)+1; }
+
+function performRoll(sides,quantity,mode){
+  if(mode==='advantage'||mode==='disadvantage'){
+    const count=Math.max(quantity+1,2);
+    const rolls=Array.from({length:count},()=>rollOne(sides));
+    const sorted=[...rolls].sort((a,b)=>a-b);
+    const kept=mode==='advantage'?sorted.slice(1):sorted.slice(0,-1);
+    const dropped=mode==='advantage'?[sorted[0]]:[sorted[sorted.length-1]];
+    const total=kept.reduce((a,b)=>a+b,0);
+    return {rolls,kept,dropped,total,mode,sides,quantity};
+  } else {
+    const rolls=Array.from({length:quantity},()=>rollOne(sides));
+    const total=rolls.reduce((a,b)=>a+b,0);
+    return {rolls,kept:rolls,dropped:[],total,mode,sides,quantity};
+  }
+}
+
+function DiceTab({t}){
+  const [selectedDie,setSelectedDie]=useState(6);
+  const [quantity,setQuantity]=useState(1);
+  const [mode,setMode]=useState('normal');
+  const [rolling,setRolling]=useState(false);
+  const [history,setHistory]=useState([]);
+  const [current,setCurrent]=useState(null);
+
+  const doRoll=()=>{
+    if(rolling)return;
+    setRolling(true);
+    let tick=0;
+    const iv=setInterval(()=>{
+      const r=performRoll(selectedDie,quantity,mode);
+      setCurrent(r);
+      tick++;
+      if(tick>=12){
+        clearInterval(iv);
+        const final=performRoll(selectedDie,quantity,mode);
+        setCurrent(final);
+        setHistory(p=>[{...final,id:uid(),ts:Date.now()},...p].slice(0,12));
+        setRolling(false);
+      }
+    },60);
+  };
+
+  const diceCount=mode!=='normal'?quantity+1:quantity;
+  const rollLabel=rolling?'ROLLING...':`ROLL ${diceCount}d${selectedDie}`;
+  const modeColor={advantage:'#4ade80',disadvantage:'#f87171',normal:t.mu};
+
+  const S={
+    panel:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'16px',marginBottom:'12px'},
+    lbl:{fontSize:'9px',letterSpacing:'3px',color:t.mu,marginBottom:'10px',display:'block'},
+    btnGrid:{display:'flex',gap:'8px',flexWrap:'wrap'},
+    selBtn:(active)=>({padding:'8px 16px',background:'none',fontFamily:'inherit',fontSize:'12px',letterSpacing:'3px',border:`1px solid ${active?t.a:t.bd}`,color:active?t.a:t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s',minWidth:'56px',textAlign:'center'}),
+    modeBtn:(active,mc)=>({padding:'6px 14px',background:active?`rgba(${t.rgb},0.06)`:'none',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',border:`1px solid ${active?mc:t.bd}`,color:active?mc:t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'}),
+    rollBtn:{width:'100%',padding:'12px',background:'none',border:`2px solid ${rolling?t.bd:t.a}`,borderRadius:'2px',fontFamily:'inherit',fontSize:'13px',letterSpacing:'5px',color:rolling?t.mu:t.a,cursor:rolling?'not-allowed':'pointer',transition:'all 0.15s',marginTop:'4px'},
+    bigNum:{fontFamily:"'VT323',monospace",fontSize:'64px',lineHeight:'1',color:t.a,textShadow:`0 0 30px rgba(${t.rgb},0.4)`},
+    rollBreak:{fontSize:'11px',letterSpacing:'2px',color:t.mu,marginTop:'8px'},
+    histRow:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'6px 0',borderBottom:`1px solid ${t.bd}`},
+    histLabel:{fontSize:'10px',color:t.mu,letterSpacing:'1px'},
+    histVal:{fontFamily:"'VT323',monospace",color:t.tx},
+    histMeta:{fontSize:'9px',color:t.mu,marginTop:'1px'},
+    pill:(mc)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',border:`1px solid ${mc}`,color:mc,borderRadius:'2px',marginLeft:'6px'}),
+  };
+
+  return React.createElement('div',null,
+    React.createElement('div',{style:S.panel},
+      React.createElement('span',{style:S.lbl},'DIE TYPE'),
+      React.createElement('div',{style:S.btnGrid},
+        DICE_TYPES.map(s=>React.createElement('button',{key:s,style:S.selBtn(selectedDie===s),onClick:()=>setSelectedDie(s)},`d${s}`))
+      )
+    ),
+    React.createElement('div',{style:S.panel},
+      React.createElement('span',{style:S.lbl},'QUANTITY'),
+      React.createElement('div',{style:S.btnGrid},
+        QUANTITY_OPTS.map(q=>React.createElement('button',{key:q,style:S.selBtn(quantity===q),onClick:()=>setQuantity(q)},String(q)))
+      )
+    ),
+    React.createElement('div',{style:S.panel},
+      React.createElement('span',{style:S.lbl},'ROLL MODE'),
+      React.createElement('div',{style:S.btnGrid},
+        MODE_OPTS.map(m=>{
+          const mc=modeColor[m.id];
+          return React.createElement('button',{key:m.id,style:S.modeBtn(mode===m.id,mc),onClick:()=>setMode(m.id)},m.label);
+        })
+      ),
+      mode!=='normal'&&React.createElement('div',{style:{marginTop:'10px',fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6'}},
+        mode==='advantage'
+          ?`Rolls ${quantity+1} dice - drops the lowest, keeps the rest.`
+          :`Rolls ${quantity+1} dice - drops the highest, keeps the rest.`
+      )
+    ),
+    React.createElement('div',{style:S.panel},
+      React.createElement('button',{style:S.rollBtn,onClick:doRoll,disabled:rolling},rollLabel),
+      current&&React.createElement('div',{style:{textAlign:'center',padding:'20px 0',marginTop:'12px',borderTop:`1px solid ${t.bd}`}},
+        React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
+        React.createElement('div',{style:S.rollBreak},
+          current.kept.map((v,i)=>React.createElement('span',{key:i,style:{color:t.tx,marginRight:'6px'}},v)),
+          current.dropped.map((v,i)=>React.createElement('span',{key:'d'+i,style:{color:'#f87171',textDecoration:'line-through',marginRight:'6px'}},v))
+        ),
+        React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},
+          `${diceCount}d${current.sides} \u00b7 ${current.mode.toUpperCase()}`
+        )
+      )
+    ),
+    history.length>0&&React.createElement('div',{style:S.panel},
+      React.createElement('span',{style:S.lbl},'ROLL HISTORY'),
+      ...history.map((r,i)=>{
+        const dc=r.mode!=='normal'?r.quantity+1:r.quantity;
+        const mc2=modeColor[r.mode];
+        return React.createElement('div',{key:r.id,style:{...S.histRow,opacity:Math.max(0.2,1-i*0.07)}},
+          React.createElement('div',null,
+            React.createElement('span',{style:S.histLabel},`${dc}d${r.sides}`),
+            r.mode!=='normal'&&React.createElement('span',{style:S.pill(mc2)},r.mode.toUpperCase())
+          ),
+          React.createElement('div',{style:{textAlign:'right'}},
+            React.createElement('div',{style:{...S.histVal,fontSize:i===0?'28px':'18px',color:i===0?t.a:t.tx}},
+              r.sides===100?String(r.total).padStart(3,'0'):r.total
+            ),
+            React.createElement('div',{style:S.histMeta},
+              r.kept.join(', '),
+              r.dropped.length>0&&React.createElement('span',{style:{color:'#f87171',textDecoration:'line-through',marginLeft:'4px'}},r.dropped.join(', '))
+            )
+          )
+        );
+      })
+    )
+  );
+}
+
+function App(){
+  const [game,setGame]=useState('mothership');
+  const [tab,setTab]=useState('sessions');
+  const [data,setData]=useState({mothership:defaultData(),alien:defaultData()});
+  const [loaded,setLoaded]=useState(false);
+  const [modal,setModal]=useState(null);
+  const [form,setForm]=useState({});
+  const [delConfirm,setDelConfirm]=useState(null);
+  const t=THEMES[game];
+
+  useEffect(()=>{
+    (async()=>{
+      try{const r=await storage.get(STORAGE_KEY);if(r)setData(JSON.parse(r.value));}catch{}
+      setLoaded(true);
+    })();
+  },[]);
+
+  const save=async(d)=>{try{await storage.set(STORAGE_KEY,JSON.stringify(d));}catch{}};
+  const upd=(d)=>{setData(d);save(d);};
+  const gd=()=>data[game];
+  const getFields=(tid)=>FIELDS[tid==='crew'?`crew_${game}`:tid]||[];
+
+  const openAdd=()=>{setForm({});setModal({mode:'add',tab});};
+  const openEdit=(item)=>{setForm({...item});setModal({mode:'edit',tab,item});};
+  const openView=(item)=>{setModal({mode:'view',tab,item});};
+
+  const saveItem=()=>{
+    const req=getFields(modal.tab).find(f=>f.req);
+    if(req&&!form[req.k]?.trim())return;
+    const items=[...(gd()[modal.tab]||[])];
+    if(modal.mode==='add'){items.push({...form,id:uid(),createdAt:Date.now()});}
+    else{const i=items.findIndex(x=>x.id===modal.item.id);if(i>=0)items[i]={...items[i],...form};}
+    const nd={...data,[game]:{...gd(),[modal.tab]:items}};
+    upd(nd);setModal(null);
+  };
+
+  const delItem=(id)=>{
+    const items=(gd()[tab]||[]).filter(x=>x.id!==id);
+    const nd={...data,[game]:{...gd(),[tab]:items}};
+    upd(nd);setDelConfirm(null);setModal(null);
+  };
+
+  const isValid=()=>{
+    const req=getFields(tab).find(f=>f.req);
+    return !req||!!form[req.k]?.trim();
+  };
+
+  const items=gd()[tab]||[];
+
+  const S={
+    root:{fontFamily:"'Share Tech Mono','Courier New',monospace",background:t.bg,color:t.tx,minHeight:'100vh',position:'relative'},
+    scanline:{position:'fixed',inset:0,pointerEvents:'none',zIndex:9999,backgroundImage:'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.05) 2px,rgba(0,0,0,0.05) 4px)'},
+    header:{borderBottom:`1px solid ${t.bd}`,background:t.panel},
+    gameSwitcher:{display:'flex',borderBottom:`1px solid ${t.bd}`},
+    gameBtn:(g)=>({flex:1,padding:'10px 20px',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'11px',letterSpacing:'2px',transition:'all 0.2s',color:game===g?t.a:t.mu,borderBottom:game===g?`2px solid ${t.a}`:'2px solid transparent',boxShadow:game===g?`0 0 20px rgba(${t.rgb},0.08) inset`:'none'}),
+    titleRow:{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'8px 20px'},
+    title:{fontSize:'26px',letterSpacing:'6px',color:t.a,textShadow:`0 0 20px rgba(${t.rgb},0.5)`,fontFamily:"'VT323',monospace"},
+    sub:{fontSize:'9px',letterSpacing:'3px',color:t.mu},
+    tabBar:{display:'flex',padding:'0 12px',gap:'2px',overflowX:'auto'},
+    tabBtn:(id)=>({padding:'8px 14px',background:'none',border:'none',cursor:'pointer',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',color:tab===id?t.a:t.mu,borderBottom:tab===id?`2px solid ${t.a}`:'2px solid transparent',transition:'all 0.15s',whiteSpace:'nowrap'}),
+    main:{padding:'20px',maxWidth:'860px',margin:'0 auto'},
+    secHead:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'},
+    secTitle:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
+    addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',cursor:'pointer'},
+    card:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'14px 16px',marginBottom:'8px',cursor:'pointer',transition:'border-color 0.15s'},
+    cardTitle:{fontSize:'14px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
+    cardMeta:{fontSize:'10px',color:t.mu,letterSpacing:'1px',lineHeight:'1.5'},
+    badge:(s)=>({display:'inline-block',padding:'2px 6px',fontSize:'9px',letterSpacing:'1px',border:`1px solid ${STATUS_C[s]||t.mu}`,color:STATUS_C[s]||t.mu,borderRadius:'2px'}),
+    empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000,padding:'20px'},
+    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'24px',width:'100%',maxWidth:'540px',maxHeight:'85vh',overflowY:'auto',boxShadow:`0 0 40px rgba(${t.rgb},0.15)`},
+    mTitle:{fontSize:'13px',letterSpacing:'3px',color:t.a,marginBottom:'20px'},
+    field:{marginBottom:'14px'},
+    lbl:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'5px'},
+    inp:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
+    ta:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},
+    sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
+    btnRow:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'20px'},
+    btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,background:'none',borderRadius:'2px',cursor:'pointer'}),
+  };
+
+  const renderCard=(item)=>{
+    if(tab==='sessions') return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+        React.createElement('div',null,
+          React.createElement('div',{style:S.cardTitle},`${item.sessionNumber?`[${String(item.sessionNumber).padStart(2,'0')}] `:''}${item.title||'UNTITLED'}`),
+          item.date&&React.createElement('div',{style:S.cardMeta},item.date)
+        ),
+        item.casualties&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'1px'}},`X ${item.casualties}`)
+      ),
+      item.summary&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.summary.slice(0,130)}${item.summary.length>130?'...':''}`),
+      item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},
+        item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>
+          React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase())
+        )
+      )
+    );
+    if(tab==='npcs') return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+        React.createElement('div',null,
+          React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),
+          React.createElement('div',{style:S.cardMeta},[item.role,item.affiliation].filter(Boolean).join(' · '))
+        ),
+        item.status&&React.createElement('span',{style:S.badge(item.status)},item.status)
+      ),
+      item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
+    );
+    if(tab==='locations'){
+      const threat=item.threat?parseInt(item.threat[0]):0;
+      return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
+          React.createElement('div',null,
+            React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),
+            React.createElement('div',{style:S.cardMeta},item.type||'')
+          ),
+          React.createElement('div',{style:{display:'flex',gap:'3px',alignItems:'center'}},
+            [1,2,3,4,5].map(i=>React.createElement('div',{key:i,style:{width:'8px',height:'8px',borderRadius:'50%',background:i<=threat?'#f87171':t.bd}}))
+          )
+        ),
+        item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
+      );
+    }
+    if(tab==='crew') return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+        React.createElement('div',null,
+          React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),
+          React.createElement('div',{style:S.cardMeta},item.role||'')
+        ),
+        React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}},
+          item.status&&React.createElement('span',{style:S.badge(item.status)},item.status),
+          (item.stress!==undefined&&item.stress!=='')&&React.createElement('span',{style:{fontSize:'9px',color:t.mu}},`STR: ${item.stress}`)
+        )
+      ),
+      item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,80)}${item.description.length>80?'...':''}`)
+    );
+    return null;
+  };
+
+  const renderViewContent=(item)=>getFields(modal?.tab||tab).map(f=>{
+    const val=item[f.k];
+    if(val===undefined||val===null||val==='')return null;
+    return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
+      React.createElement('div',{style:S.lbl},f.l),
+      React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'}},val)
+    );
+  });
+
+  const renderForm=()=>getFields(modal?.tab||tab).map(f=>
+    React.createElement('div',{key:f.k,style:S.field},
+      React.createElement('label',{style:S.lbl},`${f.l}${f.req?' *':''}`),
+      f.type==='textarea'?
+        React.createElement('textarea',{rows:f.rows||4,style:S.ta,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))}):
+      f.type==='select'?
+        React.createElement('select',{style:S.sel,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))},
+          React.createElement('option',{value:''},'-- SELECT --'),
+          ...(f.opts||[]).map(o=>React.createElement('option',{key:o,value:o},o))
+        ):
+        React.createElement('input',{type:f.type,style:S.inp,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})
+    )
+  );
+
+  if(!loaded) return React.createElement('div',{style:{...S.root,display:'flex',alignItems:'center',justifyContent:'center',height:'100vh'}},
+    React.createElement('div',{style:{color:t.a,fontFamily:"'VT323',monospace",fontSize:'28px',letterSpacing:'6px'}},'INITIALIZING...')
+  );
+
+  return React.createElement('div',{style:S.root},
+    React.createElement('div',{style:S.scanline}),
+
+    React.createElement('div',{style:S.header},
+      React.createElement('div',{style:S.gameSwitcher},
+        ['mothership','alien'].map(g=>
+          React.createElement('button',{key:g,style:S.gameBtn(g),onClick:()=>{setGame(g);setTab('sessions');}},THEMES[g].name)
+        )
+      ),
+      React.createElement('div',{style:S.titleRow},
+        React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
+        React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
+        React.createElement('div',{style:{textAlign:'right'}},React.createElement('div',{style:S.sub},'v1.1 // ACTIVE'))
+      ),
+      React.createElement('div',{style:S.tabBar},
+        TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label))
+      )
+    ),
+
+    React.createElement('div',{style:S.main},
+      tab==='dice'
+        ? React.createElement(DiceTab,{t})
+        : React.createElement('div',null,
+            React.createElement('div',{style:S.secHead},
+              React.createElement('div',{style:S.secTitle},`${TABS.find(x=>x.id===tab)?.label} -- ${items.length} RECORDS`),
+              React.createElement('button',{style:S.addBtn,onClick:openAdd},'+ ADD ENTRY')
+            ),
+            items.length===0
+              ? React.createElement('div',{style:S.empty},
+                  React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
+                  'NO RECORDS FOUND',React.createElement('br'),
+                  React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'PRESS + ADD ENTRY TO CREATE')
+                )
+              : items.map(item=>renderCard(item))
+          )
+    ),
+
+    modal&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget)setModal(null);}},
+      React.createElement('div',{style:S.mbox},
+        modal.mode==='view'
+          ? React.createElement('div',null,
+              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
+                React.createElement('div',{style:S.mTitle},tab==='sessions'?(modal.item.title||'RECORD'):(modal.item.name||'RECORD')),
+                React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')
+              ),
+              ...renderViewContent(modal.item),
+              React.createElement('div',{style:S.btnRow},
+                React.createElement('button',{style:S.btn('danger'),onClick:()=>setDelConfirm(modal.item.id)},'DELETE'),
+                React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CLOSE'),
+                React.createElement('button',{style:S.btn('primary'),onClick:()=>openEdit(modal.item)},'EDIT')
+              )
+            )
+          : React.createElement('div',null,
+              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
+                React.createElement('div',{style:S.mTitle},modal.mode==='add'?'+ NEW ENTRY':'EDIT RECORD'),
+                React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')
+              ),
+              ...renderForm(),
+              React.createElement('div',{style:S.btnRow},
+                React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CANCEL'),
+                React.createElement('button',{style:{...S.btn('primary'),opacity:isValid()?1:0.4},onClick:saveItem,disabled:!isValid()},
+                  modal.mode==='add'?'SAVE ENTRY':'UPDATE'
+                )
+              )
+            )
+      )
+    ),
+
+    delConfirm&&React.createElement('div',{style:S.overlay},
+      React.createElement('div',{style:{...S.mbox,maxWidth:'340px',textAlign:'center'}},
+        React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'CONFIRM DELETE'),
+        React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS ACTION CANNOT BE UNDONE'),
+        React.createElement('div',{style:S.btnRow},
+          React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelConfirm(null)},'CANCEL'),
+          React.createElement('button',{style:S.btn('danger'),onClick:()=>delItem(delConfirm)},'CONFIRM DELETE')
+        )
+      )
+    )
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+</script>
+</body>
+</html>
