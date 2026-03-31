@@ -188,13 +188,19 @@ function parseHitBoxes(val){
 }
 
 // ─── DICE TAB ────────────────────────────────────────────────────────────────
-function DiceTab({t}){
+function DiceTab({t,game}){
+  const isAlien=game==='alien';
   const [selectedDie,setSelectedDie]=useState(6);
   const [quantity,setQuantity]=useState(1);
   const [mode,setMode]=useState('normal');
   const [rolling,setRolling]=useState(false);
   const [history,setHistory]=useState([]);
   const [current,setCurrent]=useState(null);
+
+  // ── Stress dice state (Alien RPG only) ──
+  const [stressCount,setStressCount]=useState(1);
+  const [stressRolling,setStressRolling]=useState(false);
+  const [stressCurrent,setStressCurrent]=useState(null);
 
   const doRoll=()=>{
     if(rolling)return;
@@ -209,6 +215,27 @@ function DiceTab({t}){
         setCurrent(final);
         setHistory(p=>[{...final,id:uid()},...p].slice(0,12));
         setRolling(false);
+      }
+    },60);
+  };
+
+  // Roll stress dice — each is a d6:
+  // 6 = SUCCESS, 1 = PANIC, 2-5 = nothing
+  const rollStressDice=()=>{
+    if(stressRolling)return;
+    setStressRolling(true);
+    let tick=0;
+    const iv=setInterval(()=>{
+      const dice=Array.from({length:stressCount},()=>Math.floor(Math.random()*6)+1);
+      setStressCurrent({dice,rolling:true});
+      tick++;
+      if(tick>=12){
+        clearInterval(iv);
+        const final=Array.from({length:stressCount},()=>Math.floor(Math.random()*6)+1);
+        const successes=final.filter(d=>d===6).length;
+        const panics=final.filter(d=>d===1).length;
+        setStressCurrent({dice:final,successes,panics,rolling:false});
+        setStressRolling(false);
       }
     },60);
   };
@@ -245,6 +272,64 @@ function DiceTab({t}){
         React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},`${diceCount}d${current.sides} \u00b7 ${current.mode.toUpperCase()}`)
       )
     ),
+    // ── Stress Dice panel (Alien RPG only) ──
+    isAlien&&React.createElement('div',{style:{...S.panel,border:`1px solid #f59e0b`,background:`rgba(251,191,36,0.04)`}},
+      React.createElement('span',{style:{...S.lbl,color:'#f59e0b',letterSpacing:'3px'}},'STRESS DICE (ALIEN RPG)'),
+      React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6',marginBottom:'10px'}},
+        '6 = SUCCESS   ·   1 = PANIC   ·   2-5 = nothing'
+      ),
+      React.createElement('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'12px',flexWrap:'wrap'}},
+        React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'2px'}},'DICE:'),
+        [1,2,3,4,5,6,7,8,9,10].map(n=>
+          React.createElement('button',{key:n,
+            style:{padding:'5px 10px',background:'none',fontFamily:'inherit',fontSize:'11px',letterSpacing:'2px',
+              border:`1px solid ${stressCount===n?'#f59e0b':t.bd}`,
+              color:stressCount===n?'#f59e0b':t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'},
+            onClick:()=>setStressCount(n)
+          },String(n))
+        )
+      ),
+      React.createElement('button',{
+        style:{width:'100%',padding:'10px',background:'none',
+          border:`2px solid ${stressRolling?t.bd:'#f59e0b'}`,borderRadius:'2px',
+          fontFamily:'inherit',fontSize:'12px',letterSpacing:'4px',
+          color:stressRolling?t.mu:'#f59e0b',cursor:stressRolling?'not-allowed':'pointer',transition:'all 0.15s'},
+        onClick:rollStressDice,disabled:stressRolling
+      }, stressRolling?'ROLLING...': `ROLL ${stressCount} STRESS ${stressCount===1?'DIE':'DICE'}`),
+
+      stressCurrent&&!stressCurrent.rolling&&React.createElement('div',{style:{marginTop:'16px',textAlign:'center',borderTop:`1px solid ${t.bd}`,paddingTop:'14px'}},
+        // Individual die results
+        React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
+          stressCurrent.dice.map((d,i)=>{
+            const isSuccess=d===6;
+            const isPanic=d===1;
+            const col=isSuccess?'#4ade80':isPanic?'#f87171':t.mu;
+            return React.createElement('div',{key:i,style:{
+              display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
+              padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',
+              background:`rgba(${isSuccess?'74,222,128':isPanic?'248,113,113':'128,128,128'},0.06)`,
+              minWidth:'36px'
+            }},
+              React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},d),
+              React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},
+                isSuccess?'HIT':isPanic?'PANIC':'···'
+              )
+            );
+          })
+        ),
+        // Summary line
+        React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',flexWrap:'wrap'}},
+          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},
+            `${stressCurrent.successes} HIT${stressCurrent.successes!==1?'S':''}`
+          ),
+          React.createElement('span',{style:{fontSize:'10px',color:t.mu}},'|'),
+          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:stressCurrent.panics>0?'#f87171':t.mu}},
+            `${stressCurrent.panics} PANIC${stressCurrent.panics!==1?'S':''}`
+          )
+        )
+      )
+    ),
+
     history.length>0&&React.createElement('div',{style:S.panel},
       React.createElement('span',{style:S.lbl},'ROLL HISTORY'),
       ...history.map((r,i)=>{
@@ -840,7 +925,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v1.9 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v2.0 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
@@ -858,7 +943,7 @@ function App(){
     // ── Main ──
     React.createElement('div',{style:S.main},
       tab==='dice'
-        ?React.createElement(DiceTab,{t})
+        ?React.createElement(DiceTab,{t,game})
         :tab==='encounter'
           ?React.createElement(EncounterTab,{
               t,game,
