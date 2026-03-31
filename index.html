@@ -14,14 +14,40 @@
   button:hover{opacity:0.8}
   select option{background:#071009}
   input[type=number]::-webkit-inner-spin-button{opacity:1}
+  /* Markdown rendered output */
+  .md-view p{margin:0 0 6px 0}
+  .md-view p:last-child{margin-bottom:0}
+  .md-view ul,.md-view ol{margin:4px 0 6px 18px;padding:0}
+  .md-view li{margin-bottom:2px}
+  .md-view strong{font-weight:bold;opacity:1}
+  .md-view em{font-style:italic;opacity:0.85}
+  .md-view h1,.md-view h2,.md-view h3{letter-spacing:2px;margin:8px 0 4px 0;font-family:'VT323',monospace;font-size:16px}
+  .md-view code{font-family:inherit;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:2px;font-size:11px}
+  .md-view hr{border:none;border-top:1px solid currentColor;opacity:0.2;margin:8px 0}
+  .md-view blockquote{border-left:2px solid currentColor;padding-left:10px;opacity:0.7;margin:4px 0}
 </style>
 </head>
 <body>
 <div id="root"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 const {useState,useEffect,useCallback}=React;
+
+// ── Markdown renderer ─────────────────────────────────────────────────────
+// Configure marked: no pedantic, breaks on single newlines
+if(typeof marked!=='undefined'){
+  marked.setOptions({breaks:true,gfm:true,pedantic:false});
+}
+function MarkdownView({text,style}){
+  if(!text)return null;
+  const html=typeof marked!=='undefined'?marked.parse(String(text)):`<p>${String(text)}</p>`;
+  return React.createElement('div',{
+    style:{...style,lineHeight:'1.7'},
+    dangerouslySetInnerHTML:{__html:html}
+  });
+}
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const defaultEncounter=()=>({round:1,activeIndex:0,started:false,combatants:[]});
@@ -756,11 +782,11 @@ function App(){
     return React.createElement('div',null,
       React.createElement('div',{style:S.statBlock},statFields.map(f=>item[f.k]?React.createElement('div',{key:f.k,style:S.statCell},React.createElement('div',{style:S.statLbl},f.l),React.createElement('div',{style:S.statVal},item[f.k])):null)),
       item.category&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('span',{style:S.catBadge(item.category)},item.category)),
-      item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'INSTINCT'),React.createElement('div',{style:{...S.viewVal,fontStyle:'italic',color:t.mu}},item.instinct)),
+      item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'INSTINCT'),React.createElement(MarkdownView,{text:item.instinct,style:{...S.viewVal,fontStyle:'italic',color:t.mu}})),
       React.createElement('div',{style:S.divider}),
-      item.attacks&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:{...S.viewLbl,color:t.a}},isMothership?'COMBAT & DAMAGE':'ATTACKS & DICE'),React.createElement('div',{style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}},item.attacks)),
-      item.skills&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'SKILLS'),React.createElement('div',{style:S.viewVal},item.skills)),
-      item.notes&&React.createElement('div',null,React.createElement('div',{style:S.divider}),React.createElement('div',{style:S.viewLbl},'SPECIAL ABILITIES / NOTES'),React.createElement('div',{style:S.viewVal},item.notes))
+      item.attacks&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:{...S.viewLbl,color:t.a}},isMothership?'COMBAT & DAMAGE':'ATTACKS & DICE'),React.createElement(MarkdownView,{text:item.attacks,style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}})),
+      item.skills&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'SKILLS'),React.createElement(MarkdownView,{text:item.skills,style:S.viewVal})),
+      item.notes&&React.createElement('div',null,React.createElement('div',{style:S.divider}),React.createElement('div',{style:S.viewLbl},'SPECIAL ABILITIES / NOTES'),React.createElement(MarkdownView,{text:item.notes,style:S.viewVal}))
     );
   };
 
@@ -769,9 +795,17 @@ function App(){
     return getFields(modal?.tab||tab).map(f=>{
       const val=item[f.k];
       if(val===undefined||val===null||val==='')return null;
+      const isMarkdown=f.type==='textarea';
       return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
         React.createElement('div',{style:S.lbl},f.l),
-        React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'}},val)
+        isMarkdown
+          ? React.createElement('div',{className:'md-view'},
+              React.createElement(MarkdownView,{
+                text:val,
+                style:{fontSize:'13px',color:t.tx}
+              })
+            )
+          : React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6'}},val)
       );
     });
   };
@@ -806,7 +840,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v1.8 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v1.9 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
