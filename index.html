@@ -263,13 +263,54 @@ function DiceTab({t,game}){
     ),
     React.createElement('div',{style:S.panel},
       React.createElement('button',{style:S.rollBtn,onClick:doRoll,disabled:rolling},rolling?'ROLLING...':`ROLL ${diceCount}d${selectedDie}`),
-      current&&React.createElement('div',{style:{textAlign:'center',padding:'20px 0',marginTop:'12px',borderTop:`1px solid ${t.bd}`}},
-        React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
-        React.createElement('div',{style:{fontSize:'11px',color:t.mu,marginTop:'8px'}},
-          current.kept.map((v,i)=>React.createElement('span',{key:i,style:{color:t.tx,marginRight:'6px'}},v)),
-          current.dropped.map((v,i)=>React.createElement('span',{key:'d'+i,style:{color:'#f87171',textDecoration:'line-through',marginRight:'6px'}},v))
-        ),
-        React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},`${diceCount}d${current.sides} \u00b7 ${current.mode.toUpperCase()}`)
+      current&&React.createElement('div',{style:{padding:'16px 0 4px 0',marginTop:'12px',borderTop:`1px solid ${t.bd}`}},
+        // Alien RPG: show individual die cards with 6=success highlighted
+        isAlien
+          ? React.createElement('div',null,
+              React.createElement('div',{style:{display:'flex',gap:'6px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
+                current.kept.map((v,i)=>{
+                  const isSuccess=v===6;
+                  const col=isSuccess?'#4ade80':t.mu;
+                  return React.createElement('div',{key:i,style:{
+                    display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
+                    padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',
+                    background:`rgba(${isSuccess?'74,222,128':'128,128,128'},0.06)`,
+                    minWidth:'36px'
+                  }},
+                    React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},v),
+                    React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},isSuccess?'HIT':'···')
+                  );
+                }),
+                current.dropped.map((v,i)=>
+                  React.createElement('div',{key:'d'+i,style:{
+                    display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
+                    padding:'8px 10px',border:`1px solid #f87171`,borderRadius:'2px',
+                    background:'rgba(248,113,113,0.06)',minWidth:'36px',opacity:0.5
+                  }},
+                    React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:'#f87171',lineHeight:1,textDecoration:'line-through'}},v),
+                    React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:'#f87171'}},'DROP')
+                  )
+                )
+              ),
+              React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',marginBottom:'8px'}},
+                React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},
+                  `${current.kept.filter(v=>v===6).length} SUCCESS${current.kept.filter(v=>v===6).length!==1?'ES':''}`
+                ),
+                React.createElement('span',{style:{fontSize:'10px',color:t.mu}},'|'),
+                React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px'}},
+                  `${diceCount}d${current.sides} · ${current.mode.toUpperCase()}`
+                )
+              )
+            )
+          // Mothership: keep original big number display
+          : React.createElement('div',{style:{textAlign:'center'}},
+              React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
+              React.createElement('div',{style:{fontSize:'11px',color:t.mu,marginTop:'8px'}},
+                current.kept.map((v,i)=>React.createElement('span',{key:i,style:{color:t.tx,marginRight:'6px'}},v)),
+                current.dropped.map((v,i)=>React.createElement('span',{key:'d'+i,style:{color:'#f87171',textDecoration:'line-through',marginRight:'6px'}},v))
+              ),
+              React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},`${diceCount}d${current.sides} · ${current.mode.toUpperCase()}`)
+            )
       )
     ),
     // ── Stress Dice panel (Alien RPG only) ──
@@ -925,7 +966,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.0 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v2.1 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
