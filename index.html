@@ -155,6 +155,7 @@ const TABS=[
   {id:'bestiary',label:'BESTIARY'},
   {id:'encounter',label:'ENCOUNTER'},
   {id:'dice',label:'DICE'},
+  {id:'rules',label:'RULES'},
 ];
 
 const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',PANICKING:'#fb923c',BROKEN:'#fb923c',UNKNOWN:'#94a3b8',MIA:'#94a3b8'};
@@ -670,6 +671,462 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   );
 }
 
+
+// ─── RULES TAB ────────────────────────────────────────────────────────────────
+const MOTHERSHIP_RULES=[
+  {
+    id:'stats',
+    title:'STATS & SAVES',
+    quick:`STR / SPD / INT / COMBAT — roll 2d10+25 each (avg 36)
+SANITY / FEAR / BODY saves — roll 2d10+10 each
+Roll 1d100 UNDER your stat/save to succeed. 90-99 always fails.`,
+    full:`STAT CHECKS: Roll 1d100 under your relevant stat. Fail = gain 1 Stress.
+Roll of 90-99 is always a failure, even with bonuses.
+Roll of 00 = Critical Success. Doubles on a failed roll = Critical Failure + Panic Check.
+
+STATS (2d10+25):
+• Strength — holding airlocks, carrying, climbing, jumping
+• Speed — acting first, running, escaping before blast doors close
+• Intellect — recalling training, fixing things, thinking under pressure
+• Combat — fighting for your life
+
+SAVES (2d10+10):
+• Sanity — rationalise chaos, detect illusions, cope with Stress
+• Fear — maintain composure against fear, loneliness, depression
+• Body — quick reflexes, resist disease, resist infestation
+
+SKILLS add their bonus to your stat before rolling:
+• Trained (+10) • Expert (+15) • Master (+20)
+
+ADVANTAGE [+]: Roll twice, take the best result.
+DISADVANTAGE [-]: Roll twice, take the worst result.
+If you have both, they cancel out.`
+  },
+  {
+    id:'health',
+    title:'HEALTH & WOUNDS',
+    quick:`Health Max = 1d10+10 (11–20)
+Max Wounds = 2 (Marine/Android = 3)
+Health hits 0 → gain 1 Wound, reset Health (minus carryover)
+Max Wounds reached → make a Death Save`,
+    full:`HEALTH: Your damage buffer. Roll 1d10+10 at character creation.
+When Health drops to zero you gain a Wound and roll on the Wounds Table.
+Reset Health to maximum, subtract any carryover damage.
+
+WOUNDS TABLE (roll 1d10 by damage type):
+• Blunt Force / Bleeding / Gunshot / Fire & Explosives / Gore & Massive
+• 00 = Flesh Wound (minor inconvenience)
+• 01-04 = Minor Injury (lasting, needs treatment)
+• 05-06 = Major Injury (severe, needs treatment)
+• 07-08 = Lethal Injury (Death Save in 1d10 rounds)
+• 09 = Fatal Injury (Death Save immediately)
+
+DEATH SAVE: Warden places 1d10 in a cup face down.
+Revealed when someone checks your vitals.
+• 00 = Unconscious, wake in 2d10 min, -1d5 Max Health
+• 01-02 = Dying, die in 1d5 rounds without help
+• 03-04 = Comatose
+• 05-09 = Dead
+
+BLEEDING: Some wounds cause 1 DMG/round until treated. Cumulative. Ignores armor.`
+  },
+  {
+    id:'armor',
+    title:'ARMOR',
+    quick:`AP = Armor Points. Ignore all damage LESS than AP.
+Damage ≥ AP destroys armor + you take remainder.
+Anti-Armor (AA) weapons ignore and destroy armor on hit.
+Damage Reduction (DR) always reduces damage first.`,
+    full:`ARMOR POINTS (AP) — Mothership armor absorbs hits:
+Characters ignore all damage less than their AP in a single hit.
+If damage equals or exceeds AP, armor is destroyed and excess damage carries through.
+
+ARMOR TABLE:
+• Standard Crew Attire — AP 1
+• Vaccsuit — AP 3 (Speed [-], includes O2 12hrs, comms, headlamp)
+• Hazard Suit — AP 5 (includes air filter, O2 1hr, radiation shielding)
+• Standard Battle Dress — AP 7 (includes comms)
+• Advanced Battle Dress — AP 10 (Speed [-], DR 3, includes HUD, exoskeletal weave)
+
+DAMAGE REDUCTION (DR): Reduces all incoming damage by the stated amount.
+Occurs before armor. Applies even if armor is destroyed or weapon has Anti-Armor.
+
+ANTI-ARMOR (AA): Ignores and destroys armor on any hit.
+
+COVER also has AP values:
+• Insignificant (wood, body shields) — AP 5
+• Light (trees, metal furniture, bulkheads) — AP 10
+• Heavy (airlock doors, cement beams) — DR 5, AP 20`
+  },
+  {
+    id:'combat',
+    title:'COMBAT',
+    quick:`Rounds = ~10 seconds. Make a Combat Check to attack.
+Success → roll weapon damage, subtract from enemy Health.
+Fail → situation worsens + gain 1 Stress.
+Turn order: Speed Check — success = before enemies, fail = after.`,
+    full:`TURN ORDER: Optional strict order — everyone makes a Speed Check.
+Success = act before enemies. Fail = act after. Re-roll if situation changes dramatically.
+
+ON YOUR TURN: Move somewhere in Close Range AND do one thing.
+If you only run, you can move to Long Range.
+
+ATTACKING: Make a Combat Check. Success → roll weapon damage.
+
+HOW TO ATTACK:
+1. Declare target and weapon
+2. Make Combat Check
+3. If success, roll weapon damage
+4. Subtract from enemy Health
+
+RANGE BANDS:
+• Adjacent (<1m) — touching, fist fights, using terminals
+• Close (5-10m) — can reach by running, throwing range
+• Long (20-100m) — rifles effective, shotguns less so
+• Extreme (100m+) — smart rifles only
+
+WOUND TYPES triggered by damage:
+• Blunt Force, Bleeding, Gunshot, Fire/Explosives, Gore/Massive`
+  },
+  {
+    id:'stress',
+    title:'STRESS & PANIC',
+    quick:`Stress current/min both start at 2. Max = 20.
+Gain 1 Stress on failed Stat Check or Save.
+Panic Check: roll 1d20, must roll ABOVE current Stress.
+Rest to reduce Stress (roll worst Save).`,
+    full:`STRESS: Starts at current 2, minimum 2. Maximum is 20.
+Gain 1 Stress whenever you fail a Stat Check or Save.
+Any Stress above 20 instead reduces the most relevant stat or save.
+
+RELIEVING STRESS: Rest in a relatively safe place.
+Make a Rest Save using your worst Save.
+• Success: reduce Stress by the ones digit rolled (e.g., rolled 24 = reduce by 4)
+• Fail: gain 1 Stress instead
+
+PANIC CHECK: Roll 1d20 (Panic Die) and try to roll GREATER than current Stress.
+Triggered by: Critical Failure, watching a crewmember die, witnessing multiple panics,
+ship Critical Failure, first encounter with a horrifying entity.
+
+PANIC TABLE (1d20 result):
+01 Adrenaline Rush — [+] all rolls 2d10 min, -1d5 Stress
+02 Nervous — +1 Stress
+03 Jumpy — +1 Stress, Close crew +2 Stress
+04 Overwhelmed — [-] all rolls 1d10 min, +1 Min Stress
+05 Coward — must Fear Save to engage in violence
+06 Frightened — Fear Save [-] near source of fear
+07 Nightmares — [-] on Rest Saves (Condition)
+08-12 Various Conditions (loss of confidence, doomed, haunted...)
+15 Catatonic — unresponsive 2d10 min, -1d10 Stress
+16 Rage — [+] Damage 1d10 hrs, crew +1 Stress
+20 Retire — roll new character
+
+SHORE LEAVE converts Stress to improved Saves.`
+  },
+  {
+    id:'skills',
+    title:'SKILLS',
+    quick:`Trained (+10) · Expert (+15) · Master (+20)
+Add bonus to stat before rolling.
+Training: Trained 2yr+10kcr / Expert 4yr+50kcr / Master 6yr+200kcr`,
+    full:`SKILLS add their bonus to your relevant stat before rolling a Stat Check.
+You must have a prerequisite skill to take Expert or Master skills.
+
+TRAINED SKILLS (+10): Linguistics, Zoology, Botany, Geology, Industrial Equipment,
+Jury-Rigging, Chemistry, Computers, Zero-G, Mathematics, Art, Archaeology,
+Theology, Military Training, Rimwise, Athletics, Pharmacology (req. Chemistry)
+
+EXPERT SKILLS (+15): Psychology, Pathology, Field Medicine, Ecology,
+Asteroid Mining, Mechanical Repair, Explosives, Hacking, Wilderness Survival,
+Firearms, Hand-to-Hand Combat, Piloting, Physics, Mysticism
+
+MASTER SKILLS (+20): Sophontology, Exobiology, Surgery, Planetology,
+Robotics, Engineering, Cybernetics, Artificial Intelligence, Hyperspace,
+Xenoesotericism, Command
+
+NO SKILL (+0): You can still attempt the action. Some very complex tasks
+may require Disadvantage or may not be possible without the skill at all.
+
+MILITARY TRAINING: Free but requires a 6-year contract with Colonial Marines.`
+  },
+];
+
+const ALIEN_RULES=[
+  {
+    id:'attrs',
+    title:'ATTRIBUTES & SKILLS',
+    quick:`STR / AGL / WITS / EMP — rated 1 to 5
+Roll = Attribute + Skill level in base dice. Roll a 6 to succeed.
+More 6s = better outcome. In combat, extra 6s = extra damage.`,
+    full:`ATTRIBUTES (rated 1–5):
+• Strength — raw physical power, endurance
+• Agility — speed, body control, motor skills
+• Wits — intelligence, alertness, sharpness of mind
+• Empathy — charisma, reading and affecting others
+
+MAKING A SKILL ROLL:
+1. Add skill level to linked attribute = number of base dice (black d6s)
+2. Add stress dice (yellow d6s) equal to your current stress level
+3. Roll all dice. Any 6 = success. More 6s = better result.
+4. No 6s = failure. You may push the roll once (stress +1).
+
+SKILLS (12 core):
+Strength: Heavy Machinery, Stamina, Close Combat
+Agility: Mobility, Ranged Combat, Piloting
+Wits: Observation, Comtech, Survival
+Empathy: Command, Manipulation, Medical Aid
+
+MODIFIERS: +1 die for help (up to 3 helpers), gear bonuses, situation bonuses.
+You can never go below 1 base die. Modifiers never affect stress dice.
+
+NO SKILL (level 0): Roll only your attribute dice. May get -2 dice for complex tasks.`
+  },
+  {
+    id:'health',
+    title:'HEALTH & RESOLVE',
+    quick:`Health = (STR + AGL) ÷ 2 rounded up
+Resolve = (WITS + EMP) ÷ 2 rounded up
+Health 0 = Broken. Roll Critical Injury.
+Resolve resists Panic (subtract from panic roll result).`,
+    full:`HEALTH: Your damage buffer. Calculated as (Strength + Agility) ÷ 2, rounded up.
+When Health drops to zero you are BROKEN.
+
+BROKEN: Cannot perform any actions except one movement action per round.
+Immediately roll for a Critical Injury. Cannot gain more stress or make panic rolls.
+
+CRITICAL INJURIES (D6):
+1 Focused — Relieve all stress
+2 Intense Pain — Stress +1
+3 Wounded — Movement becomes full action for D6 days
+4 Bleeding Out — LETHAL. Also Wounded. Death roll each Shift.
+5 Dying — LETHAL. Also Wounded. Death roll each Stretch.
+6 Last Breath — LETHAL. Also Wounded. Death roll each Round.
+
+DEATH ROLLS: Roll STAMINA. Cannot push. No stress dice.
+• Fail = you die.
+• Succeed = linger on, roll again after next time limit.
+• Three successes in a row = survive on your own.
+
+GETTING BACK UP:
+• First Aid: MEDICAL AID roll (full action, adjacent). Success = no longer broken, +1 Health per 6.
+• Rally: COMMAND roll (quick action, same zone). Success = no longer broken, +1 Health per 6.
+• On Your Own: After one stretch, automatically get back up with 1 Health.
+
+RESOLVE: (Wits + Empathy) ÷ 2, rounded up. Subtracted from Panic roll results.`
+  },
+  {
+    id:'armor',
+    title:'ARMOR',
+    quick:`Armor Level reduces incoming damage by that amount.
+Armor Piercing attacks count armor as 1 level lower.
+Aim for Weak Spot: -2 dice, but armor level reduced 1 on hit.`,
+    full:`ARMOR LEVEL: When you take damage, reduce it by your armor level.
+Unlike Mothership, armor in Alien RPG is not destroyed by a single hit — it reduces every hit.
+
+ARMOR PIERCING: Weapon trait. Armor level counts as 1 step lower (minimum 0).
+
+WEAK SPOTS: You can aim for gaps in armor.
+• -2 dice to your attack roll
+• On hit, armor level reduced 1 step (after piercing reduction)
+
+BARRIERS also have armor levels:
+• Furniture — Level 1
+• Inner Bulkhead — Level 2
+• Outer Bulkhead — Level 3
+• Armored Bulkhead — Level 4+
+
+COVER:
+• Partial Cover (quick action) — attacker gets -2 dice. You can still dodge.
+• Full Cover (full action) — attacker gets -3 dice. Cannot dodge. Barrier armor applies.
+
+ANDROIDS: When broken, roll Critical System Damage instead of Critical Injury.
+Androids can keep operating until System Shutdown (result 6).`
+  },
+  {
+    id:'combat',
+    title:'COMBAT & ACTIONS',
+    quick:`Rounds = ~5-10 seconds. Draw initiative cards 1-10.
+Each turn: 1 Full Action + 1 Quick Action (or 2 Quick Actions).
+Attack = CLOSE COMBAT or RANGED COMBAT skill roll.
+Hit = base damage + 1 per extra 6 rolled.`,
+    full:`INITIATIVE: Each combatant draws a numbered card (1-10). Lower = acts first.
+Xenomorphs draw one card per point of Speed.
+Holding Off: Swap initiative cards with someone who hasn't acted yet.
+
+EACH TURN:
+Full Actions (require skill roll):
+• Attack in close combat (CLOSE COMBAT)
+• Make a ranged attack (RANGED COMBAT)
+• Jump or climb (MOBILITY)
+• Give first aid (MEDICAL AID)
+• Interact with terminal (COMTECH)
+• Give orders (COMMAND) — gives target +1 die per 6 rolled
+
+Quick Actions (faster, often no roll):
+• Move to adjacent zone
+• Take partial cover
+• Defend against close combat attack (CLOSE COMBAT, interrupt)
+• Dodge a ranged attack (MOBILITY, interrupt)
+• Aim (+2 dice to next ranged attack)
+• Reload a weapon
+• Rally a broken character (COMMAND)
+
+CLOSE COMBAT: Roll CLOSE COMBAT. Hit = base damage +1 per extra 6.
+Unarmed = base 1 damage.
+Defend: Quick action, opposed roll — each 6 you roll cancels one attacker 6.
+
+RANGED COMBAT: Roll RANGED COMBAT. Need line of sight.
+Dodge: Quick action (MOBILITY), interrupt — each 6 cancels one attacker 6.
+Aiming: Quick action before attack = +2 dice.
+
+DAMAGE: Reduce incoming damage by armor level. Decrease Health by result.
+Health 0 = Broken. Roll Critical Injury.
+
+RANGE BANDS:
+Adjacent (A) — in your face
+Short (S) — same zone
+Medium (M) — adjacent zone
+Long (L) — up to 4 zones away
+Extreme (E) — farther`
+  },
+  {
+    id:'stress',
+    title:'STRESS & PANIC',
+    quick:`Stress starts at 0. Add stress dice (yellow d6) equal to stress level.
+6 on stress die = extra success. 1 on stress die = Stress Response.
+Panic Roll = D6 + Stress Level - Resolve.
+Push a roll = +1 stress level, re-roll non-6s.`,
+    full:`STRESS LEVEL: Starts at zero. Increases when:
+• You push a skill roll (+1)
+• You or a nearby PC suffers certain stress/panic responses
+• A nearby NPC panics
+• You fire full auto (2nd/3rd attack rolls)
+• You become fatigued
+• A crew member attacks you
+
+STRESS DICE (yellow d6s): Add stress level number of yellow dice to every roll.
+• Rolling 6 on a stress die = extra success (good!)
+• Rolling 1 on a stress die = trigger a Stress Response (bad!)
+• Cannot push the roll if you rolled any 1s on stress dice.
+
+STRESS RESPONSE (D6 + Stress - Resolve):
+≤0 Keeping Cool — no effect
+1 Jumpy — pushing gives +2 stress instead of +1
+2 Tunnel Vision — Wits rolls -2 dice
+3 Aggravated — Empathy rolls -2 dice
+4 Shakes — Agility rolls -2 dice
+5 Frantic — Strength rolls -2 dice
+6 Deflated — cannot push any rolls
+7+ Mess Up — action fails, +1 stress
+
+PANIC ROLL (D6 + Stress - Resolve): Triggered by witnessing a PC broken,
+first Xenomorph sighting, Xeno within Adjacent range, certain panic responses.
+≤0 Keeping Cool
+1 Spooked — +1 stress
+2 Noisy — enemies alerted
+4 Lose Item — GM decides which
+7 Freeze — lose next turn
+9 Scream — lose turn, -1 stress, nearby PCs must panic roll
+10 Flee — must move away until safe
+11 Frenzy — attack nearest creature
+12+ Catatonic — collapse until panic stops
+
+RELIEVING STRESS: 1 stress per stretch of rest in safe area.
+Also removes one stress response per stress level reduced.`
+  },
+  {
+    id:'push',
+    title:'PUSHING ROLLS',
+    quick:`Push once per roll (unless talent allows more).
+Stress +1, add one stress die, re-roll all non-6s.
+Cannot push if you rolled any 1s on stress dice.
+Cannot push passive rolls or death rolls.`,
+    full:`PUSHING YOUR ROLL: If you fail or want more successes, you can push.
+1. Stress level immediately increases by 1 (add one stress die to pool)
+2. Re-roll all dice that are NOT showing 6
+3. All dice count in the final result (including ones not re-rolled)
+4. If a stress die now shows 1, trigger a Stress Response
+
+RESTRICTIONS:
+• Only push once per roll (some talents allow a second push)
+• Cannot push if ANY stress die showed 1 in the initial roll
+• Cannot push passive rolls (like OBSERVATION in stealth)
+• Cannot push death rolls (STAMINA saves when dying)
+• NPCs never push rolls
+
+STORY POINTS: In cinematic play, spend a story point to automatically
+get one 6 on any base die in a skill roll. Can be used before or after pushing.
+Maximum 3 story points at any time. Earned by following your personal agenda.
+
+WHY PUSH? More 6s = more damage / better outcomes in combat.
+Risk vs reward — is the extra success worth the stress and possible panic?`
+  },
+];
+
+function RulesTab({t,game}){
+  const [openSection,setOpenSection]=useState(null);
+  const isAlien=game==='alien';
+  const rules=isAlien?ALIEN_RULES:MOTHERSHIP_RULES;
+
+  const toggle=(id)=>setOpenSection(p=>p===id?null:id);
+
+  const S={
+    section:{marginBottom:'8px',border:`1px solid ${t.bd}`,borderRadius:'2px',overflow:'hidden'},
+    sectionActive:{marginBottom:'8px',border:`1px solid ${t.a}`,borderRadius:'2px',overflow:'hidden'},
+    header:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',
+      cursor:'pointer',background:t.card,transition:'background 0.15s'},
+    headerOpen:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',
+      cursor:'pointer',background:`rgba(${t.rgb},0.06)`,transition:'background 0.15s'},
+    title:{fontSize:'11px',letterSpacing:'3px',color:t.tx},
+    titleOpen:{fontSize:'11px',letterSpacing:'3px',color:t.a},
+    chevron:(open)=>({fontSize:'12px',color:open?t.a:t.mu,transition:'transform 0.2s',
+      display:'inline-block',transform:open?'rotate(90deg)':'rotate(0deg)'}),
+    quickRef:{padding:'12px 16px',background:t.bg,borderBottom:`1px solid ${t.bd}`,
+      fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.tx,
+      lineHeight:'1.8',letterSpacing:'0.5px',whiteSpace:'pre-wrap'},
+    expandBtn:{display:'block',width:'100%',padding:'8px 16px',background:'none',
+      border:'none',borderTop:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',
+      fontSize:'9px',letterSpacing:'2px',cursor:'pointer',textAlign:'left',
+      transition:'color 0.15s'},
+    fullDetail:{padding:'14px 16px',background:t.bg,
+      fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.mu,
+      lineHeight:'1.9',letterSpacing:'0.5px',whiteSpace:'pre-wrap',
+      borderTop:`1px dashed ${t.bd}`},
+    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',
+      padding:'14px 16px',marginBottom:'16px',fontSize:'10px',color:t.mu,
+      letterSpacing:'1px',lineHeight:'1.7'},
+  };
+
+  const [expandedFull,setExpandedFull]=useState({});
+  const toggleFull=(id)=>setExpandedFull(p=>({...p,[id]:!p[id]}));
+
+  return React.createElement('div',null,
+    React.createElement('div',{style:S.intro},
+      isAlien
+        ? 'ALIEN RPG — Roll d6 dice equal to Attribute + Skill. Each 6 = success. Stress dice add yellow d6s — 6s help, 1s trigger responses. Roll-over system.'
+        : 'MOTHERSHIP — Roll 1d100 under your Stat or Save to succeed. 90-99 always fails. Advantage = roll twice take best. Disadvantage = roll twice take worst. Roll-under system.'
+    ),
+    ...rules.map(r=>{
+      const isOpen=openSection===r.id;
+      const isFull=expandedFull[r.id];
+      return React.createElement('div',{key:r.id,style:isOpen?S.sectionActive:S.section},
+        React.createElement('div',{style:isOpen?S.headerOpen:S.header,onClick:()=>toggle(r.id)},
+          React.createElement('span',{style:isOpen?S.titleOpen:S.title},r.title),
+          React.createElement('span',{style:S.chevron(isOpen)},'▶')
+        ),
+        isOpen&&React.createElement('div',null,
+          React.createElement('div',{style:S.quickRef},r.quick),
+          React.createElement('button',{style:{...S.expandBtn,color:isFull?t.a:t.mu},
+            onClick:(e)=>{e.stopPropagation();toggleFull(r.id);}},
+            isFull?'▲ COLLAPSE FULL RULES':'▼ EXPAND FULL RULES'
+          ),
+          isFull&&React.createElement('div',{style:S.fullDetail},r.full)
+        )
+      );
+    })
+  );
+}
+
 // ─── APP ─────────────────────────────────────────────────────────────────────
 function App(){
   const [game,setGame]=useState('mothership');
@@ -966,7 +1423,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.1 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v2.2 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
@@ -983,7 +1440,9 @@ function App(){
 
     // ── Main ──
     React.createElement('div',{style:S.main},
-      tab==='dice'
+      tab==='rules'
+        ?React.createElement(RulesTab,{t,game})
+        :tab==='dice'
         ?React.createElement(DiceTab,{t,game})
         :tab==='encounter'
           ?React.createElement(EncounterTab,{
