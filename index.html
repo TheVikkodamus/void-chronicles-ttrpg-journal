@@ -51,7 +51,7 @@ function MarkdownView({text,style}){
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const defaultEncounter=()=>({round:1,activeIndex:0,started:false,combatants:[]});
-const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[],bestiary:[],encounter:defaultEncounter()});
+const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[],bestiary:[],encounter:defaultEncounter(),homebrew:[]});
 
 const storage={
   get:async(key)=>{try{const v=localStorage.getItem(key);return v?{value:v}:null;}catch{return null;}},
@@ -1063,7 +1063,7 @@ Risk vs reward — is the extra success worth the stress and possible panic?`
   },
 ];
 
-function RulesTab({t,game}){
+function RulesTab({t,game,homebrew,onHomebrewChange}){
   const [openSection,setOpenSection]=useState(null);
   const isAlien=game==='alien';
   const rules=isAlien?ALIEN_RULES:MOTHERSHIP_RULES;
@@ -1100,6 +1100,33 @@ function RulesTab({t,game}){
   const [expandedFull,setExpandedFull]=useState({});
   const toggleFull=(id)=>setExpandedFull(p=>({...p,[id]:!p[id]}));
 
+  // ── Homebrew state ──
+  const [hbForm,setHbForm]=useState(null); // null=closed, {}=new, {id,...}=editing
+  const [hbExpanded,setHbExpanded]=useState({});
+  const [hbDeleteConfirm,setHbDeleteConfirm]=useState(null);
+
+  const hbEntries=homebrew||[];
+
+  const saveHb=()=>{
+    if(!hbForm||!hbForm.title?.trim())return;
+    const entries=[...hbEntries];
+    if(hbForm.id){
+      const i=entries.findIndex(x=>x.id===hbForm.id);
+      if(i>=0)entries[i]={...hbForm};
+    } else {
+      entries.push({...hbForm,id:uid(),createdAt:Date.now()});
+    }
+    onHomebrewChange(entries);
+    setHbForm(null);
+  };
+
+  const deleteHb=(id)=>{
+    onHomebrewChange(hbEntries.filter(x=>x.id!==id));
+    setHbDeleteConfirm(null);
+  };
+
+  const HB_CATS=['COMBAT','SKILLS','STRESS & PANIC','ARMOR','EQUIPMENT','CREATURES','HOUSE RULE','OTHER'];
+
   return React.createElement('div',null,
     React.createElement('div',{style:S.intro},
       isAlien
@@ -1123,7 +1150,159 @@ function RulesTab({t,game}){
           isFull&&React.createElement('div',{style:S.fullDetail},r.full)
         )
       );
-    })
+    }),
+
+    // ── HOMEBREW SECTION ──────────────────────────────────────────────────────
+    React.createElement('div',{style:{marginTop:'24px',borderTop:`1px solid ${t.bd}`,paddingTop:'20px'}},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}},
+        React.createElement('div',null,
+          React.createElement('div',{style:{fontSize:'11px',letterSpacing:'4px',color:t.a}},'HOMEBREW RULES'),
+          React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginTop:'3px'}},'Your custom rules and house rules for this game')
+        ),
+        React.createElement('button',{
+          style:{padding:'5px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',
+            color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
+          onClick:()=>setHbForm({title:'',category:'HOUSE RULE',quickRef:'',fullDetail:''})
+        },'+ ADD RULE')
+      ),
+
+      // Add / Edit form
+      hbForm&&React.createElement('div',{style:{background:t.card,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'16px',marginBottom:'14px',boxShadow:`0 0 20px rgba(${t.rgb},0.08)`}},
+        React.createElement('div',{style:{fontSize:'10px',letterSpacing:'3px',color:t.a,marginBottom:'14px'}},
+          hbForm.id?'EDIT HOMEBREW RULE':'+ NEW HOMEBREW RULE'
+        ),
+        // Title
+        React.createElement('div',{style:{marginBottom:'10px'}},
+          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'TITLE *'),
+          React.createElement('input',{type:'text',
+            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
+            value:hbForm.title||'',
+            onChange:e=>setHbForm(p=>({...p,title:e.target.value})),
+            placeholder:'e.g. Called Shots, Custom Panic, Variant Armor...'
+          })
+        ),
+        // Category
+        React.createElement('div',{style:{marginBottom:'10px'}},
+          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'CATEGORY'),
+          React.createElement('select',{
+            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
+            value:hbForm.category||'HOUSE RULE',
+            onChange:e=>setHbForm(p=>({...p,category:e.target.value}))
+          },HB_CATS.map(c=>React.createElement('option',{key:c,value:c},c)))
+        ),
+        // Quick Ref
+        React.createElement('div',{style:{marginBottom:'10px'}},
+          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'QUICK REFERENCE (short summary shown when collapsed)'),
+          React.createElement('textarea',{rows:3,
+            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},
+            value:hbForm.quickRef||'',
+            onChange:e=>setHbForm(p=>({...p,quickRef:e.target.value})),
+            placeholder:'Key numbers, one-line summaries...'
+          })
+        ),
+        // Full Detail
+        React.createElement('div',{style:{marginBottom:'14px'}},
+          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'FULL DETAIL (supports markdown — **bold**, *italic*, - lists)'),
+          React.createElement('textarea',{rows:6,
+            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},
+            value:hbForm.fullDetail||'',
+            onChange:e=>setHbForm(p=>({...p,fullDetail:e.target.value})),
+            placeholder:'Full rule explanation, examples, edge cases... Supports markdown: **bold**, *italic*, - lists, ## Headings'
+          })
+        ),
+        React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end'}},
+          React.createElement('button',{
+            style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+              border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},
+            onClick:()=>setHbForm(null)
+          },'CANCEL'),
+          React.createElement('button',{
+            style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+              border:`1px solid ${hbForm.title?.trim()?t.a:t.bd}`,
+              color:hbForm.title?.trim()?t.a:t.mu,background:'none',borderRadius:'2px',cursor:'pointer',
+              opacity:hbForm.title?.trim()?1:0.4},
+            onClick:saveHb,
+            disabled:!hbForm.title?.trim()
+          },'SAVE RULE')
+        )
+      ),
+
+      // Homebrew entries list
+      hbEntries.length===0&&!hbForm&&React.createElement('div',{style:{
+        textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px',
+        border:`1px dashed ${t.bd}`,borderRadius:'2px'
+      }},'NO HOMEBREW RULES YET -- PRESS + ADD RULE TO CREATE ONE'),
+
+      ...hbEntries.map(entry=>{
+        const isOpen=hbExpanded[entry.id];
+        const catColor={'COMBAT':'#f87171','STRESS & PANIC':'#fb923c','ARMOR':'#94a3b8','EQUIPMENT':'#c084fc'}[entry.category]||t.mu;
+        return React.createElement('div',{key:entry.id,style:{
+          border:`1px solid ${isOpen?t.a:t.bd}`,borderRadius:'2px',marginBottom:'8px',overflow:'hidden'
+        }},
+          // Header
+          React.createElement('div',{style:{
+            display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',
+            background:isOpen?`rgba(${t.rgb},0.05)`:t.card,cursor:'pointer'
+          },onClick:()=>setHbExpanded(p=>({...p,[entry.id]:!p[entry.id]}))},
+            React.createElement('span',{style:{flex:1,fontSize:'11px',letterSpacing:'1px',color:isOpen?t.a:t.tx}},entry.title),
+            React.createElement('span',{style:{fontSize:'8px',letterSpacing:'1px',padding:'2px 6px',border:`1px solid ${catColor}`,color:catColor,borderRadius:'2px'}},entry.category),
+            React.createElement('span',{style:{fontSize:'11px',color:isOpen?t.a:t.mu,marginLeft:'8px',transform:isOpen?'rotate(90deg)':'none',display:'inline-block',transition:'transform 0.2s'}},'▶')
+          ),
+          // Content
+          isOpen&&React.createElement('div',null,
+            entry.quickRef&&React.createElement('div',{style:{
+              padding:'10px 14px',background:t.bg,borderTop:`1px solid ${t.bd}`,
+              fontSize:'11px',color:t.tx,lineHeight:'1.8',whiteSpace:'pre-wrap',fontFamily:'inherit'
+            }},entry.quickRef),
+            entry.fullDetail&&React.createElement('div',null,
+              React.createElement('div',{style:{padding:'10px 14px 2px',fontSize:'9px',letterSpacing:'2px',color:t.mu,borderTop:`1px dashed ${t.bd}`,background:t.bg}},'FULL DETAIL'),
+              React.createElement('div',{className:'md-view',style:{padding:'0 14px 12px',background:t.bg,fontSize:'11px',color:t.mu,lineHeight:'1.8'}},
+                React.createElement(MarkdownView,{text:entry.fullDetail,style:{color:t.mu,fontSize:'11px'}})
+              )
+            ),
+            // Action buttons
+            React.createElement('div',{style:{display:'flex',gap:'6px',padding:'8px 14px',borderTop:`1px solid ${t.bd}`,background:t.card}},
+              React.createElement('button',{
+                style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+                  border:`1px solid ${t.a}`,color:t.a,background:'none',borderRadius:'2px',cursor:'pointer'},
+                onClick:()=>setHbForm({...entry})
+              },'EDIT'),
+              React.createElement('button',{
+                style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+                  border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},
+                onClick:()=>setHbDeleteConfirm(entry.id)
+              },'DELETE')
+            )
+          )
+        );
+      }),
+
+      // Delete confirm
+      hbDeleteConfirm&&React.createElement('div',{style:{
+        position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',
+        alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'
+      }},
+        React.createElement('div',{style:{
+          background:t.panel,border:'1px solid #f87171',borderRadius:'2px',
+          padding:'24px',maxWidth:'320px',width:'100%',textAlign:'center'
+        }},
+          React.createElement('div',{style:{fontSize:'12px',letterSpacing:'3px',color:'#f87171',marginBottom:'12px'}},'DELETE RULE'),
+          React.createElement('div',{style:{fontSize:'10px',color:t.mu,letterSpacing:'1px',marginBottom:'20px'}},'THIS CANNOT BE UNDONE'),
+          React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'center'}},
+            React.createElement('button',{
+              style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+                border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},
+              onClick:()=>setHbDeleteConfirm(null)
+            },'CANCEL'),
+            React.createElement('button',{
+              style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+                border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},
+              onClick:()=>deleteHb(hbDeleteConfirm)
+            },'CONFIRM DELETE')
+          )
+        )
+      )
+    )
   );
 }
 
@@ -1161,6 +1340,7 @@ function App(){
         ['mothership','alien'].forEach(g=>{
           if(!parsed[g].bestiary)parsed[g].bestiary=[];
           if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();
+          if(!parsed[g].homebrew)parsed[g].homebrew=[];
         });
         upd(parsed);
         setImportSuccess(true);setImportError(null);
@@ -1183,6 +1363,7 @@ function App(){
           ['mothership','alien'].forEach(g=>{
             if(!parsed[g].bestiary)parsed[g].bestiary=[];
             if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();
+          if(!parsed[g].homebrew)parsed[g].homebrew=[];
           });
           setData(parsed);
         }
@@ -1203,6 +1384,11 @@ function App(){
 
   const updateEncounter=(enc)=>{
     const nd={...data,[game]:{...gd(),encounter:enc}};
+    upd(nd);
+  };
+
+  const updateHomebrew=(entries)=>{
+    const nd={...data,[game]:{...gd(),homebrew:entries}};
     upd(nd);
   };
 
@@ -1423,7 +1609,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.2 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v2.4 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
@@ -1441,7 +1627,7 @@ function App(){
     // ── Main ──
     React.createElement('div',{style:S.main},
       tab==='rules'
-        ?React.createElement(RulesTab,{t,game})
+        ?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
         :tab==='dice'
         ?React.createElement(DiceTab,{t,game})
         :tab==='encounter'
