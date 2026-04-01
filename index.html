@@ -14,7 +14,128 @@
   button:hover{opacity:0.8}
   select option{background:#071009}
   input[type=number]::-webkit-inner-spin-button{opacity:1}
-  /* Markdown rendered output */
+  /* ── Print styles ── */
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    .no-print { display: none !important; }
+    .print-only { display: block !important; }
+    .print-sheet-wrap { display: block !important; }
+    @page { margin: 12mm; size: A4; }
+  }
+  .print-only { display: none; }
+  .print-sheet-wrap { display: none; }
+
+  /* Sheet styles — always defined, used both on screen and in print */
+  .crew-sheet {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    border: 1.5px solid #000;
+    padding: 14px;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    background: #fff;
+    color: #000;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .crew-sheet .sh-title {
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    border-bottom: 1.5px solid #000;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .crew-sheet .sh-game {
+    font-size: 9px;
+    letter-spacing: 3px;
+    opacity: 0.6;
+  }
+  .crew-sheet .sh-grid {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .crew-sheet .sh-grid-4 { grid-template-columns: repeat(4,1fr); }
+  .crew-sheet .sh-grid-3 { grid-template-columns: repeat(3,1fr); }
+  .crew-sheet .sh-grid-2 { grid-template-columns: repeat(2,1fr); }
+  .crew-sheet .sh-box {
+    border: 1px solid #000;
+    padding: 5px 7px;
+    text-align: center;
+  }
+  .crew-sheet .sh-box-lbl {
+    font-size: 7px;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .crew-sheet .sh-box-val {
+    font-size: 18px;
+    font-family: 'VT323', monospace;
+    display: block;
+    line-height: 1;
+  }
+  .crew-sheet .sh-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+    align-items: stretch;
+  }
+  .crew-sheet .sh-field {
+    border: 1px solid #000;
+    padding: 5px 7px;
+    flex: 1;
+  }
+  .crew-sheet .sh-field-lbl {
+    font-size: 7px;
+    letter-spacing: 2px;
+    opacity: 0.6;
+    display: block;
+    margin-bottom: 2px;
+  }
+  .crew-sheet .sh-field-val {
+    font-size: 11px;
+    min-height: 14px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .crew-sheet .sh-wounds {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 3px;
+  }
+  .crew-sheet .sh-wound-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #000;
+    display: inline-block;
+  }
+  .crew-sheet .sh-section-lbl {
+    font-size: 8px;
+    letter-spacing: 3px;
+    opacity: 0.5;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 2px;
+    margin-bottom: 6px;
+    margin-top: 8px;
+  }
+  .crew-sheet .sh-textarea {
+    border: 1px solid #000;
+    padding: 5px 7px;
+    min-height: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 6px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* ── Markdown rendered output */
   .md-view p{margin:0 0 6px 0}
   .md-view p:last-child{margin-bottom:0}
   .md-view ul,.md-view ol{margin:4px 0 6px 18px;padding:0}
@@ -156,6 +277,7 @@ const TABS=[
   {id:'encounter',label:'ENCOUNTER'},
   {id:'dice',label:'DICE'},
   {id:'rules',label:'RULES'},
+  {id:'print',label:'PRINT'},
 ];
 
 const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',PANICKING:'#fb923c',BROKEN:'#fb923c',UNKNOWN:'#94a3b8',MIA:'#94a3b8'};
@@ -1306,6 +1428,249 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
   );
 }
 
+
+// ─── PRINT / CHARACTER SHEET ──────────────────────────────────────────────────
+function CrewSheet({member,game}){
+  const isMothership=game==='mothership';
+
+  if(isMothership){
+    const maxWounds=parseInt(member.maxWounds)||2;
+    const maxHP=member.healthMax||'--';
+    return React.createElement('div',{className:'crew-sheet'},
+      // Header
+      React.createElement('div',{className:'sh-title'},
+        React.createElement('span',null,member.name||'UNNAMED'),
+        React.createElement('span',{className:'sh-game'},'MOTHERSHIP RPG')
+      ),
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'10px',fontSize:'10px'}},
+        React.createElement('span',null,`CLASS: ${member.role||'--'}`),
+        React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
+      ),
+
+      // Stats
+      React.createElement('div',{className:'sh-section-lbl'},'STATS'),
+      React.createElement('div',{className:'sh-grid sh-grid-4'},
+        ['strength','speed','intellect','combat'].map(k=>
+          React.createElement('div',{key:k,className:'sh-box'},
+            React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),
+            React.createElement('span',{className:'sh-box-val'},member[k]||'--')
+          )
+        )
+      ),
+
+      // Saves
+      React.createElement('div',{className:'sh-section-lbl'},'SAVES'),
+      React.createElement('div',{className:'sh-grid sh-grid-3'},
+        ['sanity','fear','body'].map(k=>
+          React.createElement('div',{key:k,className:'sh-box'},
+            React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),
+            React.createElement('span',{className:'sh-box-val'},member[k]||'--')
+          )
+        )
+      ),
+
+      // Health, Wounds, Stress, Armor row
+      React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
+      React.createElement('div',{className:'sh-row'},
+        React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'60px',textAlign:'center'}},
+          React.createElement('span',{className:'sh-field-lbl'},'HEALTH MAX'),
+          React.createElement('span',{className:'sh-box-val'},maxHP)
+        ),
+        React.createElement('div',{className:'sh-field',style:{flex:2}},
+          React.createElement('span',{className:'sh-field-lbl'},'MAX WOUNDS'),
+          React.createElement('div',{className:'sh-wounds'},
+            Array.from({length:maxWounds}).map((_,i)=>
+              React.createElement('div',{key:i,className:'sh-wound-box'})
+            )
+          )
+        ),
+        React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'50px',textAlign:'center'}},
+          React.createElement('span',{className:'sh-field-lbl'},'AP'),
+          React.createElement('span',{className:'sh-box-val'},member.armorPoints||'--')
+        ),
+        React.createElement('div',{className:'sh-field',style:{flex:2}},
+          React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),
+          React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},
+            (member.armorType||'--').replace(/ \(AP \d+\)/,'')
+          )
+        )
+      ),
+
+      // Stress
+      React.createElement('div',{className:'sh-row'},
+        React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
+          React.createElement('span',{className:'sh-field-lbl'},'STRESS CURRENT'),
+          React.createElement('span',{className:'sh-box-val'},member.stressCur||'2')
+        ),
+        React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
+          React.createElement('span',{className:'sh-field-lbl'},'STRESS MINIMUM'),
+          React.createElement('span',{className:'sh-box-val'},member.stressMin||'2')
+        )
+      ),
+
+      // Skills
+      member.skills&&React.createElement('div',null,
+        React.createElement('div',{className:'sh-section-lbl'},'SKILLS'),
+        React.createElement('div',{className:'sh-textarea'},member.skills)
+      ),
+
+      // Wound conditions
+      React.createElement('div',{className:'sh-section-lbl'},'WOUND CONDITIONS'),
+      React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.wounds||''),
+
+      // Notes
+      React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
+      React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.notes||'')
+    );
+  }
+
+  // ── Alien RPG sheet ──
+  const maxHealth=parseInt(member.hp)||
+    (member.strength&&member.agility
+      ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2)
+      :4);
+
+  return React.createElement('div',{className:'crew-sheet'},
+    // Header
+    React.createElement('div',{className:'sh-title'},
+      React.createElement('span',null,member.name||'UNNAMED'),
+      React.createElement('span',{className:'sh-game'},'ALIEN RPG')
+    ),
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'10px',fontSize:'10px'}},
+      React.createElement('span',null,`ARCHETYPE: ${member.role||'--'}`),
+      React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
+    ),
+
+    // Attributes
+    React.createElement('div',{className:'sh-section-lbl'},'ATTRIBUTES'),
+    React.createElement('div',{className:'sh-grid sh-grid-4'},
+      [['strength','STR'],['agility','AGL'],['wits','WITS'],['empathy','EMP']].map(([k,l])=>
+        React.createElement('div',{key:k,className:'sh-box'},
+          React.createElement('span',{className:'sh-box-lbl'},l),
+          React.createElement('span',{className:'sh-box-val'},member[k]||'--')
+        )
+      )
+    ),
+
+    // Health boxes, Resolve, Stress
+    React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
+    React.createElement('div',{className:'sh-row'},
+      React.createElement('div',{className:'sh-field',style:{flex:3}},
+        React.createElement('span',{className:'sh-field-lbl'},`HEALTH (max ${maxHealth})`),
+        React.createElement('div',{className:'sh-wounds'},
+          Array.from({length:maxHealth}).map((_,i)=>
+            React.createElement('div',{key:i,className:'sh-wound-box'})
+          )
+        )
+      ),
+      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
+        React.createElement('span',{className:'sh-field-lbl'},'RESOLVE'),
+        React.createElement('span',{className:'sh-box-val'},member.resolve||'--')
+      ),
+      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
+        React.createElement('span',{className:'sh-field-lbl'},'STRESS'),
+        React.createElement('span',{className:'sh-box-val'},member.stress||'0')
+      )
+    ),
+
+    // Armor
+    React.createElement('div',{className:'sh-row'},
+      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
+        React.createElement('span',{className:'sh-field-lbl'},'ARMOR LEVEL'),
+        React.createElement('span',{className:'sh-box-val'},member.armorLevel||'0')
+      ),
+      React.createElement('div',{className:'sh-field',style:{flex:3}},
+        React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),
+        React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},member.armorType||'NONE')
+      )
+    ),
+
+    // Skills
+    member.skills&&React.createElement('div',null,
+      React.createElement('div',{className:'sh-section-lbl'},'SKILLS & LEVELS'),
+      React.createElement('div',{className:'sh-textarea'},member.skills)
+    ),
+
+    // Talents
+    member.talents&&React.createElement('div',null,
+      React.createElement('div',{className:'sh-section-lbl'},'TALENTS'),
+      React.createElement('div',{className:'sh-textarea'},member.talents)
+    ),
+
+    // Critical injury
+    React.createElement('div',{className:'sh-section-lbl'},'CRITICAL INJURY'),
+    React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.criticalInjury||''),
+
+    // Notes
+    React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
+    React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.notes||'')
+  );
+}
+
+function PrintTab({game,crew,t}){
+  const printAll=()=>{
+    // Mark the print wrapper visible then print
+    document.querySelectorAll('.print-sheet-wrap').forEach(el=>el.style.display='block');
+    window.print();
+    setTimeout(()=>{
+      document.querySelectorAll('.print-sheet-wrap').forEach(el=>el.style.display='none');
+    },500);
+  };
+
+  const S={
+    header:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'},
+    title:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
+    printBtn:{padding:'8px 20px',background:'none',border:`2px solid ${t.a}`,borderRadius:'2px',
+      color:t.a,fontFamily:'inherit',fontSize:'11px',letterSpacing:'3px',cursor:'pointer'},
+    grid:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))',gap:'16px'},
+    empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',
+      letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    note:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'16px',lineHeight:'1.6'},
+  };
+
+  return React.createElement('div',null,
+    React.createElement('div',{style:S.header},
+      React.createElement('div',null,
+        React.createElement('div',{style:S.title},'CHARACTER SHEETS'),
+        React.createElement('div',{style:{...S.note,marginTop:'4px',marginBottom:0}},
+          `${crew.length} CREW MEMBER${crew.length!==1?'S':''} · ${game==='mothership'?'MOTHERSHIP RPG':'ALIEN RPG'}`
+        )
+      ),
+      React.createElement('button',{style:S.printBtn,className:'no-print',onClick:printAll},'PRINT ALL')
+    ),
+    React.createElement('div',{style:S.note,className:'no-print'},
+      'Preview below. Each sheet is designed to fit on a half-page when printed two per page. Use your browser’s print dialog to select layout.'
+    ),
+    crew.length===0
+      ? React.createElement('div',{style:S.empty},
+          React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
+          'NO CREW ENTRIES FOUND',React.createElement('br'),
+          React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'ADD CREW IN THE CREW TAB FIRST')
+        )
+      : React.createElement('div',{style:S.grid},
+          crew.map(member=>
+            React.createElement('div',{key:member.id},
+              React.createElement(CrewSheet,{member,game})
+            )
+          )
+        )
+  );
+}
+
+// Helper: print a single crew sheet
+function printSingleSheet(member,game){
+  const div=document.createElement('div');
+  div.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto;';
+  div.className='print-single';
+  document.body.appendChild(div);
+  const root=ReactDOM.createRoot(div);
+  root.render(React.createElement(CrewSheet,{member,game}));
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{root.unmount();div.remove();},300);
+  },200);
+}
+
 // ─── APP ─────────────────────────────────────────────────────────────────────
 function App(){
   const [game,setGame]=useState('mothership');
@@ -1609,7 +1974,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.4 // ACTIVE'),
+          React.createElement('div',{style:S.sub},'v2.5 // ACTIVE'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
@@ -1626,7 +1991,9 @@ function App(){
 
     // ── Main ──
     React.createElement('div',{style:S.main},
-      tab==='rules'
+      tab==='print'
+        ?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
+        :tab==='rules'
         ?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
         :tab==='dice'
         ?React.createElement(DiceTab,{t,game})
@@ -1665,6 +2032,7 @@ function App(){
               ...renderViewContent(modal.item),
               React.createElement('div',{style:S.btnRow},
                 React.createElement('button',{style:S.btn('danger'),onClick:()=>setDelConfirm(modal.item.id)},'DELETE'),
+                modal.tab==='crew'&&React.createElement('button',{style:{...S.btn('ghost'),borderColor:'#94a3b8',color:'#94a3b8'},onClick:()=>printSingleSheet(modal.item,game)},'PRINT'),
                 React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CLOSE'),
                 React.createElement('button',{style:S.btn('primary'),onClick:()=>openEdit(modal.item)},'EDIT')
               )
