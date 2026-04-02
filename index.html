@@ -134,6 +134,18 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+  .crew-sheet .sh-wound-box {
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid #000;
+    display: inline-block;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  @media print {
+    .crew-sheet .sh-wound-box { cursor: default; }
+    .no-print { display: none !important; }
+  }
 
   /* ── Markdown rendered output */
   .md-view p{margin:0 0 6px 0}
@@ -305,6 +317,7 @@ const FIELDS={
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
     {k:'category',l:'CATEGORY',type:'select',opts:['ALIEN','PARASITE','UNDEAD','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
     {k:'hp',l:'HP (hit points)',type:'number'},
+    {k:'wounds',l:'MAX WOUNDS',type:'number'},
     {k:'speed',l:'SPEED',type:'text'},
     {k:'instinct',l:'INSTINCT',type:'textarea',rows:2},
     {k:'attacks',l:'COMBAT & DAMAGE',type:'textarea',rows:3},
@@ -1559,20 +1572,399 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
 }
 
 
+
+// ─── MUSIC PLAYER ────────────────────────────────────────────────────────────
+const MOOD_OPTS=['AMBIENT','EXPLORATION','TENSION','COMBAT','HORROR','OTHER'];
+
+function getYTId(url){
+  if(!url)return null;
+  // Handle youtu.be, youtube.com/watch, youtube.com/embed
+  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
+  return m?m[1]:null;
+}
+
+function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}){
+  const [addForm,setAddForm]=useState(null);
+  const [form,setForm]=useState({});
+  const [editId,setEditId]=useState(null);
+  const [delId,setDelId]=useState(null);
+  const [filterMood,setFilterMood]=useState('ALL');
+
+  const tracks=playlist||[];
+  const filtered=filterMood==='ALL'?tracks:tracks.filter(tr=>tr.mood===filterMood);
+  const activeId=activeTrackId;
+  const setActiveId=onTrackChange;
+
+  const saveTrack=()=>{
+    if(!form.title?.trim()||!form.url?.trim())return;
+    const ytId=getYTId(form.url);
+    if(!ytId){alert('Could not find a YouTube video ID in that URL. Please check the link.');return;}
+    const entry={...form,ytId,id:editId||uid(),createdAt:Date.now()};
+    let updated;
+    if(editId){
+      updated=tracks.map(t=>t.id===editId?entry:t);
+    } else {
+      updated=[...tracks,entry];
+    }
+    onPlaylistChange(updated);
+    setAddForm(null);setForm({});setEditId(null);
+  };
+
+  const del=(id)=>{
+    onPlaylistChange(tracks.filter(tr=>tr.id!==id));
+    if(activeTrackId===id)onTrackChange(null);
+    setDelId(null);
+  };
+
+  const openEdit=(track)=>{
+    setForm({...track});setEditId(track.id);setAddForm('edit');
+  };
+
+  const S={
+    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',
+      padding:'12px 16px',marginBottom:'16px',fontSize:'9px',color:t.mu,
+      letterSpacing:'1px',lineHeight:'1.7'},
+    head:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'},
+    addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',
+      color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
+    filterRow:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'14px'},
+    filterBtn:(active)=>({padding:'4px 10px',background:'none',fontFamily:'inherit',
+      fontSize:'9px',letterSpacing:'2px',border:`1px solid ${active?t.a:t.bd}`,
+      color:active?t.a:t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'}),
+    card:(isActive)=>({background:isActive?`rgba(${t.rgb},0.06)`:t.card,
+      border:`1px solid ${isActive?t.a:t.bd}`,borderRadius:'2px',
+      padding:'12px 14px',marginBottom:'8px',cursor:'pointer',transition:'all 0.2s'}),
+    cardTitle:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
+    cardMeta:{fontSize:'9px',color:t.mu,letterSpacing:'1px'},
+    moodTag:(m)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',
+      border:`1px solid ${t.bd}`,color:t.mu,borderRadius:'2px',marginLeft:'6px'}),
+    playBtn:{padding:'3px 10px',background:'none',border:`1px solid ${t.a}`,
+      color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'1px',
+      borderRadius:'2px',cursor:'pointer'},
+    empty:{textAlign:'center',padding:'40px 20px',color:t.mu,fontSize:'10px',
+      letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',
+      alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'},
+    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',
+      padding:'24px',width:'100%',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto',
+      boxShadow:`0 0 40px rgba(${t.rgb},0.15)`},
+    mTitle:{fontSize:'13px',letterSpacing:'3px',color:t.a,marginBottom:'20px'},
+    lbl:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'5px'},
+    inp:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',
+      padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',
+      marginBottom:'12px'},
+    sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',
+      padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',
+      marginBottom:'12px'},
+    btnRow:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'8px'},
+    btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',
+      border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,
+      color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,
+      background:'none',borderRadius:'2px',cursor:'pointer'}),
+  };
+
+  const isValid=form.title?.trim()&&form.url?.trim();
+
+  return React.createElement('div',null,
+    React.createElement('div',{style:S.intro},
+      'Paste any YouTube URL to add it to your playlist. Click a track to load it in the player at the bottom of the screen. The player persists while you navigate between tabs.'
+    ),
+
+    // Header
+    React.createElement('div',{style:S.head},
+      React.createElement('div',{style:{fontSize:'10px',letterSpacing:'4px',color:t.mu}},
+        `${tracks.length} TRACK${tracks.length!==1?'S':''}`
+      ),
+      React.createElement('button',{style:S.addBtn,onClick:()=>{setForm({mood:'AMBIENT'});setEditId(null);setAddForm('add');}},
+        '+ ADD TRACK')
+    ),
+
+    // Mood filter
+    React.createElement('div',{style:S.filterRow},
+      ['ALL',...MOOD_OPTS].map(m=>
+        React.createElement('button',{key:m,style:S.filterBtn(filterMood===m),
+          onClick:()=>setFilterMood(m)},m)
+      )
+    ),
+
+    // Track list
+    filtered.length===0
+      ? React.createElement('div',{style:S.empty},
+          tracks.length===0?'NO TRACKS YET — PRESS + ADD TRACK':'NO TRACKS IN THIS MOOD'
+        )
+      : filtered.map(track=>
+          React.createElement('div',{key:track.id,style:S.card(activeId===track.id),
+            onClick:()=>setActiveId(track.id)},
+            React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+              React.createElement('div',null,
+                React.createElement('div',{style:S.cardTitle},
+                  activeId===track.id?'▶ ':'▷ ',
+                  track.title
+                ),
+                React.createElement('div',{style:S.cardMeta},
+                  track.mood&&React.createElement('span',{style:S.moodTag(track.mood)},track.mood),
+                  track.artist&&React.createElement('span',{style:{marginLeft:'8px'}},track.artist)
+                )
+              ),
+              React.createElement('div',{style:{display:'flex',gap:'6px',flexShrink:0}},
+                React.createElement('button',{style:S.playBtn,
+                  onClick:(e)=>{e.stopPropagation();setActiveId(track.id);}},
+                  activeId===track.id?'NOW PLAYING':'PLAY'
+                ),
+                React.createElement('button',{style:{...S.btn('ghost'),padding:'3px 8px',fontSize:'8px'},
+                  onClick:(e)=>{e.stopPropagation();openEdit(track);}},'EDIT'),
+                React.createElement('button',{style:{...S.btn('danger'),padding:'3px 8px',fontSize:'8px'},
+                  onClick:(e)=>{e.stopPropagation();setDelId(track.id);}},'×')
+              )
+            )
+          )
+        ),
+
+    // Add/Edit modal
+    addForm&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget){setAddForm(null);setForm({});setEditId(null);}}},
+      React.createElement('div',{style:S.mbox},
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
+          React.createElement('div',{style:S.mTitle},editId?'EDIT TRACK':'+ ADD TRACK'),
+          React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},
+            onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'x')
+        ),
+        React.createElement('label',{style:S.lbl},'YOUTUBE URL *'),
+        React.createElement('input',{style:S.inp,value:form.url||'',
+          placeholder:'https://www.youtube.com/watch?v=...',
+          onChange:e=>setForm(p=>({...p,url:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'TITLE *'),
+        React.createElement('input',{style:S.inp,value:form.title||'',
+          placeholder:'Track name...',
+          onChange:e=>setForm(p=>({...p,title:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'ARTIST / SOURCE'),
+        React.createElement('input',{style:S.inp,value:form.artist||'',
+          placeholder:'Composer or channel name...',
+          onChange:e=>setForm(p=>({...p,artist:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'MOOD CATEGORY'),
+        React.createElement('select',{style:S.sel,value:form.mood||'AMBIENT',
+          onChange:e=>setForm(p=>({...p,mood:e.target.value}))},
+          MOOD_OPTS.map(m=>React.createElement('option',{key:m,value:m},m))
+        ),
+        React.createElement('div',{style:S.btnRow},
+          React.createElement('button',{style:S.btn('ghost'),onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'CANCEL'),
+          React.createElement('button',{style:{...S.btn('primary'),opacity:isValid?1:0.4},
+            onClick:saveTrack,disabled:!isValid},editId?'UPDATE':'ADD TRACK')
+        )
+      )
+    ),
+
+    // Delete confirm
+    delId&&React.createElement('div',{style:S.overlay},
+      React.createElement('div',{style:{...S.mbox,maxWidth:'320px',textAlign:'center'}},
+        React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'REMOVE TRACK'),
+        React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS CANNOT BE UNDONE'),
+        React.createElement('div',{style:S.btnRow},
+          React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelId(null)},'CANCEL'),
+          React.createElement('button',{style:S.btn('danger'),onClick:()=>del(delId)},'REMOVE')
+        )
+      )
+    ),
+
+    // Player is rendered at App level for persistence across tab switches
+  );
+}
+
+function YTPlayer({track,t,onClose,onNext,onPrev}){
+  // Each time track changes, remount the iframe with a key so it reloads
+  const S={
+    bar:{position:'fixed',bottom:0,left:0,right:0,background:t.panel,
+      borderTop:`2px solid ${t.a}`,zIndex:5000,
+      display:'flex',alignItems:'stretch',gap:'0',
+      boxShadow:`0 -6px 30px rgba(${t.rgb},0.18)`},
+    // Make the iframe large enough to clearly show YT controls
+    iframeWrap:{flexShrink:0,width:'280px',height:'158px',position:'relative',background:'#000'},
+    iframe:{width:'100%',height:'100%',border:'none',display:'block'},
+    hint:{position:'absolute',bottom:'4px',left:0,right:0,
+      textAlign:'center',fontSize:'8px',letterSpacing:'1px',color:'rgba(255,255,255,0.5)',
+      pointerEvents:'none'},
+    right:{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',
+      padding:'10px 14px'},
+    info:{flex:1},
+    title:{fontSize:'12px',letterSpacing:'1px',color:t.tx,
+      whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',marginBottom:'4px'},
+    mood:{fontSize:'8px',letterSpacing:'2px',color:t.mu},
+    controls:{display:'flex',gap:'6px',alignItems:'center',marginTop:'10px'},
+    ctrlBtn:{padding:'5px 12px',background:'none',border:`1px solid ${t.bd}`,
+      color:t.mu,fontFamily:'inherit',fontSize:'11px',letterSpacing:'1px',
+      borderRadius:'2px',cursor:'pointer'},
+    closeBtn:{padding:'5px 12px',background:'none',border:`1px solid #f87171`,
+      color:'#f87171',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
+      borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
+  };
+
+  return React.createElement('div',{style:S.bar},
+    // Iframe — large enough to interact with, no autoplay (browser blocks audio autoplay)
+    React.createElement('div',{style:S.iframeWrap},
+      React.createElement('iframe',{
+        key:track.ytId,
+        style:S.iframe,
+        src:`https://www.youtube.com/embed/${track.ytId}?autoplay=1&rel=0&modestbranding=1`,
+        allow:'autoplay; encrypted-media; fullscreen',
+        allowFullScreen:true,
+        title:track.title
+      }),
+      React.createElement('div',{style:S.hint},'click ▶ to play')
+    ),
+    React.createElement('div',{style:S.right},
+      React.createElement('div',{style:S.info},
+        React.createElement('div',{style:{fontSize:'8px',letterSpacing:'3px',color:t.a,marginBottom:'4px'}},'NOW PLAYING'),
+        React.createElement('div',{style:S.title},track.title),
+        React.createElement('div',{style:S.mood},[track.mood,track.artist].filter(Boolean).join(' · '))
+      ),
+      React.createElement('div',{style:S.controls},
+        React.createElement('button',{style:S.ctrlBtn,onClick:onPrev,title:'Previous'},'◄◄ PREV'),
+        React.createElement('button',{style:S.ctrlBtn,onClick:onNext,title:'Next'},'NEXT ►►'),
+        React.createElement('button',{style:S.closeBtn,onClick:onClose},'■ STOP')
+      )
+    )
+  );
+}
+
 // ─── PRINT / CHARACTER SHEET ──────────────────────────────────────────────────
+
+// ─── INTERACTIVE CHARACTER SHEET ─────────────────────────────────────────────
+
+// Load/save per-member session state from localStorage
+function loadSheetState(memberId){
+  try{
+    const raw=localStorage.getItem(SHEET_KEY);
+    const all=raw?JSON.parse(raw):{};
+    return all[memberId]||null;
+  }catch{return null;}
+}
+function saveSheetState(memberId,state){
+  try{
+    const raw=localStorage.getItem(SHEET_KEY);
+    const all=raw?JSON.parse(raw):{};
+    all[memberId]=state;
+    localStorage.setItem(SHEET_KEY,JSON.stringify(all));
+  }catch{}
+}
+function clearSheetState(memberId){
+  try{
+    const raw=localStorage.getItem(SHEET_KEY);
+    const all=raw?JSON.parse(raw):{};
+    delete all[memberId];
+    localStorage.setItem(SHEET_KEY,JSON.stringify(all));
+  }catch{}
+}
+const SHEET_KEY='vc-sheet-state-v1';
+
+function SpinField({label,value,min,max,onChange,color}){
+  return React.createElement('div',{className:'sh-field',style:{textAlign:'center',minWidth:'70px'}},
+    React.createElement('span',{className:'sh-field-lbl'},label),
+    React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
+      React.createElement('button',{
+        style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+          cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:color||'#000',
+          fontFamily:'inherit'},
+        onClick:()=>onChange(Math.max(min,value-1))
+      },'\u2212'),
+      React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
+        color:color||'#000',minWidth:'28px',textAlign:'center',lineHeight:1}},value),
+      React.createElement('button',{
+        style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+          cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:color||'#000',
+          fontFamily:'inherit'},
+        onClick:()=>onChange(Math.min(max,value+1))
+      },'+')
+    )
+  );
+}
+
+function WoundBoxes({count,checked,onToggle,label,filled_color}){
+  return React.createElement('div',{className:'sh-field',style:{flex:2}},
+    React.createElement('span',{className:'sh-field-lbl'},label),
+    React.createElement('div',{className:'sh-wounds',style:{marginTop:'4px'}},
+      Array.from({length:count}).map((_,i)=>
+        React.createElement('div',{
+          key:i,
+          onClick:()=>onToggle(i),
+          className:'sh-wound-box',
+          style:{
+            cursor:'pointer',
+            background:checked[i]?(filled_color||'#c00'):'#fff',
+            border:`1.5px solid ${checked[i]?(filled_color||'#c00'):'#000'}`,
+            transition:'all 0.1s'
+          }
+        })
+      )
+    )
+  );
+}
+
 function CrewSheet({member,game}){
   const isMothership=game==='mothership';
 
+  // ── Session state (separate from master crew data) ──
+  const initState=()=>{
+    const saved=loadSheetState(member.id);
+    if(isMothership){
+      const maxW=parseInt(member.maxWounds)||2;
+      const maxH=parseInt(member.healthMax)||13;
+      const maxAP=parseInt(member.armorPoints)||0;
+      return saved||{
+        currentHP:maxH,
+        wounds:Array(maxW).fill(false),
+        stressCur:parseInt(member.stressCur)||2,
+        currentAP:maxAP,
+      };
+    } else {
+      const maxH=parseInt(member.hp)||(member.strength&&member.agility
+        ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
+      const maxAL=parseInt(member.armorLevel)||0;
+      return saved||{
+        healthBoxes:Array(maxH).fill(false),
+        stress:parseInt(member.stress)||0,
+        currentAL:maxAL,
+      };
+    }
+  };
+
+  const [ss,setSS]=useState(initState);
+
+  const updateSS=(patch)=>{
+    setSS(p=>{
+      const next={...p,...patch};
+      saveSheetState(member.id,next);
+      return next;
+    });
+  };
+
+  const resetSS=()=>{
+    clearSheetState(member.id);
+    setSS(initState());
+  };
+
+  const toggleWound=(i)=>{
+    const wounds=[...ss.wounds];
+    wounds[i]=!wounds[i];
+    updateSS({wounds});
+  };
+
+  const toggleHealth=(i)=>{
+    const healthBoxes=[...ss.healthBoxes];
+    healthBoxes[i]=!healthBoxes[i];
+    updateSS({healthBoxes});
+  };
+
+  // ── Mothership Sheet ──
   if(isMothership){
     const maxWounds=parseInt(member.maxWounds)||2;
-    const maxHP=member.healthMax||'--';
+    const maxHP=parseInt(member.healthMax)||13;
+
     return React.createElement('div',{className:'crew-sheet'},
       // Header
       React.createElement('div',{className:'sh-title'},
         React.createElement('span',null,member.name||'UNNAMED'),
         React.createElement('span',{className:'sh-game'},'MOTHERSHIP RPG')
       ),
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'10px',fontSize:'10px'}},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},
         React.createElement('span',null,`CLASS: ${member.role||'--'}`),
         React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
       ),
@@ -1599,42 +1991,68 @@ function CrewSheet({member,game}){
         )
       ),
 
-      // Health, Wounds, Stress, Armor row
-      React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
+      // Interactive vitals
+      React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click wounds to mark \u00b7 use +/\u2212 for HP & stress'),
       React.createElement('div',{className:'sh-row'},
-        React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'60px',textAlign:'center'}},
-          React.createElement('span',{className:'sh-field-lbl'},'HEALTH MAX'),
-          React.createElement('span',{className:'sh-box-val'},maxHP)
-        ),
-        React.createElement('div',{className:'sh-field',style:{flex:2}},
-          React.createElement('span',{className:'sh-field-lbl'},'MAX WOUNDS'),
-          React.createElement('div',{className:'sh-wounds'},
-            Array.from({length:maxWounds}).map((_,i)=>
-              React.createElement('div',{key:i,className:'sh-wound-box'})
-            )
-          )
-        ),
-        React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'50px',textAlign:'center'}},
-          React.createElement('span',{className:'sh-field-lbl'},'AP'),
-          React.createElement('span',{className:'sh-box-val'},member.armorPoints||'--')
-        ),
-        React.createElement('div',{className:'sh-field',style:{flex:2}},
-          React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),
-          React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},
-            (member.armorType||'--').replace(/ \(AP \d+\)/,'')
-          )
+        React.createElement(SpinField,{
+          label:`HEALTH (max ${maxHP})`,
+          value:ss.currentHP,
+          min:0,max:maxHP,
+          onChange:v=>updateSS({currentHP:v})
+        }),
+        React.createElement(WoundBoxes,{
+          count:maxWounds,
+          checked:ss.wounds,
+          onToggle:toggleWound,
+          label:'WOUNDS (click to mark)',
+          filled_color:'#c00'
+        }),
+        React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'80px',textAlign:'center'}},
+          React.createElement('span',{className:'sh-field-lbl'},`AP (max ${parseInt(member.armorPoints)||0})`),
+          parseInt(member.armorPoints)>0
+            ? React.createElement('div',null,
+                React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
+                  React.createElement('button',{
+                    style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+                      cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',
+                      color:ss.currentAP===0?'#c00':'#000'},
+                    onClick:()=>updateSS({currentAP:Math.max(0,ss.currentAP-1)})
+                  },'−'),
+                  React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
+                    color:ss.currentAP===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},
+                    ss.currentAP
+                  ),
+                  React.createElement('button',{
+                    style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+                      cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},
+                    onClick:()=>updateSS({currentAP:Math.min(parseInt(member.armorPoints)||0,ss.currentAP+1)})
+                  },'+')
+                ),
+                ss.currentAP===0&&React.createElement('div',{
+                  style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}
+                },'DESTROYED')
+              )
+            : React.createElement('span',{className:'sh-box-val'},'--')
         )
       ),
 
-      // Stress
+      // Stress interactive
       React.createElement('div',{className:'sh-row'},
+        React.createElement(SpinField,{
+          label:'STRESS CURRENT',
+          value:ss.stressCur,
+          min:0,max:20,
+          onChange:v=>updateSS({stressCur:v})
+        }),
         React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-          React.createElement('span',{className:'sh-field-lbl'},'STRESS CURRENT'),
-          React.createElement('span',{className:'sh-box-val'},member.stressCur||'2')
-        ),
-        React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-          React.createElement('span',{className:'sh-field-lbl'},'STRESS MINIMUM'),
+          React.createElement('span',{className:'sh-field-lbl'},'STRESS MIN'),
           React.createElement('span',{className:'sh-box-val'},member.stressMin||'2')
+        ),
+        React.createElement('div',{className:'sh-field',style:{flex:2}},
+          React.createElement('span',{className:'sh-field-lbl'},'ARMOR'),
+          React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},
+            (member.armorType||'--').replace(/ \(AP \d+\)/,'')
+          )
         )
       ),
 
@@ -1650,15 +2068,23 @@ function CrewSheet({member,game}){
 
       // Notes
       React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
-      React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.notes||'')
+      React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.notes||''),
+
+      // Reset button
+      React.createElement('button',{
+        onClick:resetSS,
+        className:'no-print',
+        style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',
+          borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',
+          fontFamily:'inherit'}
+      },'RESET SESSION')
     );
   }
 
-  // ── Alien RPG sheet ──
+  // ── Alien RPG Sheet ──
   const maxHealth=parseInt(member.hp)||
     (member.strength&&member.agility
-      ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2)
-      :4);
+      ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
 
   return React.createElement('div',{className:'crew-sheet'},
     // Header
@@ -1666,7 +2092,7 @@ function CrewSheet({member,game}){
       React.createElement('span',null,member.name||'UNNAMED'),
       React.createElement('span',{className:'sh-game'},'ALIEN RPG')
     ),
-    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'10px',fontSize:'10px'}},
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},
       React.createElement('span',null,`ARCHETYPE: ${member.role||'--'}`),
       React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
     ),
@@ -1682,32 +2108,58 @@ function CrewSheet({member,game}){
       )
     ),
 
-    // Health boxes, Resolve, Stress
-    React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
+    // Interactive vitals
+    React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click boxes to mark damage \u00b7 +/\u2212 for stress'),
     React.createElement('div',{className:'sh-row'},
-      React.createElement('div',{className:'sh-field',style:{flex:3}},
-        React.createElement('span',{className:'sh-field-lbl'},`HEALTH (max ${maxHealth})`),
-        React.createElement('div',{className:'sh-wounds'},
-          Array.from({length:maxHealth}).map((_,i)=>
-            React.createElement('div',{key:i,className:'sh-wound-box'})
-          )
-        )
-      ),
-      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-        React.createElement('span',{className:'sh-field-lbl'},'RESOLVE'),
-        React.createElement('span',{className:'sh-box-val'},member.resolve||'--')
-      ),
-      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-        React.createElement('span',{className:'sh-field-lbl'},'STRESS'),
-        React.createElement('span',{className:'sh-box-val'},member.stress||'0')
-      )
+      React.createElement(WoundBoxes,{
+        count:maxHealth,
+        checked:ss.healthBoxes,
+        onToggle:toggleHealth,
+        label:`HEALTH (max ${maxHealth}) \u2014 click to mark damage`,
+        filled_color:'#c00'
+      }),
+      React.createElement(SpinField,{
+        label:'RESOLVE',
+        value:parseInt(member.resolve)||1,
+        min:1,max:10,
+        onChange:()=>{}
+      }),
+      React.createElement(SpinField,{
+        label:'STRESS',
+        value:ss.stress,
+        min:0,max:20,
+        onChange:v=>updateSS({stress:v})
+      })
     ),
 
-    // Armor
+    // Armor — interactive armor level tracker
     React.createElement('div',{className:'sh-row'},
-      React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-        React.createElement('span',{className:'sh-field-lbl'},'ARMOR LEVEL'),
-        React.createElement('span',{className:'sh-box-val'},member.armorLevel||'0')
+      React.createElement('div',{className:'sh-field',style:{textAlign:'center',minWidth:'90px'}},
+        React.createElement('span',{className:'sh-field-lbl'},`ARMOR LVL (max ${parseInt(member.armorLevel)||0})`),
+        parseInt(member.armorLevel)>0
+          ? React.createElement('div',null,
+              React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
+                React.createElement('button',{
+                  style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+                    cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',
+                    color:ss.currentAL===0?'#c00':'#000'},
+                  onClick:()=>updateSS({currentAL:Math.max(0,ss.currentAL-1)})
+                },'−'),
+                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
+                  color:ss.currentAL===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},
+                  ss.currentAL
+                ),
+                React.createElement('button',{
+                  style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
+                    cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},
+                  onClick:()=>updateSS({currentAL:Math.min(parseInt(member.armorLevel)||0,ss.currentAL+1)})
+                },'+')
+              ),
+              ss.currentAL===0&&React.createElement('div',{
+                style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}
+              },'DESTROYED')
+            )
+          : React.createElement('span',{className:'sh-box-val'},'0')
       ),
       React.createElement('div',{className:'sh-field',style:{flex:3}},
         React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),
@@ -1733,26 +2185,29 @@ function CrewSheet({member,game}){
 
     // Notes
     React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
-    React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.notes||'')
+    React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.notes||''),
+
+    // Reset button
+    React.createElement('button',{
+      onClick:resetSS,
+      className:'no-print',
+      style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',
+        borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',
+        fontFamily:'inherit'}
+    },'RESET SESSION')
   );
 }
 
+
 function PrintTab({game,crew,t}){
-  const printAll=()=>{
-    // Mark the print wrapper visible then print
-    document.querySelectorAll('.print-sheet-wrap').forEach(el=>el.style.display='block');
-    window.print();
-    setTimeout(()=>{
-      document.querySelectorAll('.print-sheet-wrap').forEach(el=>el.style.display='none');
-    },500);
-  };
+  const printAll=()=>{window.print();};
 
   const S={
     header:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'},
     title:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
     printBtn:{padding:'8px 20px',background:'none',border:`2px solid ${t.a}`,borderRadius:'2px',
       color:t.a,fontFamily:'inherit',fontSize:'11px',letterSpacing:'3px',cursor:'pointer'},
-    grid:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(340px,1fr))',gap:'16px'},
+    grid:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(360px,1fr))',gap:'16px'},
     empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',
       letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
     note:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'16px',lineHeight:'1.6'},
@@ -1769,7 +2224,7 @@ function PrintTab({game,crew,t}){
       React.createElement('button',{style:S.printBtn,className:'no-print',onClick:printAll},'PRINT ALL')
     ),
     React.createElement('div',{style:S.note,className:'no-print'},
-      'Preview below. Each sheet is designed to fit on a half-page when printed two per page. Use your browser’s print dialog to select layout.'
+      'Sheets are interactive — click wound boxes to mark damage, use +/− for HP and stress. Changes persist between sessions. Hit RESET SESSION on any sheet to clear it.'
     ),
     crew.length===0
       ? React.createElement('div',{style:S.empty},
@@ -1887,6 +2342,8 @@ function App(){
     upd(nd);
   };
 
+
+
   const openAdd=()=>{setForm({});setModal({mode:'add',tab});};
   const openEdit=(item)=>{setForm({...item});setModal({mode:'edit',tab,item});};
   const openView=(item)=>{setModal({mode:'view',tab,item});};
@@ -1964,6 +2421,7 @@ function App(){
       ),
       React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'6px'}},
         item.hp&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'HP'),React.createElement('div',{style:S.statVal},item.hp)),
+        isMothership&&item.wounds&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'MAX WND'),React.createElement('div',{style:S.statVal},item.wounds)),
         item.speed&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'SPEED'),React.createElement('div',{style:S.statVal},item.speed))
       ),
       item.attacks&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px'}},
@@ -2041,8 +2499,8 @@ function App(){
   const renderBestiaryView=(item)=>{
     const isMothership=game==='mothership';
     const statFields=isMothership
-      ?[{k:'hp',l:'HP'},{k:'speed',l:'SPEED'}]
-      :[{k:'hp',l:'HP'},{k:'armor',l:'ARMOR RATING'},{k:'speed',l:'SPEED'}];
+      ?[{k:'hp',l:'HP'},{k:'wounds',l:'MAX WOUNDS'},{k:'speed',l:'SPEED'}]
+      :[{k:'hp',l:'HP'},{k:'armor',l:'ARMOR LEVEL'},{k:'speed',l:'SPEED'}];
     return React.createElement('div',null,
       React.createElement('div',{style:S.statBlock},statFields.map(f=>item[f.k]?React.createElement('div',{key:f.k,style:S.statCell},React.createElement('div',{style:S.statLbl},f.l),React.createElement('div',{style:S.statVal},item[f.k])):null)),
       item.category&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('span',{style:S.catBadge(item.category)},item.category)),
@@ -2104,7 +2562,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.6 // ACTIVE · AUTH ENABLED'),
+          React.createElement('div',{style:S.sub},'v3.3 // ACTIVE · AUTH ENABLED'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
@@ -2192,7 +2650,9 @@ function App(){
       )
     ),
 
-    (importSuccess||importError)&&React.createElement('div',{style:{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:t.panel,border:`1px solid ${importSuccess?t.a:'#f87171'}`,color:importSuccess?t.a:'#f87171',padding:'10px 20px',fontSize:'10px',letterSpacing:'2px',borderRadius:'2px',zIndex:9000,boxShadow:`0 0 20px rgba(${importSuccess?t.rgb:'248,113,113'},0.2)`}},importSuccess?'DATA IMPORTED SUCCESSFULLY':importError)
+    (importSuccess||importError)&&React.createElement('div',{style:{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:t.panel,border:`1px solid ${importSuccess?t.a:'#f87171'}`,color:importSuccess?t.a:'#f87171',padding:'10px 20px',fontSize:'10px',letterSpacing:'2px',borderRadius:'2px',zIndex:9000,boxShadow:`0 0 20px rgba(${importSuccess?t.rgb:'248,113,113'},0.2)`}},importSuccess?'DATA IMPORTED SUCCESSFULLY':importError),
+
+    null
   );
 }
 
