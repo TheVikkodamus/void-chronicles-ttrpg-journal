@@ -338,7 +338,7 @@ const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171
 const CATEGORY_C={XENOMORPH:'#f87171',FACEHUGGER:'#fb923c',PARASITE:'#fb923c',SYNTHETIC:'#94a3b8',ALIEN:'#c084fc',PREDATOR:'#f87171',MUTANT:'#fb923c',INFECTED:'#f87171',UNKNOWN:'#94a3b8',UNDEAD:'#c084fc'};
 const TYPE_C={crew:'#4ade80',monster:'#f87171',npc:'#94a3b8'};
 
-const DICE_TYPES=[5,6,10,100];
+const DICE_TYPES=[5,6,10,20,100];
 const QUANTITY_OPTS=[1,2,3,4,5,6,8,10];
 const MODE_OPTS=[{id:'normal',label:'NORMAL'},{id:'advantage',label:'ADVANTAGE'},{id:'disadvantage',label:'DISADVANTAGE'}];
 
@@ -548,7 +548,83 @@ function DiceTab({t,game}){
       )
     ),
 
-    history.length>0&&React.createElement('div',{style:S.panel},
+
+    // ── Panic Tables ─────────────────────────────────────────────────────────
+    React.createElement('div',{style:{...S.panel,marginTop:'4px'}},
+      React.createElement('span',{style:{...S.lbl,color:isAlien?'#f59e0b':'#f87171',letterSpacing:'3px'}},
+        isAlien?'PANIC RESPONSE TABLE':'PANIC CHECK TABLE'
+      ),
+      isAlien
+        // ── Alien RPG Panic Response ──
+        ? React.createElement('div',null,
+            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
+              'ROLL: D6 + STRESS LEVEL − RESOLVE'
+            ),
+            ...[
+              ['≤0','Keeping Cool','No effect.'],
+              ['1','Spooked','+1 Stress Level.'],
+              ['2','Noisy','Enemies nearby automatically alerted to your presence.'],
+              ['3','Twitchy','Make immediate supply roll for air, ammo, or power.'],
+              ['4','Lose Item','Lose a weapon or important item (GM decides).'],
+              ['5','Paranoid','Cannot give or receive help on skill rolls until panic ends.'],
+              ['6','Hesitant','Automatically get #10 initiative card until panic stops.'],
+              ['7','Freeze','Frozen by fear — lose next turn, no interrupt actions.'],
+              ['8','Seek Cover','Immediately seek full cover. Lose next turn. Stress −1.'],
+              ['9','Scream','Lose next turn. Stress −1. Nearby friendly PCs must panic roll.'],
+              ['10','Flee','Move away from source. Stress −1. Friendly PCs in zone +1 Stress.'],
+              ['11','Frenzy','Attack nearest creature. Nearby PCs must panic roll immediately.'],
+              ['12+','Catatonic','Collapse to floor, cannot move until panic stops.'],
+            ].map(([result,name,desc])=>
+              React.createElement('div',{key:result,style:{
+                display:'grid',gridTemplateColumns:'28px 90px 1fr',gap:'6px',
+                padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'
+              }},
+                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f59e0b',lineHeight:1}},result),
+                React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),
+                React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)
+              )
+            )
+          )
+        // ── Mothership Panic Table ──
+        : React.createElement('div',null,
+            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
+              'ROLL: 1d20 (PANIC DIE) — must roll ABOVE current Stress to avoid panic'
+            ),
+            ...[
+              ['01','Adrenaline Rush','[+] all rolls 2d10 min. Reduce Stress 1d5.'],
+              ['02','Nervous','+1 Stress.'],
+              ['03','Jumpy','+1 Stress. All Close crew +2 Stress.'],
+              ['04','Overwhelmed','[−] all rolls 1d10 min. +1 Min Stress.'],
+              ['05','Coward','Must Fear Save to engage in violence, or flee.'],
+              ['06','Frightened','Fear Save [−] when near source of fear (Condition).'],
+              ['07','Nightmares','[−] on Rest Saves (Condition).'],
+              ['08','Loss of Confidence','Lose one Skill bonus (Condition).'],
+              ['09','Deflated','When Close crew fails a Save, gain 1 Stress (Condition).'],
+              ['10','Doomed','All Critical Successes become Critical Failures (Condition).'],
+              ['11','Suspicious','Fear Save or +1 Stress when crew rejoins (1 week).'],
+              ['12','Haunted','Something visits you at night — and soon makes demands (Condition).'],
+              ['13','Death Wish','Must Sanity Save or attack strangers/enemies for 24 hrs.'],
+              ['14','Prophetic Vision','Intense hallucination. +2 Min Stress.'],
+              ['15','Catatonic','Unresponsive 2d10 min. Reduce Stress 1d10.'],
+              ['16','Rage','[+] Damage rolls 1d10 hrs. All crew +1 Stress.'],
+              ['17','Spiraling','Panic Checks at [−] (Condition).'],
+              ['18','Compounding','Roll twice on this table. +1 Min Stress.'],
+              ['19','Heart Attack','Max Wounds −1. [−] all rolls 1d10 hrs. +1 Min Stress.'],
+              ['20','Retire','Roll up a new character.'],
+            ].map(([result,name,desc])=>
+              React.createElement('div',{key:result,style:{
+                display:'grid',gridTemplateColumns:'28px 110px 1fr',gap:'6px',
+                padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'
+              }},
+                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f87171',lineHeight:1}},result),
+                React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),
+                React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)
+              )
+            )
+          )
+    ),
+
+        history.length>0&&React.createElement('div',{style:S.panel},
       React.createElement('span',{style:S.lbl},'ROLL HISTORY'),
       ...history.map((r,i)=>{
         const dc=r.mode!=='normal'?r.quantity+1:r.quantity;
@@ -2028,7 +2104,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v2.5 // ACTIVE · AUTH ENABLED'),
+          React.createElement('div',{style:S.sub},'v2.6 // ACTIVE · AUTH ENABLED'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
             React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
