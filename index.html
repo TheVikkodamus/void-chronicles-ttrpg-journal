@@ -17,6 +17,8 @@
   /* ── Print styles ── */
   @media print {
     body { background: #fff !important; color: #000 !important; }
+    body * { background: transparent !important; color: #000 !important; }
+    .crew-sheet { background: #fff !important; border: 1.5px solid #000 !important; }
     .no-print { display: none !important; }
     .print-only { display: block !important; }
     .print-sheet-wrap { display: block !important; }
@@ -174,7 +176,6 @@
 
   if(sessionStorage.getItem(SESSION_KEY)==='1')return;
 
-  // Hide body until auth
   document.body.style.display='none';
 
   const overlay=document.createElement('div');
@@ -223,7 +224,6 @@
 const {useState,useEffect,useCallback}=React;
 
 // ── Markdown renderer ─────────────────────────────────────────────────────
-// Configure marked: no pedantic, breaks on single newlines
 if(typeof marked!=='undefined'){
   marked.setOptions({breaks:true,gfm:true,pedantic:false});
 }
@@ -237,7 +237,10 @@ function MarkdownView({text,style}){
 }
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-const defaultEncounter=()=>({round:1,activeIndex:0,started:false,combatants:[]});
+
+// ── FIX 1: activeId replaces activeIndex ──────────────────────────────────
+const defaultEncounter=()=>({round:1,activeId:null,started:false,combatants:[]});
+
 const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[],bestiary:[],encounter:defaultEncounter(),homebrew:[]});
 
 const storage={
@@ -320,8 +323,8 @@ const FIELDS={
     {k:'wounds',l:'MAX WOUNDS',type:'number'},
     {k:'speed',l:'SPEED',type:'text'},
     {k:'instinct',l:'INSTINCT',type:'textarea',rows:2},
-    {k:'attacks',l:'COMBAT & DAMAGE',type:'textarea',rows:3},
-    {k:'notes',l:'SPECIAL ABILITIES / NOTES',type:'textarea',rows:4},
+    {k:'combat',l:'COMBAT (attack rolls, combat stats)',type:'textarea',rows:3},
+    {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
   ],
   bestiary_alien:[
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
@@ -330,8 +333,8 @@ const FIELDS={
     {k:'speed',l:'SPEED',type:'text'},
     {k:'armor',l:'ARMOR LEVEL (reduces incoming damage)',type:'text'},
     {k:'skills',l:'SKILLS',type:'textarea',rows:2},
-    {k:'attacks',l:'ATTACKS & DICE',type:'textarea',rows:3},
-    {k:'notes',l:'SPECIAL ABILITIES / NOTES',type:'textarea',rows:4},
+    {k:'combat',l:'COMBAT (attack rolls & dice)',type:'textarea',rows:3},
+    {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
   ],
 };
 
@@ -369,7 +372,6 @@ function performRoll(sides,quantity,mode){
   return{rolls,kept:rolls,dropped:[],total:rolls.reduce((a,b)=>a+b,0),mode,sides,quantity};
 }
 
-// Parse a wounds/HP text value into a number of hit boxes (capped 1-20)
 function parseHitBoxes(val){
   if(!val)return 4;
   const n=parseInt(val);
@@ -387,7 +389,6 @@ function DiceTab({t,game}){
   const [history,setHistory]=useState([]);
   const [current,setCurrent]=useState(null);
 
-  // ── Stress dice state (Alien RPG only) ──
   const [stressCount,setStressCount]=useState(1);
   const [stressRolling,setStressRolling]=useState(false);
   const [stressCurrent,setStressCurrent]=useState(null);
@@ -409,8 +410,6 @@ function DiceTab({t,game}){
     },60);
   };
 
-  // Roll stress dice — each is a d6:
-  // 6 = SUCCESS, 1 = PANIC, 2-5 = nothing
   const rollStressDice=()=>{
     if(stressRolling)return;
     setStressRolling(true);
@@ -454,7 +453,6 @@ function DiceTab({t,game}){
     React.createElement('div',{style:S.panel},
       React.createElement('button',{style:S.rollBtn,onClick:doRoll,disabled:rolling},rolling?'ROLLING...':`ROLL ${diceCount}d${selectedDie}`),
       current&&React.createElement('div',{style:{padding:'16px 0 4px 0',marginTop:'12px',borderTop:`1px solid ${t.bd}`}},
-        // Alien RPG: show individual die cards with 6=success highlighted
         isAlien
           ? React.createElement('div',null,
               React.createElement('div',{style:{display:'flex',gap:'6px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
@@ -492,7 +490,6 @@ function DiceTab({t,game}){
                 )
               )
             )
-          // Mothership: keep original big number display
           : React.createElement('div',{style:{textAlign:'center'}},
               React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
               React.createElement('div',{style:{fontSize:'11px',color:t.mu,marginTop:'8px'}},
@@ -503,7 +500,6 @@ function DiceTab({t,game}){
             )
       )
     ),
-    // ── Stress Dice panel (Alien RPG only) ──
     isAlien&&React.createElement('div',{style:{...S.panel,border:`1px solid #f59e0b`,background:`rgba(251,191,36,0.04)`}},
       React.createElement('span',{style:{...S.lbl,color:'#f59e0b',letterSpacing:'3px'}},'STRESS DICE (ALIEN RPG)'),
       React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6',marginBottom:'10px'}},
@@ -529,7 +525,6 @@ function DiceTab({t,game}){
       }, stressRolling?'ROLLING...': `ROLL ${stressCount} STRESS ${stressCount===1?'DIE':'DICE'}`),
 
       stressCurrent&&!stressCurrent.rolling&&React.createElement('div',{style:{marginTop:'16px',textAlign:'center',borderTop:`1px solid ${t.bd}`,paddingTop:'14px'}},
-        // Individual die results
         React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
           stressCurrent.dice.map((d,i)=>{
             const isSuccess=d===6;
@@ -548,7 +543,6 @@ function DiceTab({t,game}){
             );
           })
         ),
-        // Summary line
         React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',flexWrap:'wrap'}},
           React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},
             `${stressCurrent.successes} HIT${stressCurrent.successes!==1?'S':''}`
@@ -561,14 +555,11 @@ function DiceTab({t,game}){
       )
     ),
 
-
-    // ── Panic Tables ─────────────────────────────────────────────────────────
     React.createElement('div',{style:{...S.panel,marginTop:'4px'}},
       React.createElement('span',{style:{...S.lbl,color:isAlien?'#f59e0b':'#f87171',letterSpacing:'3px'}},
         isAlien?'PANIC RESPONSE TABLE':'PANIC CHECK TABLE'
       ),
       isAlien
-        // ── Alien RPG Panic Response ──
         ? React.createElement('div',null,
             React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
               'ROLL: D6 + STRESS LEVEL − RESOLVE'
@@ -598,7 +589,6 @@ function DiceTab({t,game}){
               )
             )
           )
-        // ── Mothership Panic Table ──
         : React.createElement('div',null,
             React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
               'ROLL: 1d20 (PANIC DIE) — must roll ABOVE current Stress to avoid panic'
@@ -637,7 +627,7 @@ function DiceTab({t,game}){
           )
     ),
 
-        history.length>0&&React.createElement('div',{style:S.panel},
+    history.length>0&&React.createElement('div',{style:S.panel},
       React.createElement('span',{style:S.lbl},'ROLL HISTORY'),
       ...history.map((r,i)=>{
         const dc=r.mode!=='normal'?r.quantity+1:r.quantity;
@@ -666,14 +656,16 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   const isMothership=game==='mothership';
 
   const buildCombatant=(source,type)=>{
-    // For Mothership crew: hit boxes = Max Wounds (2-3 per rulebook)
-    // For everything else: hit boxes = hp number
     let maxHits;
     if(isMothership&&type==='crew'){
       maxHits=parseHitBoxes(source.maxWounds||'2');
     } else {
       maxHits=parseHitBoxes(source.hp||'4');
     }
+    // Numeric HP tracker: Mothership crew uses healthMax; everyone else uses hp
+    const maxHp=isMothership&&type==='crew'
+      ?(parseInt(source.healthMax)||13)
+      :(parseInt(source.hp)||4);
     return{
       id:uid(),
       sourceId:source.id,
@@ -681,24 +673,22 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
       type,
       role:source.role||source.category||'',
       initiative:0,
+      maxHp,
+      currentHp:maxHp,
       maxHits,
       hits:Array(maxHits).fill(false),
-      // Stats for display on encounter card
       speed:source.speed||'',
-      // Armor: Mothership crew = armorPoints, Alien crew = armorLevel, monsters = armor
       armor:isMothership&&type==='crew'
         ?(source.armorPoints||'')
         :!isMothership&&type==='crew'
           ?(source.armorLevel||'')
           :(source.armor||''),
       armorType:source.armorType||'',
-      attacks:source.attacks||'',
+      attacks:source.combat||'',
       wounds:source.wounds||'',
-      // Mothership crew extras
       healthMax:source.healthMax||'',
       combat:source.combat||'',
       stressCur:source.stressCur||'',
-      // Alien RPG crew extras
       resolve:source.resolve||'',
       stress:source.stress||'',
       category:source.category||'',
@@ -713,7 +703,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
 
   const duplicate=(original)=>{
     const copy={...original,id:uid(),hits:Array(original.maxHits).fill(false),name:original.name+' II'};
-    // increment roman numeral suffix each dup
     const names=enc.combatants.map(c=>c.name);
     const romans=['II','III','IV','V','VI','VII','VIII'];
     const baseName=original.name.replace(/ (II|III|IV|V|VI|VII|VIII)$/,'');
@@ -737,7 +726,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     }));
   };
 
-  // Quick +/- hit buttons: + marks next unchecked, - unmarks last checked
   const quickHit=(cid,dmg)=>{
     updCombatants(enc.combatants.map(c=>{
       if(c.id!==cid)return c;
@@ -757,25 +745,39 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     updCombatants(enc.combatants.map(c=>c.id===cid?{...c,initiative:parseInt(val)||0}:c));
   };
 
-  const sorted=[...enc.combatants].sort((a,b)=>b.initiative-a.initiative);
+  const setCurrentHp=(cid,delta)=>{
+    updCombatants(enc.combatants.map(c=>{
+      if(c.id!==cid)return c;
+      const max=c.maxHp||c.maxHits;
+      const cur=c.currentHp!=null?c.currentHp:max;
+      return{...c,currentHp:Math.max(0,Math.min(max,cur+delta))};
+    }));
+  };
 
+  // Sort ascending by initiative for display (lowest goes first)
+  const sorted=[...enc.combatants].sort((a,b)=>a.initiative-b.initiative);
+
+  // ── FIX 1: nextTurn / prevTurn track by ID, not index ─────────────────────
   const nextTurn=()=>{
     if(!enc.combatants.length)return;
-    const next=(enc.activeIndex+1)%sorted.length;
-    const newRound=next===0?enc.round+1:enc.round;
-    upd({activeIndex:next,round:newRound,started:true});
+    const curIdx=sorted.findIndex(c=>c.id===enc.activeId);
+    const nextIdx=(curIdx<0?0:curIdx+1)%sorted.length;
+    const newRound=nextIdx===0&&curIdx>=0?enc.round+1:enc.round;
+    upd({activeId:sorted[nextIdx].id,round:newRound,started:true});
   };
 
   const prevTurn=()=>{
     if(!enc.combatants.length)return;
-    const prev=(enc.activeIndex-1+sorted.length)%sorted.length;
-    upd({activeIndex:prev,started:true});
+    const curIdx=sorted.findIndex(c=>c.id===enc.activeId);
+    const prevIdx=curIdx<=0?sorted.length-1:curIdx-1;
+    upd({activeId:sorted[prevIdx].id,started:true});
   };
 
-  const resetHp=()=>updCombatants(enc.combatants.map(c=>({...c,hits:Array(c.maxHits).fill(false)})));
+  const resetHp=()=>updCombatants(enc.combatants.map(c=>({...c,hits:Array(c.maxHits).fill(false),currentHp:c.maxHp||c.maxHits})));
   const clearAll=()=>onUpdate(defaultEncounter());
 
-  const activeCombatant=sorted[enc.activeIndex];
+  // ── FIX 1: resolve active combatant by ID ─────────────────────────────────
+  const activeCombatant=sorted.find(c=>c.id===enc.activeId);
 
   // Styles
   const S={
@@ -783,7 +785,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     roundBox:{fontFamily:"'VT323',monospace",fontSize:'28px',color:t.a,letterSpacing:'4px',marginRight:'8px',textShadow:`0 0 12px rgba(${t.rgb},0.4)`},
     ctrl:(danger)=>({padding:'5px 12px',background:'none',border:`1px solid ${danger?'#f87171':t.bd}`,color:danger?'#f87171':t.mu,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'}),
     addBtn:{padding:'5px 14px',background:'none',border:`1px solid ${t.a}`,color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
-    // combatant card
     card:(isActive,isDead)=>({
       background:isActive?`rgba(${t.rgb},0.06)`:t.card,
       border:`1px solid ${isActive?t.a:isDead?'#f87171':t.bd}`,
@@ -794,9 +795,9 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     }),
     activePip:{position:'absolute',top:'12px',left:'-1px',width:'3px',height:'calc(100% - 24px)',background:t.a,borderRadius:'2px 0 0 2px'},
     cardTop:{display:'flex',alignItems:'flex-start',gap:'10px',marginBottom:'8px'},
-    initBox:{display:'flex',flexDirection:'column',alignItems:'center',gap:'2px',minWidth:'36px'},
-    initLbl:{fontSize:'7px',letterSpacing:'1px',color:t.mu},
-    initInp:{width:'36px',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'3px 4px',color:t.a,fontFamily:"'VT323',monospace",fontSize:'20px',textAlign:'center',outline:'none'},
+    initBox:{display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',minWidth:'48px'},
+    initLbl:{fontSize:'7px',letterSpacing:'2px',color:t.mu},
+    initInp:{width:'48px',background:`rgba(${t.rgb},0.12)`,border:`2px solid ${t.a}`,borderRadius:'3px',padding:'4px 2px',color:t.a,fontFamily:"'VT323',monospace",fontSize:'26px',textAlign:'center',outline:'none',boxShadow:`0 0 8px rgba(${t.rgb},0.25)`,letterSpacing:'1px'},
     nameBlock:{flex:1},
     nameStr:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'3px'},
     roleStr:{fontSize:'9px',color:t.mu,letterSpacing:'1px'},
@@ -806,13 +807,12 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     smBtn:(danger)=>({padding:'3px 8px',background:'none',border:`1px solid ${danger?'#f87171':t.bd}`,color:danger?'#f87171':t.mu,fontFamily:'inherit',fontSize:'8px',letterSpacing:'1px',borderRadius:'2px',cursor:'pointer'}),
     dupBtn:{padding:'3px 8px',background:'none',border:`1px solid ${t.a}`,color:t.a,fontFamily:'inherit',fontSize:'8px',letterSpacing:'1px',borderRadius:'2px',cursor:'pointer'},
     statsRow:{display:'flex',gap:'8px',marginBottom:'8px',flexWrap:'wrap'},
-    statPill:(label,val)=>null, // computed inline
+    hpRow:{display:'flex',alignItems:'center',gap:'6px',marginBottom:'8px',flexWrap:'wrap'},
     hitsRow:{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap'},
     hitBox:(filled)=>({width:'14px',height:'14px',border:`1px solid ${filled?'#f87171':t.bd}`,borderRadius:'2px',background:filled?'#f87171':'none',cursor:'pointer',display:'inline-block',flexShrink:0,transition:'all 0.1s'}),
     hpCounter:{fontFamily:"'VT323',monospace",fontSize:'16px',color:t.mu,marginLeft:'4px'},
     qBtn:{width:'22px',height:'22px',background:'none',border:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',fontSize:'14px',borderRadius:'2px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',lineHeight:1},
     attackPrev:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginTop:'6px',borderTop:`1px solid ${t.bd}`,paddingTop:'6px',lineHeight:'1.5'},
-    // add panel
     addPanel:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'16px',marginBottom:'16px'},
     filterRow:{display:'flex',gap:'6px',marginBottom:'12px'},
     filterBtn:(active)=>({padding:'5px 14px',background:active?`rgba(${t.rgb},0.06)`:'none',border:`1px solid ${active?t.a:t.bd}`,color:active?t.a:t.mu,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer'}),
@@ -829,16 +829,26 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   ):null;
 
   const renderCombatant=(c,idx)=>{
-    const isActive=enc.started&&sorted[enc.activeIndex]?.id===c.id;
+    const isActive=enc.started&&enc.activeId===c.id;
     const hitCount=c.hits.filter(Boolean).length;
-    const isDead=hitCount>=c.maxHits;
+    const maxHp=c.maxHp||c.maxHits;
+    const currentHp=c.currentHp!=null?c.currentHp:maxHp;
+    const allWoundsFilled=hitCount>=c.maxHits;
+    const isDead=allWoundsFilled||currentHp===0;
+    const woundLabel=c.type==='crew'?'WOUNDS':'HITS';
     return React.createElement('div',{key:c.id,style:S.card(isActive,isDead)},
       isActive&&React.createElement('div',{style:S.activePip}),
-      // Top row: initiative | name | badges | buttons
+      // Top row: INIT | NAME | BUTTONS
       React.createElement('div',{style:S.cardTop},
         React.createElement('div',{style:S.initBox},
           React.createElement('div',{style:S.initLbl},'INIT'),
-          React.createElement('input',{type:'number',style:S.initInp,value:c.initiative,onChange:e=>setInitiative(c.id,e.target.value)})
+          React.createElement('input',{
+            type:'number',
+            style:S.initInp,
+            key:`${c.id}-${c.initiative}`,
+            defaultValue:c.initiative,
+            onBlur:e=>setInitiative(c.id,e.target.value)
+          })
         ),
         React.createElement('div',{style:S.nameBlock},
           React.createElement('div',null,
@@ -850,32 +860,42 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
         ),
         React.createElement('div',{style:S.btnGroup},
           c.type==='monster'&&React.createElement('button',{style:S.dupBtn,onClick:()=>duplicate(c)},'DUP'),
-          React.createElement('button',{style:S.smBtn(true),onClick:()=>remove(c.id)},'×')
+          React.createElement('button',{style:S.smBtn(true),onClick:()=>remove(c.id)},'x')
         )
       ),
       // Stats row
       React.createElement('div',{style:S.statsRow},
-        isMothership&&c.type==='crew'&&c.healthMax&&statTag('HLTH',c.healthMax),
         isMothership&&c.type==='crew'&&c.combat&&statTag('CMB',c.combat),
         isMothership&&c.type==='crew'&&c.stressCur!==undefined&&c.stressCur!==''&&statTag('STRESS',c.stressCur),
         !isMothership&&c.type==='crew'&&c.resolve&&statTag('RES',c.resolve),
         !isMothership&&c.type==='crew'&&c.stress!==undefined&&c.stress!==''&&statTag('STRESS',c.stress),
         statTag('SPD',c.speed),
         c.armor&&statTag(isMothership?'AP':'ARM LVL',c.armor),
-        !(isMothership&&c.type==='crew')&&statTag('HP',`${c.maxHits-hitCount}/${c.maxHits}`),
-        c.wounds&&statTag('COND',c.wounds)
       ),
-      // Hits row: checkboxes + quick +/-
+      // HP tracker (numeric +/-)
+      React.createElement('div',{style:S.hpRow},
+        React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,minWidth:'22px'}},'HP'),
+        React.createElement('button',{style:S.qBtn,onClick:()=>setCurrentHp(c.id,-1)},'−'),
+        React.createElement('span',{style:{
+          fontFamily:"'VT323',monospace",fontSize:'20px',lineHeight:1,
+          color:currentHp===0?'#f87171':currentHp<=Math.ceil(maxHp*0.3)?'#fb923c':t.a,
+          minWidth:'32px',textAlign:'center'
+        }},String(currentHp)),
+        React.createElement('button',{style:S.qBtn,onClick:()=>setCurrentHp(c.id,1)},'+'),
+        React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px'}},`/ ${maxHp}`),
+        currentHp===0&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'2px',marginLeft:'6px'}},'HP ZERO')
+      ),
+      // Wounds / Hits boxes
       React.createElement('div',{style:S.hitsRow},
-        React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,marginRight:'2px'}},(isMothership&&c.type==='crew')?'WOUNDS':'HITS'),
+        React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,marginRight:'2px'}},woundLabel),
         ...c.hits.map((h,hi)=>React.createElement('div',{key:hi,style:S.hitBox(h),onClick:()=>toggleHit(c.id,hi)})),
-        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,1),title:'Mark one hit'},'+'),
-        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,-1),title:'Remove one hit'},'\u2212'),
+        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,1),title:'Mark one'},'+'),
+        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,-1),title:'Remove one'},'−'),
         isDead&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'2px',marginLeft:'4px'}},'DOWN')
       ),
-      // Attacks preview
+      // Combat preview
       c.attacks&&React.createElement('div',{style:S.attackPrev},
-        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},isMothership?'COMBAT:':'ATTACKS:'),
+        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),
         `${c.attacks.slice(0,100)}${c.attacks.length>100?'...':''}`
       )
     );
@@ -884,7 +904,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   const addList=addFilter==='crew'?crew:bestiary;
 
   return React.createElement('div',null,
-    // ── Top bar ──
     React.createElement('div',{style:S.topBar},
       React.createElement('div',{style:S.roundBox},`ROUND ${enc.round}`),
       React.createElement('button',{style:S.ctrl(),onClick:prevTurn,disabled:!enc.combatants.length},'◀ PREV'),
@@ -894,7 +913,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
       React.createElement('button',{style:S.addBtn,onClick:()=>setShowAdd(v=>!v)},showAdd?'HIDE ROSTER':'+ ADD COMBATANTS')
     ),
 
-    // ── Add combatants panel ──
     showAdd&&React.createElement('div',{style:S.addPanel},
       React.createElement('div',{style:{fontSize:'9px',letterSpacing:'3px',color:t.mu,marginBottom:'10px'}},'SELECT FROM ROSTER'),
       React.createElement('div',{style:S.filterRow},
@@ -918,14 +936,12 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
           )
     ),
 
-    // ── Active turn banner ──
     enc.started&&activeCombatant&&React.createElement('div',{style:{background:`rgba(${t.rgb},0.05)`,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'8px 14px',marginBottom:'12px',display:'flex',justifyContent:'space-between',alignItems:'center'}},
       React.createElement('span',{style:{fontSize:'9px',letterSpacing:'3px',color:t.mu}},'ACTIVE TURN'),
       React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'18px',color:t.a,letterSpacing:'2px'}},activeCombatant.name),
       React.createElement('span',{style:{fontSize:'9px',letterSpacing:'2px',color:t.mu}},`ROUND ${enc.round}`)
     ),
 
-    // ── Combatant list ──
     enc.combatants.length===0
       ? React.createElement('div',{style:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'}},
           React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
@@ -1365,8 +1381,7 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
   const [expandedFull,setExpandedFull]=useState({});
   const toggleFull=(id)=>setExpandedFull(p=>({...p,[id]:!p[id]}));
 
-  // ── Homebrew state ──
-  const [hbForm,setHbForm]=useState(null); // null=closed, {}=new, {id,...}=editing
+  const [hbForm,setHbForm]=useState(null);
   const [hbExpanded,setHbExpanded]=useState({});
   const [hbDeleteConfirm,setHbDeleteConfirm]=useState(null);
 
@@ -1417,7 +1432,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
       );
     }),
 
-    // ── HOMEBREW SECTION ──────────────────────────────────────────────────────
     React.createElement('div',{style:{marginTop:'24px',borderTop:`1px solid ${t.bd}`,paddingTop:'20px'}},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}},
         React.createElement('div',null,
@@ -1431,12 +1445,10 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
         },'+ ADD RULE')
       ),
 
-      // Add / Edit form
       hbForm&&React.createElement('div',{style:{background:t.card,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'16px',marginBottom:'14px',boxShadow:`0 0 20px rgba(${t.rgb},0.08)`}},
         React.createElement('div',{style:{fontSize:'10px',letterSpacing:'3px',color:t.a,marginBottom:'14px'}},
           hbForm.id?'EDIT HOMEBREW RULE':'+ NEW HOMEBREW RULE'
         ),
-        // Title
         React.createElement('div',{style:{marginBottom:'10px'}},
           React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'TITLE *'),
           React.createElement('input',{type:'text',
@@ -1446,7 +1458,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
             placeholder:'e.g. Called Shots, Custom Panic, Variant Armor...'
           })
         ),
-        // Category
         React.createElement('div',{style:{marginBottom:'10px'}},
           React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'CATEGORY'),
           React.createElement('select',{
@@ -1455,7 +1466,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
             onChange:e=>setHbForm(p=>({...p,category:e.target.value}))
           },HB_CATS.map(c=>React.createElement('option',{key:c,value:c},c)))
         ),
-        // Quick Ref
         React.createElement('div',{style:{marginBottom:'10px'}},
           React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'QUICK REFERENCE (short summary shown when collapsed)'),
           React.createElement('textarea',{rows:3,
@@ -1465,7 +1475,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
             placeholder:'Key numbers, one-line summaries...'
           })
         ),
-        // Full Detail
         React.createElement('div',{style:{marginBottom:'14px'}},
           React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'FULL DETAIL (supports markdown — **bold**, *italic*, - lists)'),
           React.createElement('textarea',{rows:6,
@@ -1492,7 +1501,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
         )
       ),
 
-      // Homebrew entries list
       hbEntries.length===0&&!hbForm&&React.createElement('div',{style:{
         textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px',
         border:`1px dashed ${t.bd}`,borderRadius:'2px'
@@ -1504,7 +1512,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
         return React.createElement('div',{key:entry.id,style:{
           border:`1px solid ${isOpen?t.a:t.bd}`,borderRadius:'2px',marginBottom:'8px',overflow:'hidden'
         }},
-          // Header
           React.createElement('div',{style:{
             display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',
             background:isOpen?`rgba(${t.rgb},0.05)`:t.card,cursor:'pointer'
@@ -1513,7 +1520,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
             React.createElement('span',{style:{fontSize:'8px',letterSpacing:'1px',padding:'2px 6px',border:`1px solid ${catColor}`,color:catColor,borderRadius:'2px'}},entry.category),
             React.createElement('span',{style:{fontSize:'11px',color:isOpen?t.a:t.mu,marginLeft:'8px',transform:isOpen?'rotate(90deg)':'none',display:'inline-block',transition:'transform 0.2s'}},'▶')
           ),
-          // Content
           isOpen&&React.createElement('div',null,
             entry.quickRef&&React.createElement('div',{style:{
               padding:'10px 14px',background:t.bg,borderTop:`1px solid ${t.bd}`,
@@ -1525,7 +1531,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
                 React.createElement(MarkdownView,{text:entry.fullDetail,style:{color:t.mu,fontSize:'11px'}})
               )
             ),
-            // Action buttons
             React.createElement('div',{style:{display:'flex',gap:'6px',padding:'8px 14px',borderTop:`1px solid ${t.bd}`,background:t.card}},
               React.createElement('button',{
                 style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
@@ -1542,7 +1547,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
         );
       }),
 
-      // Delete confirm
       hbDeleteConfirm&&React.createElement('div',{style:{
         position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',
         alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'
@@ -1572,13 +1576,11 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
 }
 
 
-
 // ─── MUSIC PLAYER ────────────────────────────────────────────────────────────
 const MOOD_OPTS=['AMBIENT','EXPLORATION','TENSION','COMBAT','HORROR','OTHER'];
 
 function getYTId(url){
   if(!url)return null;
-  // Handle youtu.be, youtube.com/watch, youtube.com/embed
   const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
   return m?m[1]:null;
 }
@@ -1669,8 +1671,6 @@ function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}
     React.createElement('div',{style:S.intro},
       'Paste any YouTube URL to add it to your playlist. Click a track to load it in the player at the bottom of the screen. The player persists while you navigate between tabs.'
     ),
-
-    // Header
     React.createElement('div',{style:S.head},
       React.createElement('div',{style:{fontSize:'10px',letterSpacing:'4px',color:t.mu}},
         `${tracks.length} TRACK${tracks.length!==1?'S':''}`
@@ -1678,16 +1678,12 @@ function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}
       React.createElement('button',{style:S.addBtn,onClick:()=>{setForm({mood:'AMBIENT'});setEditId(null);setAddForm('add');}},
         '+ ADD TRACK')
     ),
-
-    // Mood filter
     React.createElement('div',{style:S.filterRow},
       ['ALL',...MOOD_OPTS].map(m=>
         React.createElement('button',{key:m,style:S.filterBtn(filterMood===m),
           onClick:()=>setFilterMood(m)},m)
       )
     ),
-
-    // Track list
     filtered.length===0
       ? React.createElement('div',{style:S.empty},
           tracks.length===0?'NO TRACKS YET — PRESS + ADD TRACK':'NO TRACKS IN THIS MOOD'
@@ -1719,8 +1715,6 @@ function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}
             )
           )
         ),
-
-    // Add/Edit modal
     addForm&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget){setAddForm(null);setForm({});setEditId(null);}}},
       React.createElement('div',{style:S.mbox},
         React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
@@ -1752,8 +1746,6 @@ function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}
         )
       )
     ),
-
-    // Delete confirm
     delId&&React.createElement('div',{style:S.overlay},
       React.createElement('div',{style:{...S.mbox,maxWidth:'320px',textAlign:'center'}},
         React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'REMOVE TRACK'),
@@ -1763,20 +1755,16 @@ function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}
           React.createElement('button',{style:S.btn('danger'),onClick:()=>del(delId)},'REMOVE')
         )
       )
-    ),
-
-    // Player is rendered at App level for persistence across tab switches
+    )
   );
 }
 
 function YTPlayer({track,t,onClose,onNext,onPrev}){
-  // Each time track changes, remount the iframe with a key so it reloads
   const S={
     bar:{position:'fixed',bottom:0,left:0,right:0,background:t.panel,
       borderTop:`2px solid ${t.a}`,zIndex:5000,
       display:'flex',alignItems:'stretch',gap:'0',
       boxShadow:`0 -6px 30px rgba(${t.rgb},0.18)`},
-    // Make the iframe large enough to clearly show YT controls
     iframeWrap:{flexShrink:0,width:'280px',height:'158px',position:'relative',background:'#000'},
     iframe:{width:'100%',height:'100%',border:'none',display:'block'},
     hint:{position:'absolute',bottom:'4px',left:0,right:0,
@@ -1798,7 +1786,6 @@ function YTPlayer({track,t,onClose,onNext,onPrev}){
   };
 
   return React.createElement('div',{style:S.bar},
-    // Iframe — large enough to interact with, no autoplay (browser blocks audio autoplay)
     React.createElement('div',{style:S.iframeWrap},
       React.createElement('iframe',{
         key:track.ytId,
@@ -1825,11 +1812,7 @@ function YTPlayer({track,t,onClose,onNext,onPrev}){
   );
 }
 
-// ─── PRINT / CHARACTER SHEET ──────────────────────────────────────────────────
-
-// ─── INTERACTIVE CHARACTER SHEET ─────────────────────────────────────────────
-
-// Load/save per-member session state from localStorage
+// ─── PRINT / CHARACTER SHEET ─────────────────────────────────────────────────
 function loadSheetState(memberId){
   try{
     const raw=localStorage.getItem(SHEET_KEY);
@@ -1901,7 +1884,6 @@ function WoundBoxes({count,checked,onToggle,label,filled_color}){
 function CrewSheet({member,game}){
   const isMothership=game==='mothership';
 
-  // ── Session state (separate from master crew data) ──
   const initState=()=>{
     const saved=loadSheetState(member.id);
     if(isMothership){
@@ -1953,13 +1935,11 @@ function CrewSheet({member,game}){
     updateSS({healthBoxes});
   };
 
-  // ── Mothership Sheet ──
   if(isMothership){
     const maxWounds=parseInt(member.maxWounds)||2;
     const maxHP=parseInt(member.healthMax)||13;
 
     return React.createElement('div',{className:'crew-sheet'},
-      // Header
       React.createElement('div',{className:'sh-title'},
         React.createElement('span',null,member.name||'UNNAMED'),
         React.createElement('span',{className:'sh-game'},'MOTHERSHIP RPG')
@@ -1968,8 +1948,6 @@ function CrewSheet({member,game}){
         React.createElement('span',null,`CLASS: ${member.role||'--'}`),
         React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
       ),
-
-      // Stats
       React.createElement('div',{className:'sh-section-lbl'},'STATS'),
       React.createElement('div',{className:'sh-grid sh-grid-4'},
         ['strength','speed','intellect','combat'].map(k=>
@@ -1979,8 +1957,6 @@ function CrewSheet({member,game}){
           )
         )
       ),
-
-      // Saves
       React.createElement('div',{className:'sh-section-lbl'},'SAVES'),
       React.createElement('div',{className:'sh-grid sh-grid-3'},
         ['sanity','fear','body'].map(k=>
@@ -1990,8 +1966,6 @@ function CrewSheet({member,game}){
           )
         )
       ),
-
-      // Interactive vitals
       React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click wounds to mark \u00b7 use +/\u2212 for HP & stress'),
       React.createElement('div',{className:'sh-row'},
         React.createElement(SpinField,{
@@ -2035,8 +2009,6 @@ function CrewSheet({member,game}){
             : React.createElement('span',{className:'sh-box-val'},'--')
         )
       ),
-
-      // Stress interactive
       React.createElement('div',{className:'sh-row'},
         React.createElement(SpinField,{
           label:'STRESS CURRENT',
@@ -2055,22 +2027,14 @@ function CrewSheet({member,game}){
           )
         )
       ),
-
-      // Skills
       member.skills&&React.createElement('div',null,
         React.createElement('div',{className:'sh-section-lbl'},'SKILLS'),
         React.createElement('div',{className:'sh-textarea'},member.skills)
       ),
-
-      // Wound conditions
       React.createElement('div',{className:'sh-section-lbl'},'WOUND CONDITIONS'),
       React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.wounds||''),
-
-      // Notes
       React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
       React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.notes||''),
-
-      // Reset button
       React.createElement('button',{
         onClick:resetSS,
         className:'no-print',
@@ -2081,13 +2045,11 @@ function CrewSheet({member,game}){
     );
   }
 
-  // ── Alien RPG Sheet ──
   const maxHealth=parseInt(member.hp)||
     (member.strength&&member.agility
       ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
 
   return React.createElement('div',{className:'crew-sheet'},
-    // Header
     React.createElement('div',{className:'sh-title'},
       React.createElement('span',null,member.name||'UNNAMED'),
       React.createElement('span',{className:'sh-game'},'ALIEN RPG')
@@ -2096,8 +2058,6 @@ function CrewSheet({member,game}){
       React.createElement('span',null,`ARCHETYPE: ${member.role||'--'}`),
       React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
     ),
-
-    // Attributes
     React.createElement('div',{className:'sh-section-lbl'},'ATTRIBUTES'),
     React.createElement('div',{className:'sh-grid sh-grid-4'},
       [['strength','STR'],['agility','AGL'],['wits','WITS'],['empathy','EMP']].map(([k,l])=>
@@ -2107,8 +2067,6 @@ function CrewSheet({member,game}){
         )
       )
     ),
-
-    // Interactive vitals
     React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click boxes to mark damage \u00b7 +/\u2212 for stress'),
     React.createElement('div',{className:'sh-row'},
       React.createElement(WoundBoxes,{
@@ -2131,8 +2089,6 @@ function CrewSheet({member,game}){
         onChange:v=>updateSS({stress:v})
       })
     ),
-
-    // Armor — interactive armor level tracker
     React.createElement('div',{className:'sh-row'},
       React.createElement('div',{className:'sh-field',style:{textAlign:'center',minWidth:'90px'}},
         React.createElement('span',{className:'sh-field-lbl'},`ARMOR LVL (max ${parseInt(member.armorLevel)||0})`),
@@ -2166,28 +2122,18 @@ function CrewSheet({member,game}){
         React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},member.armorType||'NONE')
       )
     ),
-
-    // Skills
     member.skills&&React.createElement('div',null,
       React.createElement('div',{className:'sh-section-lbl'},'SKILLS & LEVELS'),
       React.createElement('div',{className:'sh-textarea'},member.skills)
     ),
-
-    // Talents
     member.talents&&React.createElement('div',null,
       React.createElement('div',{className:'sh-section-lbl'},'TALENTS'),
       React.createElement('div',{className:'sh-textarea'},member.talents)
     ),
-
-    // Critical injury
     React.createElement('div',{className:'sh-section-lbl'},'CRITICAL INJURY'),
     React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.criticalInjury||''),
-
-    // Notes
     React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
     React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.notes||''),
-
-    // Reset button
     React.createElement('button',{
       onClick:resetSS,
       className:'no-print',
@@ -2242,7 +2188,6 @@ function PrintTab({game,crew,t}){
   );
 }
 
-// Helper: print a single crew sheet
 function printSingleSheet(member,game){
   const div=document.createElement('div');
   div.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto;';
@@ -2313,7 +2258,7 @@ function App(){
           ['mothership','alien'].forEach(g=>{
             if(!parsed[g].bestiary)parsed[g].bestiary=[];
             if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();
-          if(!parsed[g].homebrew)parsed[g].homebrew=[];
+            if(!parsed[g].homebrew)parsed[g].homebrew=[];
           });
           setData(parsed);
         }
@@ -2341,8 +2286,6 @@ function App(){
     const nd={...data,[game]:{...gd(),homebrew:entries}};
     upd(nd);
   };
-
-
 
   const openAdd=()=>{setForm({});setModal({mode:'add',tab});};
   const openEdit=(item)=>{setForm({...item});setModal({mode:'edit',tab,item});};
@@ -2408,7 +2351,6 @@ function App(){
     viewVal:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'},
   };
 
-  // ── Bestiary card ──
   const renderBestiaryCard=(item)=>{
     const isMothership=game==='mothership';
     return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
@@ -2424,14 +2366,13 @@ function App(){
         isMothership&&item.wounds&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'MAX WND'),React.createElement('div',{style:S.statVal},item.wounds)),
         item.speed&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'SPEED'),React.createElement('div',{style:S.statVal},item.speed))
       ),
-      item.attacks&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px'}},
-        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},isMothership?'COMBAT:':'ATTACKS:'),
-        `${item.attacks.slice(0,80)}${item.attacks.length>80?'...':''}`
+      item.combat&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px'}},
+        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),
+        `${item.combat.slice(0,80)}${item.combat.length>80?'...':''}`
       )
     );
   };
 
-  // ── Generic card ──
   const renderCard=(item)=>{
     if(tab==='bestiary')return renderBestiaryCard(item);
     if(tab==='sessions')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
@@ -2495,7 +2436,6 @@ function App(){
     return null;
   };
 
-  // ── View modal content ──
   const renderBestiaryView=(item)=>{
     const isMothership=game==='mothership';
     const statFields=isMothership
@@ -2506,9 +2446,16 @@ function App(){
       item.category&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('span',{style:S.catBadge(item.category)},item.category)),
       item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'INSTINCT'),React.createElement(MarkdownView,{text:item.instinct,style:{...S.viewVal,fontStyle:'italic',color:t.mu}})),
       React.createElement('div',{style:S.divider}),
-      item.attacks&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:{...S.viewLbl,color:t.a}},isMothership?'COMBAT & DAMAGE':'ATTACKS & DICE'),React.createElement(MarkdownView,{text:item.attacks,style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}})),
+      item.combat&&React.createElement('div',{style:{marginBottom:'12px'}},
+        React.createElement('div',{style:{...S.viewLbl,color:t.a}},'COMBAT'),
+        React.createElement(MarkdownView,{text:item.combat,style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}})
+      ),
       item.skills&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'SKILLS'),React.createElement(MarkdownView,{text:item.skills,style:S.viewVal})),
-      item.notes&&React.createElement('div',null,React.createElement('div',{style:S.divider}),React.createElement('div',{style:S.viewLbl},'SPECIAL ABILITIES / NOTES'),React.createElement(MarkdownView,{text:item.notes,style:S.viewVal}))
+      item.damageAbility&&React.createElement('div',null,
+        React.createElement('div',{style:S.divider}),
+        React.createElement('div',{style:{...S.viewLbl,color:t.a}},'DAMAGE & SPECIAL ABILITIES'),
+        React.createElement(MarkdownView,{text:item.damageAbility,style:S.viewVal})
+      )
     );
   };
 
@@ -2553,7 +2500,6 @@ function App(){
   return React.createElement('div',{style:S.root},
     React.createElement('div',{style:S.scanline}),
 
-    // ── Header ──
     React.createElement('div',{style:S.header},
       React.createElement('div',{style:S.gameSwitcher},
         ['mothership','alien'].map(g=>React.createElement('button',{key:g,style:S.gameBtn(g),onClick:()=>{setGame(g);setTab('sessions');}},THEMES[g].name))
@@ -2577,7 +2523,6 @@ function App(){
       )
     ),
 
-    // ── Main ──
     React.createElement('div',{style:S.main},
       tab==='print'
         ?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
@@ -2608,7 +2553,6 @@ function App(){
             )
     ),
 
-    // ── Modals ──
     modal&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget)setModal(null);}},
       React.createElement('div',{style:S.mbox},
         modal.mode==='view'
