@@ -655,12 +655,51 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
 
   const isMothership=game==='mothership';
 
+  // Migration: fix combatants saved before HP tracker and wound-box changes
+  useEffect(()=>{
+    if(!enc.combatants.length)return;
+    let anyChange=false;
+    const fixed=enc.combatants.map(c=>{
+      const p={};
+
+      // Fix monster wound boxes built from hp (pre-wound-fix code)
+      if(c.type==='monster'&&c.wounds){
+        const correct=parseHitBoxes(c.wounds);
+        if(correct!==c.maxHits){p.maxHits=correct;p.hits=Array(correct).fill(false);}
+      }
+
+      // Fix missing maxHp — must use ORIGINAL c.maxHits (before patch) for monsters
+      if(c.maxHp==null){
+        let hp;
+        if(c.type==='crew'){
+          // Mothership crew stored healthMax; Alien crew maxHits = HP boxes
+          hp=c.healthMax?Math.max(1,parseInt(c.healthMax)||13):(c.maxHits||4);
+        } else {
+          // Monster: use stored hp field if present, else original maxHits was HP-based
+          hp=c.hp?Math.max(1,parseInt(c.hp)||4):(c.maxHits||4);
+        }
+        p.maxHp=hp;
+      }
+
+      // Fix missing currentHp
+      if(c.currentHp==null){p.currentHp=p.maxHp!=null?p.maxHp:c.maxHp;}
+
+      if(Object.keys(p).length){anyChange=true;return{...c,...p};}
+      return c;
+    });
+    if(anyChange)onUpdate({...enc,combatants:fixed});
+  },[]);
+
   const buildCombatant=(source,type)=>{
     let maxHits;
-    if(isMothership&&type==='crew'){
-      maxHits=parseHitBoxes(source.maxWounds||'2');
+    if(type==='crew'){
+      // Crew: Mothership uses maxWounds boxes; Alien uses hp boxes (HP = health boxes)
+      maxHits=isMothership
+        ?parseHitBoxes(source.maxWounds||'2')
+        :parseHitBoxes(source.hp||'4');
     } else {
-      maxHits=parseHitBoxes(source.hp||'4');
+      // Monster: always use wounds field for wound boxes (Mothership has MAX WOUNDS; Alien defaults to 2)
+      maxHits=parseHitBoxes(source.wounds||'2');
     }
     // Numeric HP tracker: Mothership crew uses healthMax; everyone else uses hp
     const maxHp=isMothership&&type==='crew'
@@ -686,6 +725,7 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
       armorType:source.armorType||'',
       attacks:source.combat||'',
       wounds:source.wounds||'',
+      hp:source.hp||'',
       healthMax:source.healthMax||'',
       combat:source.combat||'',
       stressCur:source.stressCur||'',
@@ -831,11 +871,11 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   const renderCombatant=(c,idx)=>{
     const isActive=enc.started&&enc.activeId===c.id;
     const hitCount=c.hits.filter(Boolean).length;
-    const maxHp=c.maxHp||c.maxHits;
+    const maxHp=c.maxHp||0;
     const currentHp=c.currentHp!=null?c.currentHp:maxHp;
     const allWoundsFilled=hitCount>=c.maxHits;
     const isDead=allWoundsFilled||currentHp===0;
-    const woundLabel=c.type==='crew'?'WOUNDS':'HITS';
+    const woundLabel='WOUNDS';
     return React.createElement('div',{key:c.id,style:S.card(isActive,isDead)},
       isActive&&React.createElement('div',{style:S.activePip}),
       // Top row: INIT | NAME | BUTTONS
