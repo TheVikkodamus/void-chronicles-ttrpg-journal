@@ -14,7 +14,6 @@
   button:hover{opacity:0.8}
   select option{background:#071009}
   input[type=number]::-webkit-inner-spin-button{opacity:1}
-  /* ── Print styles ── */
   @media print {
     body { background: #fff !important; color: #000 !important; }
     body * { background: transparent !important; color: #000 !important; }
@@ -26,136 +25,28 @@
   }
   .print-only { display: none; }
   .print-sheet-wrap { display: none; }
-
-  /* Sheet styles — always defined, used both on screen and in print */
-  .crew-sheet {
-    font-family: 'Share Tech Mono', 'Courier New', monospace;
-    border: 1.5px solid #000;
-    padding: 14px;
-    page-break-inside: avoid;
-    break-inside: avoid;
-    background: #fff;
-    color: #000;
-    font-size: 11px;
-    line-height: 1.4;
-  }
-  .crew-sheet .sh-title {
-    font-size: 15px;
-    font-weight: bold;
-    letter-spacing: 2px;
-    border-bottom: 1.5px solid #000;
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-  }
-  .crew-sheet .sh-game {
-    font-size: 9px;
-    letter-spacing: 3px;
-    opacity: 0.6;
-  }
-  .crew-sheet .sh-grid {
-    display: grid;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .crew-sheet .sh-grid-4 { grid-template-columns: repeat(4,1fr); }
-  .crew-sheet .sh-grid-3 { grid-template-columns: repeat(3,1fr); }
-  .crew-sheet .sh-grid-2 { grid-template-columns: repeat(2,1fr); }
-  .crew-sheet .sh-box {
-    border: 1px solid #000;
-    padding: 5px 7px;
-    text-align: center;
-  }
-  .crew-sheet .sh-box-lbl {
-    font-size: 7px;
-    letter-spacing: 2px;
-    opacity: 0.6;
-    display: block;
-    margin-bottom: 2px;
-  }
-  .crew-sheet .sh-box-val {
-    font-size: 18px;
-    font-family: 'VT323', monospace;
-    display: block;
-    line-height: 1;
-  }
-  .crew-sheet .sh-row {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-    align-items: stretch;
-  }
-  .crew-sheet .sh-field {
-    border: 1px solid #000;
-    padding: 5px 7px;
-    flex: 1;
-  }
-  .crew-sheet .sh-field-lbl {
-    font-size: 7px;
-    letter-spacing: 2px;
-    opacity: 0.6;
-    display: block;
-    margin-bottom: 2px;
-  }
-  .crew-sheet .sh-field-val {
-    font-size: 11px;
-    min-height: 14px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .crew-sheet .sh-wounds {
-    display: flex;
-    gap: 4px;
-    flex-wrap: wrap;
-    margin-top: 3px;
-  }
-  .crew-sheet .sh-wound-box {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #000;
-    display: inline-block;
-  }
-  .crew-sheet .sh-section-lbl {
-    font-size: 8px;
-    letter-spacing: 3px;
-    opacity: 0.5;
-    border-bottom: 1px solid #ccc;
-    padding-bottom: 2px;
-    margin-bottom: 6px;
-    margin-top: 8px;
-  }
-  .crew-sheet .sh-textarea {
-    border: 1px solid #000;
-    padding: 5px 7px;
-    min-height: 40px;
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 6px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  .crew-sheet .sh-wound-box {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #000;
-    display: inline-block;
-    cursor: pointer;
-    transition: background 0.1s;
-  }
-  @media print {
-    .crew-sheet .sh-wound-box { cursor: default; }
-    .no-print { display: none !important; }
-  }
-
-  /* ── Markdown rendered output */
-  .md-view p{margin:0 0 6px 0}
-  .md-view p:last-child{margin-bottom:0}
-  .md-view ul,.md-view ol{margin:4px 0 6px 18px;padding:0}
-  .md-view li{margin-bottom:2px}
-  .md-view strong{font-weight:bold;opacity:1}
-  .md-view em{font-style:italic;opacity:0.85}
+  .crew-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
+  .crew-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
+  .crew-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
+  .crew-sheet .sh-grid{display:grid;gap:6px;margin-bottom:10px;}
+  .crew-sheet .sh-grid-4{grid-template-columns:repeat(4,1fr);}
+  .crew-sheet .sh-grid-3{grid-template-columns:repeat(3,1fr);}
+  .crew-sheet .sh-grid-2{grid-template-columns:repeat(2,1fr);}
+  .crew-sheet .sh-box{border:1px solid #000;padding:5px 7px;text-align:center;}
+  .crew-sheet .sh-box-lbl{font-size:7px;letter-spacing:2px;opacity:0.6;display:block;margin-bottom:2px;}
+  .crew-sheet .sh-box-val{font-size:18px;font-family:'VT323',monospace;display:block;line-height:1;}
+  .crew-sheet .sh-row{display:flex;gap:6px;margin-bottom:8px;align-items:stretch;}
+  .crew-sheet .sh-field{border:1px solid #000;padding:5px 7px;flex:1;}
+  .crew-sheet .sh-field-lbl{font-size:7px;letter-spacing:2px;opacity:0.6;display:block;margin-bottom:2px;}
+  .crew-sheet .sh-field-val{font-size:11px;min-height:14px;white-space:pre-wrap;word-break:break-word;}
+  .crew-sheet .sh-wounds{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+  .crew-sheet .sh-section-lbl{font-size:8px;letter-spacing:3px;opacity:0.5;border-bottom:1px solid #ccc;padding-bottom:2px;margin-bottom:6px;margin-top:8px;}
+  .crew-sheet .sh-textarea{border:1px solid #000;padding:5px 7px;min-height:40px;width:100%;box-sizing:border-box;margin-bottom:6px;white-space:pre-wrap;word-break:break-word;}
+  .crew-sheet .sh-wound-box{width:16px;height:16px;border:1.5px solid #000;display:inline-block;cursor:pointer;transition:background 0.1s;}
+  @media print{.crew-sheet .sh-wound-box{cursor:default;}.no-print{display:none !important;}}
+  .md-view p{margin:0 0 6px 0}.md-view p:last-child{margin-bottom:0}
+  .md-view ul,.md-view ol{margin:4px 0 6px 18px;padding:0}.md-view li{margin-bottom:2px}
+  .md-view strong{font-weight:bold;opacity:1}.md-view em{font-style:italic;opacity:0.85}
   .md-view h1,.md-view h2,.md-view h3{letter-spacing:2px;margin:8px 0 4px 0;font-family:'VT323',monospace;font-size:16px}
   .md-view code{font-family:inherit;background:rgba(255,255,255,0.06);padding:1px 4px;border-radius:2px;font-size:11px}
   .md-view hr{border:none;border-top:1px solid currentColor;opacity:0.2;margin:8px 0}
@@ -164,53 +55,17 @@
 </head>
 <body>
 <script>
-// ── Password gate ──────────────────────────────────────────────────────────
 (async function(){
   const HASH='28767e8782da837acdf6065424e8ef609042638603fb0d47131d0ae4b913998b';
   const SESSION_KEY='vc_auth';
-
-  async function sha256(str){
-    const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  }
-
+  async function sha256(str){const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');}
   if(sessionStorage.getItem(SESSION_KEY)==='1')return;
-
   document.body.style.display='none';
-
   const overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:#020a04;display:flex;align-items:center;justify-content:center;z-index:99999;font-family:"Share Tech Mono","Courier New",monospace;';
-  overlay.innerHTML=`
-    <div style="border:1px solid #1e3d1e;padding:36px 40px;max-width:340px;width:100%;text-align:center;">
-      <div style="font-family:VT323,monospace;font-size:32px;letter-spacing:6px;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,0.4);margin-bottom:6px;">VOID CHRONICLES</div>
-      <div style="font-size:9px;letter-spacing:3px;color:#3a5c3a;margin-bottom:28px;">WARDEN TERMINAL v3.3</div>
-      <div style="font-size:9px;letter-spacing:2px;color:#3a5c3a;margin-bottom:10px;text-align:left;">ACCESS CODE</div>
-      <input id="vc-pwd" type="password" autocomplete="current-password"
-        style="width:100%;box-sizing:border-box;background:#071009;border:1px solid #1e3d1e;color:#86efac;font-family:inherit;font-size:14px;padding:10px 12px;outline:none;letter-spacing:2px;margin-bottom:10px;"
-        placeholder="············"/>
-      <div id="vc-err" style="font-size:9px;color:#f87171;letter-spacing:1px;min-height:16px;margin-bottom:10px;"></div>
-      <button id="vc-btn"
-        style="width:100%;padding:10px;background:none;border:1px solid #fbbf24;color:#fbbf24;font-family:inherit;font-size:11px;letter-spacing:4px;cursor:pointer;">
-        AUTHENTICATE
-      </button>
-    </div>`;
-  document.body.appendChild(overlay);
-  document.body.style.display='block';
-
-  async function attempt(){
-    const val=document.getElementById('vc-pwd').value;
-    const h=await sha256(val);
-    if(h===HASH){
-      sessionStorage.setItem(SESSION_KEY,'1');
-      overlay.remove();
-    } else {
-      document.getElementById('vc-err').textContent='ACCESS DENIED';
-      document.getElementById('vc-pwd').value='';
-      document.getElementById('vc-pwd').focus();
-      setTimeout(()=>document.getElementById('vc-err').textContent='',2000);
-    }
-  }
-
+  overlay.innerHTML=`<div style="border:1px solid #1e3d1e;padding:36px 40px;max-width:340px;width:100%;text-align:center;"><div style="font-family:VT323,monospace;font-size:32px;letter-spacing:6px;color:#fbbf24;text-shadow:0 0 20px rgba(251,191,36,0.4);margin-bottom:6px;">VOID CHRONICLES</div><div style="font-size:9px;letter-spacing:3px;color:#3a5c3a;margin-bottom:28px;">WARDEN TERMINAL v3.3</div><div style="font-size:9px;letter-spacing:2px;color:#3a5c3a;margin-bottom:10px;text-align:left;">ACCESS CODE</div><input id="vc-pwd" type="password" autocomplete="current-password" style="width:100%;box-sizing:border-box;background:#071009;border:1px solid #1e3d1e;color:#86efac;font-family:inherit;font-size:14px;padding:10px 12px;outline:none;letter-spacing:2px;margin-bottom:10px;" placeholder="············"/><div id="vc-err" style="font-size:9px;color:#f87171;letter-spacing:1px;min-height:16px;margin-bottom:10px;"></div><button id="vc-btn" style="width:100%;padding:10px;background:none;border:1px solid #fbbf24;color:#fbbf24;font-family:inherit;font-size:11px;letter-spacing:4px;cursor:pointer;">AUTHENTICATE</button></div>`;
+  document.body.appendChild(overlay);document.body.style.display='block';
+  async function attempt(){const val=document.getElementById('vc-pwd').value;const h=await sha256(val);if(h===HASH){sessionStorage.setItem(SESSION_KEY,'1');overlay.remove();}else{document.getElementById('vc-err').textContent='ACCESS DENIED';document.getElementById('vc-pwd').value='';document.getElementById('vc-pwd').focus();setTimeout(()=>document.getElementById('vc-err').textContent='',2000);}}
   document.getElementById('vc-btn').addEventListener('click',attempt);
   document.getElementById('vc-pwd').addEventListener('keydown',e=>{if(e.key==='Enter')attempt();});
   document.getElementById('vc-pwd').focus();
@@ -222,37 +77,24 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 const {useState,useEffect,useCallback}=React;
-
-// ── Markdown renderer ─────────────────────────────────────────────────────
-if(typeof marked!=='undefined'){
-  marked.setOptions({breaks:true,gfm:true,pedantic:false});
-}
+if(typeof marked!=='undefined'){marked.setOptions({breaks:true,gfm:true,pedantic:false});}
 function MarkdownView({text,style}){
   if(!text)return null;
   const html=typeof marked!=='undefined'?marked.parse(String(text)):`<p>${String(text)}</p>`;
-  return React.createElement('div',{
-    style:{...style,lineHeight:'1.7'},
-    dangerouslySetInnerHTML:{__html:html}
-  });
+  return React.createElement('div',{style:{...style,lineHeight:'1.7'},dangerouslySetInnerHTML:{__html:html}});
 }
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
-
-// ── FIX 1: activeId replaces activeIndex ──────────────────────────────────
 const defaultEncounter=()=>({round:1,activeId:null,started:false,combatants:[]});
-
 const defaultData=()=>({sessions:[],npcs:[],locations:[],crew:[],bestiary:[],encounter:defaultEncounter(),homebrew:[]});
-
 const storage={
   get:async(key)=>{try{const v=localStorage.getItem(key);return v?{value:v}:null;}catch{return null;}},
   set:async(key,value)=>{try{localStorage.setItem(key,value);return{key,value};}catch{return null;}}
 };
-
 const THEMES={
   mothership:{a:'#fbbf24',rgb:'251,191,36',bg:'#020a04',panel:'#071009',card:'#0d150d',bd:'#1e3d1e',tx:'#86efac',mu:'#3a5c3a',name:'MOTHERSHIP RPG',sub:'WARDEN TERMINAL v2.1'},
   alien:{a:'#4ade80',rgb:'74,222,128',bg:'#0c0700',panel:'#130e01',card:'#1a1200',bd:'#321d00',tx:'#fde68a',mu:'#7a5a1a',name:'ALIEN RPG',sub:'GAME MU/TH/UR. DATABANK'}
 };
-
 const FIELDS={
   sessions:[
     {k:'sessionNumber',l:'SESSION #',type:'number'},
@@ -337,27 +179,17 @@ const FIELDS={
     {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
   ],
 };
-
 const TABS=[
-  {id:'sessions',label:'SESSIONS'},
-  {id:'npcs',label:'CONTACTS'},
-  {id:'locations',label:'SECTORS'},
-  {id:'crew',label:'CREW'},
-  {id:'bestiary',label:'BESTIARY'},
-  {id:'encounter',label:'ENCOUNTER'},
-  {id:'dice',label:'DICE'},
-  {id:'rules',label:'RULES'},
-  {id:'print',label:'PRINT'},
+  {id:'sessions',label:'SESSIONS'},{id:'npcs',label:'CONTACTS'},{id:'locations',label:'SECTORS'},
+  {id:'crew',label:'CREW'},{id:'bestiary',label:'BESTIARY'},{id:'encounter',label:'ENCOUNTER'},
+  {id:'dice',label:'DICE'},{id:'rules',label:'RULES'},{id:'print',label:'PRINT'},
 ];
-
 const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',PANICKING:'#fb923c',BROKEN:'#fb923c',UNKNOWN:'#94a3b8',MIA:'#94a3b8'};
 const CATEGORY_C={XENOMORPH:'#f87171',FACEHUGGER:'#fb923c',PARASITE:'#fb923c',SYNTHETIC:'#94a3b8',ALIEN:'#c084fc',PREDATOR:'#f87171',MUTANT:'#fb923c',INFECTED:'#f87171',UNKNOWN:'#94a3b8',UNDEAD:'#c084fc'};
 const TYPE_C={crew:'#4ade80',monster:'#f87171',npc:'#94a3b8'};
-
 const DICE_TYPES=[5,6,10,20,100];
 const QUANTITY_OPTS=[1,2,3,4,5,6,8,10];
 const MODE_OPTS=[{id:'normal',label:'NORMAL'},{id:'advantage',label:'ADVANTAGE'},{id:'disadvantage',label:'DISADVANTAGE'}];
-
 function rollOne(sides){return Math.floor(Math.random()*sides)+1;}
 function performRoll(sides,quantity,mode){
   if(mode==='advantage'||mode==='disadvantage'){
@@ -371,15 +203,8 @@ function performRoll(sides,quantity,mode){
   const rolls=Array.from({length:quantity},()=>rollOne(sides));
   return{rolls,kept:rolls,dropped:[],total:rolls.reduce((a,b)=>a+b,0),mode,sides,quantity};
 }
-
-function parseHitBoxes(val){
-  if(!val)return 4;
-  const n=parseInt(val);
-  if(!isNaN(n)&&n>0)return n;
-  return 4;
-}
-
-// ─── DICE TAB ────────────────────────────────────────────────────────────────
+function parseHitBoxes(val){if(!val)return 4;const n=parseInt(val);if(!isNaN(n)&&n>0)return n;return 4;}
+// ─── DICE TAB ───────────────────────────────────────────────────────────────
 function DiceTab({t,game}){
   const isAlien=game==='alien';
   const [selectedDie,setSelectedDie]=useState(6);
@@ -388,47 +213,23 @@ function DiceTab({t,game}){
   const [rolling,setRolling]=useState(false);
   const [history,setHistory]=useState([]);
   const [current,setCurrent]=useState(null);
-
   const [stressCount,setStressCount]=useState(1);
   const [stressRolling,setStressRolling]=useState(false);
   const [stressCurrent,setStressCurrent]=useState(null);
-
   const doRoll=()=>{
-    if(rolling)return;
-    setRolling(true);
-    let tick=0;
-    const iv=setInterval(()=>{
-      setCurrent(performRoll(selectedDie,quantity,mode));
-      tick++;
-      if(tick>=12){
-        clearInterval(iv);
-        const final=performRoll(selectedDie,quantity,mode);
-        setCurrent(final);
-        setHistory(p=>[{...final,id:uid()},...p].slice(0,12));
-        setRolling(false);
-      }
+    if(rolling)return;setRolling(true);let tick=0;
+    const iv=setInterval(()=>{setCurrent(performRoll(selectedDie,quantity,mode));tick++;
+      if(tick>=12){clearInterval(iv);const final=performRoll(selectedDie,quantity,mode);setCurrent(final);setHistory(p=>[{...final,id:uid()},...p].slice(0,12));setRolling(false);}
     },60);
   };
-
   const rollStressDice=()=>{
-    if(stressRolling)return;
-    setStressRolling(true);
-    let tick=0;
+    if(stressRolling)return;setStressRolling(true);let tick=0;
     const iv=setInterval(()=>{
       const dice=Array.from({length:stressCount},()=>Math.floor(Math.random()*6)+1);
-      setStressCurrent({dice,rolling:true});
-      tick++;
-      if(tick>=12){
-        clearInterval(iv);
-        const final=Array.from({length:stressCount},()=>Math.floor(Math.random()*6)+1);
-        const successes=final.filter(d=>d===6).length;
-        const panics=final.filter(d=>d===1).length;
-        setStressCurrent({dice:final,successes,panics,rolling:false});
-        setStressRolling(false);
-      }
+      setStressCurrent({dice,rolling:true});tick++;
+      if(tick>=12){clearInterval(iv);const final=Array.from({length:stressCount},()=>Math.floor(Math.random()*6)+1);const successes=final.filter(d=>d===6).length;const panics=final.filter(d=>d===1).length;setStressCurrent({dice:final,successes,panics,rolling:false});setStressRolling(false);}
     },60);
   };
-
   const diceCount=mode!=='normal'?quantity+1:quantity;
   const modeColor={advantage:'#4ade80',disadvantage:'#f87171',normal:t.mu};
   const S={
@@ -453,237 +254,98 @@ function DiceTab({t,game}){
     React.createElement('div',{style:S.panel},
       React.createElement('button',{style:S.rollBtn,onClick:doRoll,disabled:rolling},rolling?'ROLLING...':`ROLL ${diceCount}d${selectedDie}`),
       current&&React.createElement('div',{style:{padding:'16px 0 4px 0',marginTop:'12px',borderTop:`1px solid ${t.bd}`}},
-        isAlien
-          ? React.createElement('div',null,
-              React.createElement('div',{style:{display:'flex',gap:'6px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
-                current.kept.map((v,i)=>{
-                  const isSuccess=v===6;
-                  const col=isSuccess?'#4ade80':t.mu;
-                  return React.createElement('div',{key:i,style:{
-                    display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
-                    padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',
-                    background:`rgba(${isSuccess?'74,222,128':'128,128,128'},0.06)`,
-                    minWidth:'36px'
-                  }},
-                    React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},v),
-                    React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},isSuccess?'HIT':'···')
-                  );
-                }),
-                current.dropped.map((v,i)=>
-                  React.createElement('div',{key:'d'+i,style:{
-                    display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
-                    padding:'8px 10px',border:`1px solid #f87171`,borderRadius:'2px',
-                    background:'rgba(248,113,113,0.06)',minWidth:'36px',opacity:0.5
-                  }},
-                    React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:'#f87171',lineHeight:1,textDecoration:'line-through'}},v),
-                    React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:'#f87171'}},'DROP')
-                  )
-                )
-              ),
-              React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',marginBottom:'8px'}},
-                React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},
-                  `${current.kept.filter(v=>v===6).length} SUCCESS${current.kept.filter(v=>v===6).length!==1?'ES':''}`
-                ),
-                React.createElement('span',{style:{fontSize:'10px',color:t.mu}},'|'),
-                React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px'}},
-                  `${diceCount}d${current.sides} · ${current.mode.toUpperCase()}`
-                )
-              )
-            )
-          : React.createElement('div',{style:{textAlign:'center'}},
-              React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
-              React.createElement('div',{style:{fontSize:'11px',color:t.mu,marginTop:'8px'}},
-                current.kept.map((v,i)=>React.createElement('span',{key:i,style:{color:t.tx,marginRight:'6px'}},v)),
-                current.dropped.map((v,i)=>React.createElement('span',{key:'d'+i,style:{color:'#f87171',textDecoration:'line-through',marginRight:'6px'}},v))
-              ),
-              React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},`${diceCount}d${current.sides} · ${current.mode.toUpperCase()}`)
-            )
+        isAlien?React.createElement('div',null,
+          React.createElement('div',{style:{display:'flex',gap:'6px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
+            current.kept.map((v,i)=>{const isSuccess=v===6;const col=isSuccess?'#4ade80':t.mu;return React.createElement('div',{key:i,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',background:`rgba(${isSuccess?'74,222,128':'128,128,128'},0.06)`,minWidth:'36px'}},React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},v),React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},isSuccess?'HIT':'\u00b7\u00b7\u00b7'));}),
+            current.dropped.map((v,i)=>React.createElement('div',{key:'d'+i,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',padding:'8px 10px',border:'1px solid #f87171',borderRadius:'2px',background:'rgba(248,113,113,0.06)',minWidth:'36px',opacity:0.5}},React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:'#f87171',lineHeight:1,textDecoration:'line-through'}},v),React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:'#f87171'}},'DROP')))
+          ),
+          React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',marginBottom:'8px'}},
+            React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},`${current.kept.filter(v=>v===6).length} SUCCESS${current.kept.filter(v=>v===6).length!==1?'ES':''}`),
+            React.createElement('span',{style:{fontSize:'10px',color:t.mu}},'|'),
+            React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px'}},`${diceCount}d${current.sides} \u00b7 ${current.mode.toUpperCase()}`)
+          )
+        ):React.createElement('div',{style:{textAlign:'center'}},
+          React.createElement('div',{style:S.bigNum},current.sides===100?String(current.total).padStart(3,'0'):current.total),
+          React.createElement('div',{style:{fontSize:'11px',color:t.mu,marginTop:'8px'}},current.kept.map((v,i)=>React.createElement('span',{key:i,style:{color:t.tx,marginRight:'6px'}},v)),current.dropped.map((v,i)=>React.createElement('span',{key:'d'+i,style:{color:'#f87171',textDecoration:'line-through',marginRight:'6px'}},v))),
+          React.createElement('div',{style:{fontSize:'9px',color:t.mu,marginTop:'6px',letterSpacing:'1px'}},`${diceCount}d${current.sides} \u00b7 ${current.mode.toUpperCase()}`)
+        )
       )
     ),
-    isAlien&&React.createElement('div',{style:{...S.panel,border:`1px solid #f59e0b`,background:`rgba(251,191,36,0.04)`}},
+    isAlien&&React.createElement('div',{style:{...S.panel,border:'1px solid #f59e0b',background:'rgba(251,191,36,0.04)'}},
       React.createElement('span',{style:{...S.lbl,color:'#f59e0b',letterSpacing:'3px'}},'STRESS DICE (ALIEN RPG)'),
-      React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6',marginBottom:'10px'}},
-        '6 = SUCCESS   ·   1 = PANIC   ·   2-5 = nothing'
-      ),
+      React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6',marginBottom:'10px'}},'6 = SUCCESS   \u00b7   1 = PANIC   \u00b7   2-5 = nothing'),
       React.createElement('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'12px',flexWrap:'wrap'}},
         React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'2px'}},'DICE:'),
-        [1,2,3,4,5,6,7,8,9,10].map(n=>
-          React.createElement('button',{key:n,
-            style:{padding:'5px 10px',background:'none',fontFamily:'inherit',fontSize:'11px',letterSpacing:'2px',
-              border:`1px solid ${stressCount===n?'#f59e0b':t.bd}`,
-              color:stressCount===n?'#f59e0b':t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'},
-            onClick:()=>setStressCount(n)
-          },String(n))
-        )
+        [1,2,3,4,5,6,7,8,9,10].map(n=>React.createElement('button',{key:n,style:{padding:'5px 10px',background:'none',fontFamily:'inherit',fontSize:'11px',letterSpacing:'2px',border:`1px solid ${stressCount===n?'#f59e0b':t.bd}`,color:stressCount===n?'#f59e0b':t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'},onClick:()=>setStressCount(n)},String(n)))
       ),
-      React.createElement('button',{
-        style:{width:'100%',padding:'10px',background:'none',
-          border:`2px solid ${stressRolling?t.bd:'#f59e0b'}`,borderRadius:'2px',
-          fontFamily:'inherit',fontSize:'12px',letterSpacing:'4px',
-          color:stressRolling?t.mu:'#f59e0b',cursor:stressRolling?'not-allowed':'pointer',transition:'all 0.15s'},
-        onClick:rollStressDice,disabled:stressRolling
-      }, stressRolling?'ROLLING...': `ROLL ${stressCount} STRESS ${stressCount===1?'DIE':'DICE'}`),
-
+      React.createElement('button',{style:{width:'100%',padding:'10px',background:'none',border:`2px solid ${stressRolling?t.bd:'#f59e0b'}`,borderRadius:'2px',fontFamily:'inherit',fontSize:'12px',letterSpacing:'4px',color:stressRolling?t.mu:'#f59e0b',cursor:stressRolling?'not-allowed':'pointer',transition:'all 0.15s'},onClick:rollStressDice,disabled:stressRolling},stressRolling?'ROLLING...':`ROLL ${stressCount} STRESS ${stressCount===1?'DIE':'DICE'}`),
       stressCurrent&&!stressCurrent.rolling&&React.createElement('div',{style:{marginTop:'16px',textAlign:'center',borderTop:`1px solid ${t.bd}`,paddingTop:'14px'}},
         React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'center',flexWrap:'wrap',marginBottom:'12px'}},
-          stressCurrent.dice.map((d,i)=>{
-            const isSuccess=d===6;
-            const isPanic=d===1;
-            const col=isSuccess?'#4ade80':isPanic?'#f87171':t.mu;
-            return React.createElement('div',{key:i,style:{
-              display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',
-              padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',
-              background:`rgba(${isSuccess?'74,222,128':isPanic?'248,113,113':'128,128,128'},0.06)`,
-              minWidth:'36px'
-            }},
-              React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},d),
-              React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},
-                isSuccess?'HIT':isPanic?'PANIC':'···'
-              )
-            );
-          })
+          stressCurrent.dice.map((d,i)=>{const isSuccess=d===6;const isPanic=d===1;const col=isSuccess?'#4ade80':isPanic?'#f87171':t.mu;return React.createElement('div',{key:i,style:{display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',padding:'8px 10px',border:`1px solid ${col}`,borderRadius:'2px',background:`rgba(${isSuccess?'74,222,128':isPanic?'248,113,113':'128,128,128'},0.06)`,minWidth:'36px'}},React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:'28px',color:col,lineHeight:1}},d),React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:col}},isSuccess?'HIT':isPanic?'PANIC':'\u00b7\u00b7\u00b7'));})
         ),
         React.createElement('div',{style:{display:'flex',gap:'12px',justifyContent:'center',flexWrap:'wrap'}},
-          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},
-            `${stressCurrent.successes} HIT${stressCurrent.successes!==1?'S':''}`
-          ),
+          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:'#4ade80'}},`${stressCurrent.successes} HIT${stressCurrent.successes!==1?'S':''}`),
           React.createElement('span',{style:{fontSize:'10px',color:t.mu}},'|'),
-          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:stressCurrent.panics>0?'#f87171':t.mu}},
-            `${stressCurrent.panics} PANIC${stressCurrent.panics!==1?'S':''}`
-          )
+          React.createElement('span',{style:{fontSize:'10px',letterSpacing:'2px',color:stressCurrent.panics>0?'#f87171':t.mu}},`${stressCurrent.panics} PANIC${stressCurrent.panics!==1?'S':''}`)
         )
       )
     ),
-
     React.createElement('div',{style:{...S.panel,marginTop:'4px'}},
-      React.createElement('span',{style:{...S.lbl,color:isAlien?'#f59e0b':'#f87171',letterSpacing:'3px'}},
-        isAlien?'PANIC RESPONSE TABLE':'PANIC CHECK TABLE'
-      ),
+      React.createElement('span',{style:{...S.lbl,color:isAlien?'#f59e0b':'#f87171',letterSpacing:'3px'}},isAlien?'PANIC RESPONSE TABLE':'PANIC CHECK TABLE'),
       isAlien
-        ? React.createElement('div',null,
-            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
-              'ROLL: D6 + STRESS LEVEL − RESOLVE'
-            ),
+        ?React.createElement('div',null,
+            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},'ROLL: D6 + STRESS LEVEL \u2212 RESOLVE'),
             ...[
-              ['≤0','Keeping Cool','No effect.'],
-              ['1','Spooked','+1 Stress Level.'],
-              ['2','Noisy','Enemies nearby automatically alerted to your presence.'],
-              ['3','Twitchy','Make immediate supply roll for air, ammo, or power.'],
-              ['4','Lose Item','Lose a weapon or important item (GM decides).'],
+              ['\u22640','Keeping Cool','No effect.'],['1','Spooked','+1 Stress Level.'],['2','Noisy','Enemies nearby automatically alerted.'],
+              ['3','Twitchy','Make immediate supply roll.'],['4','Lose Item','Lose a weapon or important item (GM decides).'],
               ['5','Paranoid','Cannot give or receive help on skill rolls until panic ends.'],
               ['6','Hesitant','Automatically get #10 initiative card until panic stops.'],
-              ['7','Freeze','Frozen by fear — lose next turn, no interrupt actions.'],
-              ['8','Seek Cover','Immediately seek full cover. Lose next turn. Stress −1.'],
-              ['9','Scream','Lose next turn. Stress −1. Nearby friendly PCs must panic roll.'],
-              ['10','Flee','Move away from source. Stress −1. Friendly PCs in zone +1 Stress.'],
+              ['7','Freeze','Frozen by fear \u2014 lose next turn, no interrupt actions.'],
+              ['8','Seek Cover','Immediately seek full cover. Lose next turn. Stress \u22121.'],
+              ['9','Scream','Lose next turn. Stress \u22121. Nearby friendly PCs must panic roll.'],
+              ['10','Flee','Move away from source. Stress \u22121. Friendly PCs in zone +1 Stress.'],
               ['11','Frenzy','Attack nearest creature. Nearby PCs must panic roll immediately.'],
               ['12+','Catatonic','Collapse to floor, cannot move until panic stops.'],
-            ].map(([result,name,desc])=>
-              React.createElement('div',{key:result,style:{
-                display:'grid',gridTemplateColumns:'28px 90px 1fr',gap:'6px',
-                padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'
-              }},
-                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f59e0b',lineHeight:1}},result),
-                React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),
-                React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)
-              )
-            )
+            ].map(([result,name,desc])=>React.createElement('div',{key:result,style:{display:'grid',gridTemplateColumns:'28px 90px 1fr',gap:'6px',padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'}},React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f59e0b',lineHeight:1}},result),React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)))
           )
-        : React.createElement('div',null,
-            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},
-              'ROLL: 1d20 (PANIC DIE) — must roll ABOVE current Stress to avoid panic'
-            ),
+        :React.createElement('div',null,
+            React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'10px'}},'ROLL: 1d20 (PANIC DIE) \u2014 must roll ABOVE current Stress to avoid panic'),
             ...[
-              ['01','Adrenaline Rush','[+] all rolls 2d10 min. Reduce Stress 1d5.'],
-              ['02','Nervous','+1 Stress.'],
-              ['03','Jumpy','+1 Stress. All Close crew +2 Stress.'],
-              ['04','Overwhelmed','[−] all rolls 1d10 min. +1 Min Stress.'],
-              ['05','Coward','Must Fear Save to engage in violence, or flee.'],
-              ['06','Frightened','Fear Save [−] when near source of fear (Condition).'],
-              ['07','Nightmares','[−] on Rest Saves (Condition).'],
-              ['08','Loss of Confidence','Lose one Skill bonus (Condition).'],
-              ['09','Deflated','When Close crew fails a Save, gain 1 Stress (Condition).'],
-              ['10','Doomed','All Critical Successes become Critical Failures (Condition).'],
-              ['11','Suspicious','Fear Save or +1 Stress when crew rejoins (1 week).'],
-              ['12','Haunted','Something visits you at night — and soon makes demands (Condition).'],
-              ['13','Death Wish','Must Sanity Save or attack strangers/enemies for 24 hrs.'],
-              ['14','Prophetic Vision','Intense hallucination. +2 Min Stress.'],
-              ['15','Catatonic','Unresponsive 2d10 min. Reduce Stress 1d10.'],
-              ['16','Rage','[+] Damage rolls 1d10 hrs. All crew +1 Stress.'],
-              ['17','Spiraling','Panic Checks at [−] (Condition).'],
-              ['18','Compounding','Roll twice on this table. +1 Min Stress.'],
-              ['19','Heart Attack','Max Wounds −1. [−] all rolls 1d10 hrs. +1 Min Stress.'],
-              ['20','Retire','Roll up a new character.'],
-            ].map(([result,name,desc])=>
-              React.createElement('div',{key:result,style:{
-                display:'grid',gridTemplateColumns:'28px 110px 1fr',gap:'6px',
-                padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'
-              }},
-                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f87171',lineHeight:1}},result),
-                React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),
-                React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)
-              )
-            )
+              ['01','Adrenaline Rush','[+] all rolls 2d10 min. Reduce Stress 1d5.'],['02','Nervous','+1 Stress.'],
+              ['03','Jumpy','+1 Stress. All Close crew +2 Stress.'],['04','Overwhelmed','[-] all rolls 1d10 min. +1 Min Stress.'],
+              ['05','Coward','Must Fear Save to engage in violence, or flee.'],['06','Frightened','Fear Save [-] when near source of fear (Condition).'],
+              ['07','Nightmares','[-] on Rest Saves (Condition).'],['08','Loss of Confidence','Lose one Skill bonus (Condition).'],
+              ['09','Deflated','When Close crew fails a Save, gain 1 Stress (Condition).'],['10','Doomed','All Critical Successes become Critical Failures (Condition).'],
+              ['11','Suspicious','Fear Save or +1 Stress when crew rejoins (1 week).'],['12','Haunted','Something visits you at night \u2014 and soon makes demands (Condition).'],
+              ['13','Death Wish','Must Sanity Save or attack strangers/enemies for 24 hrs.'],['14','Prophetic Vision','Intense hallucination. +2 Min Stress.'],
+              ['15','Catatonic','Unresponsive 2d10 min. Reduce Stress 1d10.'],['16','Rage','[+] Damage rolls 1d10 hrs. All crew +1 Stress.'],
+              ['17','Spiraling','Panic Checks at [-] (Condition).'],['18','Compounding','Roll twice on this table. +1 Min Stress.'],
+              ['19','Heart Attack','Max Wounds \u22121. [-] all rolls 1d10 hrs. +1 Min Stress.'],['20','Retire','Roll up a new character.'],
+            ].map(([result,name,desc])=>React.createElement('div',{key:result,style:{display:'grid',gridTemplateColumns:'28px 110px 1fr',gap:'6px',padding:'5px 0',borderBottom:`1px solid ${t.bd}`,alignItems:'start'}},React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'16px',color:'#f87171',lineHeight:1}},result),React.createElement('span',{style:{fontSize:'9px',color:t.tx,letterSpacing:'1px',lineHeight:'1.4'}},name),React.createElement('span',{style:{fontSize:'9px',color:t.mu,lineHeight:'1.4'}},desc)))
           )
     ),
-
     history.length>0&&React.createElement('div',{style:S.panel},
       React.createElement('span',{style:S.lbl},'ROLL HISTORY'),
-      ...history.map((r,i)=>{
-        const dc=r.mode!=='normal'?r.quantity+1:r.quantity;
-        const mc=modeColor[r.mode];
-        return React.createElement('div',{key:r.id,style:{...S.histRow,opacity:Math.max(0.2,1-i*0.07)}},
-          React.createElement('div',null,React.createElement('span',{style:{fontSize:'10px',color:t.mu}},`${dc}d${r.sides}`),r.mode!=='normal'&&React.createElement('span',{style:S.pill(mc)},r.mode.toUpperCase())),
-          React.createElement('div',{style:{textAlign:'right'}},
-            React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:i===0?'28px':'18px',color:i===0?t.a:t.tx}},r.sides===100?String(r.total).padStart(3,'0'):r.total),
-            React.createElement('div',{style:{fontSize:'9px',color:t.mu}},r.kept.join(', '),r.dropped.length>0&&React.createElement('span',{style:{color:'#f87171',textDecoration:'line-through',marginLeft:'4px'}},r.dropped.join(', ')))
-          )
-        );
-      })
-    )
+      ...history.map((r,i)=>{const dc=r.mode!=='normal'?r.quantity+1:r.quantity;const mc=modeColor[r.mode];return React.createElement('div',{key:r.id,style:{...S.histRow,opacity:Math.max(0.2,1-i*0.07)}},React.createElement('div',null,React.createElement('span',{style:{fontSize:'10px',color:t.mu}},`${dc}d${r.sides}`),r.mode!=='normal'&&React.createElement('span',{style:S.pill(mc)},r.mode.toUpperCase())),React.createElement('div',{style:{textAlign:'right'}},React.createElement('div',{style:{fontFamily:"'VT323',monospace",fontSize:i===0?'28px':'18px',color:i===0?t.a:t.tx}},r.sides===100?String(r.total).padStart(3,'0'):r.total),React.createElement('div',{style:{fontSize:'9px',color:t.mu}},r.kept.join(', '),r.dropped.length>0&&React.createElement('span',{style:{color:'#f87171',textDecoration:'line-through',marginLeft:'4px'}},r.dropped.join(', ')))));}))
   );
 }
-
-// ─── ENCOUNTER TAB ────────────────────────────────────────────────────────────
+// ─── ENCOUNTER TAB ──────────────────────────────────────────────────────────
 function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
   const [showAdd,setShowAdd]=useState(false);
   const [addFilter,setAddFilter]=useState('crew');
   const enc=encounter||defaultEncounter();
-
   const upd=(changes)=>onUpdate({...enc,...changes});
   const updCombatants=(combatants)=>upd({combatants});
-
   const isMothership=game==='mothership';
 
-  // Migration: fix combatants saved before HP tracker and wound-box changes
   useEffect(()=>{
     if(!enc.combatants.length)return;
     let anyChange=false;
     const fixed=enc.combatants.map(c=>{
       const p={};
-
-      // Fix monster wound boxes built from hp (pre-wound-fix code)
-      if(c.type==='monster'&&c.wounds){
-        const correct=parseHitBoxes(c.wounds);
-        if(correct!==c.maxHits){p.maxHits=correct;p.hits=Array(correct).fill(false);}
-      }
-
-      // Fix missing maxHp — must use ORIGINAL c.maxHits (before patch) for monsters
-      if(c.maxHp==null){
-        let hp;
-        if(c.type==='crew'){
-          // Mothership crew stored healthMax; Alien crew maxHits = HP boxes
-          hp=c.healthMax?Math.max(1,parseInt(c.healthMax)||13):(c.maxHits||4);
-        } else {
-          // Monster: use stored hp field if present, else original maxHits was HP-based
-          hp=c.hp?Math.max(1,parseInt(c.hp)||4):(c.maxHits||4);
-        }
-        p.maxHp=hp;
-      }
-
-      // Fix missing currentHp
+      if(c.type==='monster'&&c.wounds){const correct=parseHitBoxes(c.wounds);if(correct!==c.maxHits){p.maxHits=correct;p.hits=Array(correct).fill(false);}}
+      if(c.maxHp==null){let hp;if(c.type==='crew'){hp=c.healthMax?Math.max(1,parseInt(c.healthMax)||13):(c.maxHits||4);}else{hp=c.hp?Math.max(1,parseInt(c.hp)||4):(c.maxHits||4);}p.maxHp=hp;}
       if(c.currentHp==null){p.currentHp=p.maxHp!=null?p.maxHp:c.maxHp;}
-
       if(Object.keys(p).length){anyChange=true;return{...c,...p};}
       return c;
     });
@@ -692,112 +354,48 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
 
   const buildCombatant=(source,type)=>{
     let maxHits;
-    if(type==='crew'){
-      // Crew: Mothership uses maxWounds boxes; Alien uses hp boxes (HP = health boxes)
-      maxHits=isMothership
-        ?parseHitBoxes(source.maxWounds||'2')
-        :parseHitBoxes(source.hp||'4');
-    } else {
-      // Monster: always use wounds field for wound boxes (Mothership has MAX WOUNDS; Alien defaults to 2)
-      maxHits=parseHitBoxes(source.wounds||'2');
-    }
-    // Numeric HP tracker: Mothership crew uses healthMax; everyone else uses hp
-    const maxHp=isMothership&&type==='crew'
-      ?(parseInt(source.healthMax)||13)
-      :(parseInt(source.hp)||4);
+    if(type==='crew'){maxHits=isMothership?parseHitBoxes(source.maxWounds||'2'):parseHitBoxes(source.hp||'4');}
+    else{maxHits=parseHitBoxes(source.wounds||'2');}
+    const maxHp=isMothership&&type==='crew'?(parseInt(source.healthMax)||13):(parseInt(source.hp)||4);
     return{
-      id:uid(),
-      sourceId:source.id,
-      name:source.name||'UNKNOWN',
-      type,
-      role:source.role||source.category||'',
-      initiative:0,
-      maxHp,
-      currentHp:maxHp,
-      maxHits,
-      hits:Array(maxHits).fill(false),
+      id:uid(),sourceId:source.id,name:source.name||'UNKNOWN',type,
+      role:source.role||source.category||'',initiative:0,
+      maxHp,currentHp:maxHp,maxHits,hits:Array(maxHits).fill(false),
       speed:source.speed||'',
-      armor:isMothership&&type==='crew'
-        ?(source.armorPoints||'')
-        :!isMothership&&type==='crew'
-          ?(source.armorLevel||'')
-          :(source.armor||''),
-      armorType:source.armorType||'',
-      attacks:source.combat||'',
-      wounds:source.wounds||'',
-      hp:source.hp||'',
-      healthMax:source.healthMax||'',
-      combat:source.combat||'',
-      stressCur:source.stressCur||'',
-      resolve:source.resolve||'',
-      stress:source.stress||'',
-      category:source.category||'',
-      status:source.status||'ACTIVE',
+      armor:isMothership&&type==='crew'?(source.armorPoints||''):!isMothership&&type==='crew'?(source.armorLevel||''):(source.armor||''),
+      armorType:source.armorType||'',attacks:source.combat||'',wounds:source.wounds||'',hp:source.hp||'',
+      healthMax:source.healthMax||'',combat:source.combat||'',stressCur:source.stressCur||'',
+      resolve:source.resolve||'',stress:source.stress||'',category:source.category||'',status:source.status||'ACTIVE',
     };
   };
-
-  const addCombatant=(source,type)=>{
-    const c=buildCombatant(source,type);
-    updCombatants([...enc.combatants,c]);
-  };
-
+  const addCombatant=(source,type)=>{const c=buildCombatant(source,type);updCombatants([...enc.combatants,c]);};
   const duplicate=(original)=>{
-    const copy={...original,id:uid(),hits:Array(original.maxHits).fill(false),name:original.name+' II'};
+    const copy={...original,id:uid(),hits:Array(original.maxHits).fill(false),currentHp:original.maxHp,name:original.name+' II'};
     const names=enc.combatants.map(c=>c.name);
     const romans=['II','III','IV','V','VI','VII','VIII'];
     const baseName=original.name.replace(/ (II|III|IV|V|VI|VII|VIII)$/,'');
     let finalName=baseName;
-    for(const r of romans){
-      const candidate=`${baseName} ${r}`;
-      if(!names.includes(candidate)){finalName=candidate;break;}
-    }
-    copy.name=finalName;
-    updCombatants([...enc.combatants,copy]);
+    for(const r of romans){const candidate=`${baseName} ${r}`;if(!names.includes(candidate)){finalName=candidate;break;}}
+    copy.name=finalName;updCombatants([...enc.combatants,copy]);
   };
-
   const remove=(id)=>updCombatants(enc.combatants.filter(c=>c.id!==id));
-
-  const toggleHit=(cid,hi)=>{
-    updCombatants(enc.combatants.map(c=>{
-      if(c.id!==cid)return c;
-      const hits=[...c.hits];
-      hits[hi]=!hits[hi];
-      return{...c,hits};
-    }));
-  };
-
+  const toggleHit=(cid,hi)=>{updCombatants(enc.combatants.map(c=>{if(c.id!==cid)return c;const hits=[...c.hits];hits[hi]=!hits[hi];return{...c,hits};}));};
   const quickHit=(cid,dmg)=>{
     updCombatants(enc.combatants.map(c=>{
-      if(c.id!==cid)return c;
-      const hits=[...c.hits];
-      if(dmg>0){
-        const idx=hits.findIndex(h=>!h);
-        if(idx>=0)hits[idx]=true;
-      } else {
-        const idx=[...hits].reverse().findIndex(h=>h);
-        if(idx>=0)hits[hits.length-1-idx]=false;
-      }
+      if(c.id!==cid)return c;const hits=[...c.hits];
+      if(dmg>0){const idx=hits.findIndex(h=>!h);if(idx>=0)hits[idx]=true;}
+      else{const idx=[...hits].reverse().findIndex(h=>h);if(idx>=0)hits[hits.length-1-idx]=false;}
       return{...c,hits};
     }));
   };
-
-  const setInitiative=(cid,val)=>{
-    updCombatants(enc.combatants.map(c=>c.id===cid?{...c,initiative:parseInt(val)||0}:c));
-  };
-
+  const setInitiative=(cid,val)=>{updCombatants(enc.combatants.map(c=>c.id===cid?{...c,initiative:parseInt(val)||0}:c));};
   const setCurrentHp=(cid,delta)=>{
     updCombatants(enc.combatants.map(c=>{
-      if(c.id!==cid)return c;
-      const max=c.maxHp||c.maxHits;
-      const cur=c.currentHp!=null?c.currentHp:max;
+      if(c.id!==cid)return c;const max=c.maxHp||c.maxHits;const cur=c.currentHp!=null?c.currentHp:max;
       return{...c,currentHp:Math.max(0,Math.min(max,cur+delta))};
     }));
   };
-
-  // Sort ascending by initiative for display (lowest goes first)
   const sorted=[...enc.combatants].sort((a,b)=>a.initiative-b.initiative);
-
-  // ── FIX 1: nextTurn / prevTurn track by ID, not index ─────────────────────
   const nextTurn=()=>{
     if(!enc.combatants.length)return;
     const curIdx=sorted.findIndex(c=>c.id===enc.activeId);
@@ -805,41 +403,28 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     const newRound=nextIdx===0&&curIdx>=0?enc.round+1:enc.round;
     upd({activeId:sorted[nextIdx].id,round:newRound,started:true});
   };
-
   const prevTurn=()=>{
     if(!enc.combatants.length)return;
     const curIdx=sorted.findIndex(c=>c.id===enc.activeId);
     const prevIdx=curIdx<=0?sorted.length-1:curIdx-1;
     upd({activeId:sorted[prevIdx].id,started:true});
   };
-
   const resetHp=()=>updCombatants(enc.combatants.map(c=>({...c,hits:Array(c.maxHits).fill(false),currentHp:c.maxHp||c.maxHits})));
   const clearAll=()=>onUpdate(defaultEncounter());
-
-  // ── FIX 1: resolve active combatant by ID ─────────────────────────────────
   const activeCombatant=sorted.find(c=>c.id===enc.activeId);
 
-  // Styles
   const S={
     topBar:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'16px',flexWrap:'wrap'},
     roundBox:{fontFamily:"'VT323',monospace",fontSize:'28px',color:t.a,letterSpacing:'4px',marginRight:'8px',textShadow:`0 0 12px rgba(${t.rgb},0.4)`},
     ctrl:(danger)=>({padding:'5px 12px',background:'none',border:`1px solid ${danger?'#f87171':t.bd}`,color:danger?'#f87171':t.mu,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'}),
     addBtn:{padding:'5px 14px',background:'none',border:`1px solid ${t.a}`,color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
-    card:(isActive,isDead)=>({
-      background:isActive?`rgba(${t.rgb},0.06)`:t.card,
-      border:`1px solid ${isActive?t.a:isDead?'#f87171':t.bd}`,
-      borderRadius:'2px',padding:'12px 14px',marginBottom:'8px',
-      boxShadow:isActive?`0 0 16px rgba(${t.rgb},0.12)`:'none',
-      transition:'all 0.2s',
-      position:'relative',
-    }),
+    card:(isActive,isDead)=>({background:isActive?`rgba(${t.rgb},0.06)`:t.card,border:`1px solid ${isActive?t.a:isDead?'#f87171':t.bd}`,borderRadius:'2px',padding:'12px 14px',marginBottom:'8px',boxShadow:isActive?`0 0 16px rgba(${t.rgb},0.12)`:'none',transition:'all 0.2s',position:'relative'}),
     activePip:{position:'absolute',top:'12px',left:'-1px',width:'3px',height:'calc(100% - 24px)',background:t.a,borderRadius:'2px 0 0 2px'},
     cardTop:{display:'flex',alignItems:'flex-start',gap:'10px',marginBottom:'8px'},
     initBox:{display:'flex',flexDirection:'column',alignItems:'center',gap:'3px',minWidth:'48px'},
     initLbl:{fontSize:'7px',letterSpacing:'2px',color:t.mu},
     initInp:{width:'48px',background:`rgba(${t.rgb},0.12)`,border:`2px solid ${t.a}`,borderRadius:'3px',padding:'4px 2px',color:t.a,fontFamily:"'VT323',monospace",fontSize:'26px',textAlign:'center',outline:'none',boxShadow:`0 0 8px rgba(${t.rgb},0.25)`,letterSpacing:'1px'},
-    nameBlock:{flex:1},
-    nameStr:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'3px'},
+    nameBlock:{flex:1},nameStr:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'3px'},
     roleStr:{fontSize:'9px',color:t.mu,letterSpacing:'1px'},
     typeBadge:(type)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',border:`1px solid ${TYPE_C[type]||t.mu}`,color:TYPE_C[type]||t.mu,borderRadius:'2px',marginLeft:'6px'}),
     catBadge:(cat)=>({display:'inline-block',padding:'1px 5px',fontSize:'7px',letterSpacing:'1px',border:`1px solid ${CATEGORY_C[cat]||t.mu}`,color:CATEGORY_C[cat]||t.mu,borderRadius:'2px',marginLeft:'4px'}),
@@ -850,7 +435,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     hpRow:{display:'flex',alignItems:'center',gap:'6px',marginBottom:'8px',flexWrap:'wrap'},
     hitsRow:{display:'flex',alignItems:'center',gap:'8px',flexWrap:'wrap'},
     hitBox:(filled)=>({width:'14px',height:'14px',border:`1px solid ${filled?'#f87171':t.bd}`,borderRadius:'2px',background:filled?'#f87171':'none',cursor:'pointer',display:'inline-block',flexShrink:0,transition:'all 0.1s'}),
-    hpCounter:{fontFamily:"'VT323',monospace",fontSize:'16px',color:t.mu,marginLeft:'4px'},
     qBtn:{width:'22px',height:'22px',background:'none',border:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',fontSize:'14px',borderRadius:'2px',cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',lineHeight:1},
     attackPrev:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginTop:'6px',borderTop:`1px solid ${t.bd}`,paddingTop:'6px',lineHeight:'1.5'},
     addPanel:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'16px',marginBottom:'16px'},
@@ -858,1044 +442,279 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     filterBtn:(active)=>({padding:'5px 14px',background:active?`rgba(${t.rgb},0.06)`:'none',border:`1px solid ${active?t.a:t.bd}`,color:active?t.a:t.mu,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer'}),
     sourceList:{display:'flex',flexDirection:'column',gap:'6px',maxHeight:'240px',overflowY:'auto'},
     sourceRow:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'8px 10px',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',cursor:'pointer',transition:'border-color 0.15s'},
-    sourceName:{fontSize:'11px',color:t.tx,letterSpacing:'1px'},
-    sourceMeta:{fontSize:'9px',color:t.mu},
+    sourceName:{fontSize:'11px',color:t.tx,letterSpacing:'1px'},sourceMeta:{fontSize:'9px',color:t.mu},
     empty:{textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px'},
   };
+  const statTag=(label,val)=>val?React.createElement('span',{style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'2px 6px',borderRadius:'2px',letterSpacing:'1px'}},React.createElement('span',{style:{color:t.mu,marginRight:'3px'}},label+':'),React.createElement('span',{style:{color:t.tx}},val)):null;
 
-  const statTag=(label,val)=>val?React.createElement('span',{style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'2px 6px',borderRadius:'2px',letterSpacing:'1px'}},
-    React.createElement('span',{style:{color:t.mu,marginRight:'3px'}},label+':'),
-    React.createElement('span',{style:{color:t.tx}},val)
-  ):null;
-
-  const renderCombatant=(c,idx)=>{
+  const renderCombatant=(c)=>{
     const isActive=enc.started&&enc.activeId===c.id;
     const hitCount=c.hits.filter(Boolean).length;
-    const maxHp=c.maxHp||0;
-    const currentHp=c.currentHp!=null?c.currentHp:maxHp;
-    const allWoundsFilled=hitCount>=c.maxHits;
-    const isDead=allWoundsFilled||currentHp===0;
-    const woundLabel='WOUNDS';
+    const maxHp=c.maxHp||0;const currentHp=c.currentHp!=null?c.currentHp:maxHp;
+    const isDead=hitCount>=c.maxHits||currentHp===0;
     return React.createElement('div',{key:c.id,style:S.card(isActive,isDead)},
       isActive&&React.createElement('div',{style:S.activePip}),
-      // Top row: INIT | NAME | BUTTONS
       React.createElement('div',{style:S.cardTop},
-        React.createElement('div',{style:S.initBox},
-          React.createElement('div',{style:S.initLbl},'INIT'),
-          React.createElement('input',{
-            type:'number',
-            style:S.initInp,
-            key:`${c.id}-${c.initiative}`,
-            defaultValue:c.initiative,
-            onBlur:e=>setInitiative(c.id,e.target.value)
-          })
+        React.createElement('div',{style:S.initBox},React.createElement('div',{style:S.initLbl},'INIT'),
+          React.createElement('input',{type:'number',style:S.initInp,key:`${c.id}-${c.initiative}`,defaultValue:c.initiative,onBlur:e=>setInitiative(c.id,e.target.value)})
         ),
         React.createElement('div',{style:S.nameBlock},
-          React.createElement('div',null,
-            React.createElement('span',{style:S.nameStr},c.name),
-            React.createElement('span',{style:S.typeBadge(c.type)},c.type.toUpperCase()),
-            c.category&&React.createElement('span',{style:S.catBadge(c.category)},c.category)
-          ),
+          React.createElement('div',null,React.createElement('span',{style:S.nameStr},c.name),React.createElement('span',{style:S.typeBadge(c.type)},c.type.toUpperCase()),c.category&&React.createElement('span',{style:S.catBadge(c.category)},c.category)),
           c.role&&React.createElement('div',{style:S.roleStr},c.role)
         ),
-        React.createElement('div',{style:S.btnGroup},
-          c.type==='monster'&&React.createElement('button',{style:S.dupBtn,onClick:()=>duplicate(c)},'DUP'),
-          React.createElement('button',{style:S.smBtn(true),onClick:()=>remove(c.id)},'x')
-        )
+        React.createElement('div',{style:S.btnGroup},c.type==='monster'&&React.createElement('button',{style:S.dupBtn,onClick:()=>duplicate(c)},'DUP'),React.createElement('button',{style:S.smBtn(true),onClick:()=>remove(c.id)},'x'))
       ),
-      // Stats row
       React.createElement('div',{style:S.statsRow},
         isMothership&&c.type==='crew'&&c.combat&&statTag('CMB',c.combat),
         isMothership&&c.type==='crew'&&c.stressCur!==undefined&&c.stressCur!==''&&statTag('STRESS',c.stressCur),
         !isMothership&&c.type==='crew'&&c.resolve&&statTag('RES',c.resolve),
         !isMothership&&c.type==='crew'&&c.stress!==undefined&&c.stress!==''&&statTag('STRESS',c.stress),
-        statTag('SPD',c.speed),
-        c.armor&&statTag(isMothership?'AP':'ARM LVL',c.armor),
+        statTag('SPD',c.speed),c.armor&&statTag(isMothership?'AP':'ARM LVL',c.armor)
       ),
-      // HP tracker (numeric +/-)
       React.createElement('div',{style:S.hpRow},
         React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,minWidth:'22px'}},'HP'),
-        React.createElement('button',{style:S.qBtn,onClick:()=>setCurrentHp(c.id,-1)},'−'),
-        React.createElement('span',{style:{
-          fontFamily:"'VT323',monospace",fontSize:'20px',lineHeight:1,
-          color:currentHp===0?'#f87171':currentHp<=Math.ceil(maxHp*0.3)?'#fb923c':t.a,
-          minWidth:'32px',textAlign:'center'
-        }},String(currentHp)),
+        React.createElement('button',{style:S.qBtn,onClick:()=>setCurrentHp(c.id,-1)},'\u2212'),
+        React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'20px',lineHeight:1,color:currentHp===0?'#f87171':currentHp<=Math.ceil(maxHp*0.3)?'#fb923c':t.a,minWidth:'32px',textAlign:'center'}},String(currentHp)),
         React.createElement('button',{style:S.qBtn,onClick:()=>setCurrentHp(c.id,1)},'+'),
         React.createElement('span',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px'}},`/ ${maxHp}`),
         currentHp===0&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'2px',marginLeft:'6px'}},'HP ZERO')
       ),
-      // Wounds / Hits boxes
       React.createElement('div',{style:S.hitsRow},
-        React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,marginRight:'2px'}},woundLabel),
+        React.createElement('span',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,marginRight:'2px'}},'WOUNDS'),
         ...c.hits.map((h,hi)=>React.createElement('div',{key:hi,style:S.hitBox(h),onClick:()=>toggleHit(c.id,hi)})),
         React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,1),title:'Mark one'},'+'),
-        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,-1),title:'Remove one'},'−'),
+        React.createElement('button',{style:S.qBtn,onClick:()=>quickHit(c.id,-1),title:'Remove one'},'\u2212'),
         isDead&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'2px',marginLeft:'4px'}},'DOWN')
       ),
-      // Combat preview
-      c.attacks&&React.createElement('div',{style:S.attackPrev},
-        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),
-        `${c.attacks.slice(0,100)}${c.attacks.length>100?'...':''}`
-      )
+      c.attacks&&React.createElement('div',{style:S.attackPrev},React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),`${c.attacks.slice(0,100)}${c.attacks.length>100?'...':''}`)
     );
   };
 
   const addList=addFilter==='crew'?crew:bestiary;
-
   return React.createElement('div',null,
     React.createElement('div',{style:S.topBar},
       React.createElement('div',{style:S.roundBox},`ROUND ${enc.round}`),
-      React.createElement('button',{style:S.ctrl(),onClick:prevTurn,disabled:!enc.combatants.length},'◀ PREV'),
-      React.createElement('button',{style:{...S.ctrl(),border:`1px solid ${t.a}`,color:t.a},onClick:nextTurn,disabled:!enc.combatants.length},'NEXT ▶'),
+      React.createElement('button',{style:S.ctrl(),onClick:prevTurn,disabled:!enc.combatants.length},'\u25c0 PREV'),
+      React.createElement('button',{style:{...S.ctrl(),border:`1px solid ${t.a}`,color:t.a},onClick:nextTurn,disabled:!enc.combatants.length},'NEXT \u25b6'),
       React.createElement('button',{style:S.ctrl(),onClick:resetHp},'RESET HP'),
       React.createElement('button',{style:S.ctrl(true),onClick:clearAll},'CLEAR ALL'),
       React.createElement('button',{style:S.addBtn,onClick:()=>setShowAdd(v=>!v)},showAdd?'HIDE ROSTER':'+ ADD COMBATANTS')
     ),
-
     showAdd&&React.createElement('div',{style:S.addPanel},
       React.createElement('div',{style:{fontSize:'9px',letterSpacing:'3px',color:t.mu,marginBottom:'10px'}},'SELECT FROM ROSTER'),
       React.createElement('div',{style:S.filterRow},
         React.createElement('button',{style:S.filterBtn(addFilter==='crew'),onClick:()=>setAddFilter('crew')},'CREW'),
         React.createElement('button',{style:S.filterBtn(addFilter==='bestiary'),onClick:()=>setAddFilter('bestiary')},'BESTIARY')
       ),
-      addList.length===0
-        ? React.createElement('div',{style:S.empty},`NO ${addFilter.toUpperCase()} ENTRIES FOUND`)
-        : React.createElement('div',{style:S.sourceList},
-            addList.map(entry=>React.createElement('div',{key:entry.id,style:S.sourceRow,onClick:()=>addCombatant(entry,addFilter==='crew'?'crew':'monster')},
-              React.createElement('div',null,
-                React.createElement('div',{style:S.sourceName},entry.name),
-                React.createElement('div',{style:S.sourceMeta},
-                  addFilter==='crew'&&isMothership
-                    ?[entry.role,entry.combat?`CMB ${entry.combat}`:null,entry.healthMax?`HLTH ${entry.healthMax}`:null,entry.maxWounds?`WND ${entry.maxWounds}`:null,entry.armorPoints?`AP ${entry.armorPoints}`:null].filter(Boolean).join('  \u00b7  ')
-                    :[entry.role,entry.category,entry.speed?`SPD ${entry.speed}`:null,entry.hp?`HP ${entry.hp}`:null].filter(Boolean).join('  \u00b7  ')
-                )
-              ),
-              React.createElement('span',{style:{fontSize:'9px',color:t.a,letterSpacing:'2px'}},'+ ADD')
-            ))
-          )
+      addList.length===0?React.createElement('div',{style:S.empty},`NO ${addFilter.toUpperCase()} ENTRIES FOUND`):React.createElement('div',{style:S.sourceList},
+        addList.map(entry=>React.createElement('div',{key:entry.id,style:S.sourceRow,onClick:()=>addCombatant(entry,addFilter==='crew'?'crew':'monster')},
+          React.createElement('div',null,
+            React.createElement('div',{style:S.sourceName},entry.name),
+            React.createElement('div',{style:S.sourceMeta},addFilter==='crew'&&isMothership?[entry.role,entry.combat?`CMB ${entry.combat}`:null,entry.healthMax?`HLTH ${entry.healthMax}`:null,entry.maxWounds?`WND ${entry.maxWounds}`:null,entry.armorPoints?`AP ${entry.armorPoints}`:null].filter(Boolean).join('  \u00b7  '):[entry.role,entry.category,entry.speed?`SPD ${entry.speed}`:null,entry.hp?`HP ${entry.hp}`:null].filter(Boolean).join('  \u00b7  '))
+          ),
+          React.createElement('span',{style:{fontSize:'9px',color:t.a,letterSpacing:'2px'}},'+ ADD')
+        ))
+      )
     ),
-
     enc.started&&activeCombatant&&React.createElement('div',{style:{background:`rgba(${t.rgb},0.05)`,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'8px 14px',marginBottom:'12px',display:'flex',justifyContent:'space-between',alignItems:'center'}},
       React.createElement('span',{style:{fontSize:'9px',letterSpacing:'3px',color:t.mu}},'ACTIVE TURN'),
       React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'18px',color:t.a,letterSpacing:'2px'}},activeCombatant.name),
       React.createElement('span',{style:{fontSize:'9px',letterSpacing:'2px',color:t.mu}},`ROUND ${enc.round}`)
     ),
-
-    enc.combatants.length===0
-      ? React.createElement('div',{style:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'}},
-          React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
-          'NO COMBATANTS',React.createElement('br'),
-          React.createElement('span',{style:{fontSize:'9px',opacity:0.5}},'PRESS + ADD COMBATANTS TO BEGIN')
-        )
-      : sorted.map((c,i)=>renderCombatant(c,i))
+    enc.combatants.length===0?React.createElement('div',{style:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'}},React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),'NO COMBATANTS',React.createElement('br'),React.createElement('span',{style:{fontSize:'9px',opacity:0.5}},'PRESS + ADD COMBATANTS TO BEGIN'))
+    :sorted.map((c,i)=>renderCombatant(c,i))
   );
 }
-
-
-// ─── RULES TAB ────────────────────────────────────────────────────────────────
+// ─── RULES TAB ──────────────────────────────────────────────────────────────
 const MOTHERSHIP_RULES=[
-  {
-    id:'stats',
-    title:'STATS & SAVES',
-    quick:`STR / SPD / INT / COMBAT — roll 2d10+25 each (avg 36)
-SANITY / FEAR / BODY saves — roll 2d10+10 each
-Roll 1d100 UNDER your stat/save to succeed. 90-99 always fails.`,
-    full:`STAT CHECKS: Roll 1d100 under your relevant stat. Fail = gain 1 Stress.
-Roll of 90-99 is always a failure, even with bonuses.
-Roll of 00 = Critical Success. Doubles on a failed roll = Critical Failure + Panic Check.
-
-STATS (2d10+25):
-• Strength — holding airlocks, carrying, climbing, jumping
-• Speed — acting first, running, escaping before blast doors close
-• Intellect — recalling training, fixing things, thinking under pressure
-• Combat — fighting for your life
-
-SAVES (2d10+10):
-• Sanity — rationalise chaos, detect illusions, cope with Stress
-• Fear — maintain composure against fear, loneliness, depression
-• Body — quick reflexes, resist disease, resist infestation
-
-SKILLS add their bonus to your stat before rolling:
-• Trained (+10) • Expert (+15) • Master (+20)
-
-ADVANTAGE [+]: Roll twice, take the best result.
-DISADVANTAGE [-]: Roll twice, take the worst result.
-If you have both, they cancel out.`
-  },
-  {
-    id:'health',
-    title:'HEALTH & WOUNDS',
-    quick:`Health Max = 1d10+10 (11–20)
-Max Wounds = 2 (Marine/Android = 3)
-Health hits 0 → gain 1 Wound, reset Health (minus carryover)
-Max Wounds reached → make a Death Save`,
-    full:`HEALTH: Your damage buffer. Roll 1d10+10 at character creation.
-When Health drops to zero you gain a Wound and roll on the Wounds Table.
-Reset Health to maximum, subtract any carryover damage.
-
-WOUNDS TABLE (roll 1d10 by damage type):
-• Blunt Force / Bleeding / Gunshot / Fire & Explosives / Gore & Massive
-• 00 = Flesh Wound (minor inconvenience)
-• 01-04 = Minor Injury (lasting, needs treatment)
-• 05-06 = Major Injury (severe, needs treatment)
-• 07-08 = Lethal Injury (Death Save in 1d10 rounds)
-• 09 = Fatal Injury (Death Save immediately)
-
-DEATH SAVE: Warden places 1d10 in a cup face down.
-Revealed when someone checks your vitals.
-• 00 = Unconscious, wake in 2d10 min, -1d5 Max Health
-• 01-02 = Dying, die in 1d5 rounds without help
-• 03-04 = Comatose
-• 05-09 = Dead
-
-BLEEDING: Some wounds cause 1 DMG/round until treated. Cumulative. Ignores armor.`
-  },
-  {
-    id:'armor',
-    title:'ARMOR',
-    quick:`AP = Armor Points. Ignore all damage LESS than AP.
-Damage ≥ AP destroys armor + you take remainder.
-Anti-Armor (AA) weapons ignore and destroy armor on hit.
-Damage Reduction (DR) always reduces damage first.`,
-    full:`ARMOR POINTS (AP) — Mothership armor absorbs hits:
-Characters ignore all damage less than their AP in a single hit.
-If damage equals or exceeds AP, armor is destroyed and excess damage carries through.
-
-ARMOR TABLE:
-• Standard Crew Attire — AP 1
-• Vaccsuit — AP 3 (Speed [-], includes O2 12hrs, comms, headlamp)
-• Hazard Suit — AP 5 (includes air filter, O2 1hr, radiation shielding)
-• Standard Battle Dress — AP 7 (includes comms)
-• Advanced Battle Dress — AP 10 (Speed [-], DR 3, includes HUD, exoskeletal weave)
-
-DAMAGE REDUCTION (DR): Reduces all incoming damage by the stated amount.
-Occurs before armor. Applies even if armor is destroyed or weapon has Anti-Armor.
-
-ANTI-ARMOR (AA): Ignores and destroys armor on any hit.
-
-COVER also has AP values:
-• Insignificant (wood, body shields) — AP 5
-• Light (trees, metal furniture, bulkheads) — AP 10
-• Heavy (airlock doors, cement beams) — DR 5, AP 20`
-  },
-  {
-    id:'combat',
-    title:'COMBAT',
-    quick:`Rounds = ~10 seconds. Make a Combat Check to attack.
-Success → roll weapon damage, subtract from enemy Health.
-Fail → situation worsens + gain 1 Stress.
-Turn order: Speed Check — success = before enemies, fail = after.`,
-    full:`TURN ORDER: Optional strict order — everyone makes a Speed Check.
-Success = act before enemies. Fail = act after. Re-roll if situation changes dramatically.
-
-ON YOUR TURN: Move somewhere in Close Range AND do one thing.
-If you only run, you can move to Long Range.
-
-ATTACKING: Make a Combat Check. Success → roll weapon damage.
-
-HOW TO ATTACK:
-1. Declare target and weapon
-2. Make Combat Check
-3. If success, roll weapon damage
-4. Subtract from enemy Health
-
-RANGE BANDS:
-• Adjacent (<1m) — touching, fist fights, using terminals
-• Close (5-10m) — can reach by running, throwing range
-• Long (20-100m) — rifles effective, shotguns less so
-• Extreme (100m+) — smart rifles only
-
-WOUND TYPES triggered by damage:
-• Blunt Force, Bleeding, Gunshot, Fire/Explosives, Gore/Massive`
-  },
-  {
-    id:'stress',
-    title:'STRESS & PANIC',
-    quick:`Stress current/min both start at 2. Max = 20.
-Gain 1 Stress on failed Stat Check or Save.
-Panic Check: roll 1d20, must roll ABOVE current Stress.
-Rest to reduce Stress (roll worst Save).`,
-    full:`STRESS: Starts at current 2, minimum 2. Maximum is 20.
-Gain 1 Stress whenever you fail a Stat Check or Save.
-Any Stress above 20 instead reduces the most relevant stat or save.
-
-RELIEVING STRESS: Rest in a relatively safe place.
-Make a Rest Save using your worst Save.
-• Success: reduce Stress by the ones digit rolled (e.g., rolled 24 = reduce by 4)
-• Fail: gain 1 Stress instead
-
-PANIC CHECK: Roll 1d20 (Panic Die) and try to roll GREATER than current Stress.
-Triggered by: Critical Failure, watching a crewmember die, witnessing multiple panics,
-ship Critical Failure, first encounter with a horrifying entity.
-
-PANIC TABLE (1d20 result):
-01 Adrenaline Rush — [+] all rolls 2d10 min, -1d5 Stress
-02 Nervous — +1 Stress
-03 Jumpy — +1 Stress, Close crew +2 Stress
-04 Overwhelmed — [-] all rolls 1d10 min, +1 Min Stress
-05 Coward — must Fear Save to engage in violence
-06 Frightened — Fear Save [-] near source of fear
-07 Nightmares — [-] on Rest Saves (Condition)
-08-12 Various Conditions (loss of confidence, doomed, haunted...)
-15 Catatonic — unresponsive 2d10 min, -1d10 Stress
-16 Rage — [+] Damage 1d10 hrs, crew +1 Stress
-20 Retire — roll new character
-
-SHORE LEAVE converts Stress to improved Saves.`
-  },
-  {
-    id:'skills',
-    title:'SKILLS',
-    quick:`Trained (+10) · Expert (+15) · Master (+20)
-Add bonus to stat before rolling.
-Training: Trained 2yr+10kcr / Expert 4yr+50kcr / Master 6yr+200kcr`,
-    full:`SKILLS add their bonus to your relevant stat before rolling a Stat Check.
-You must have a prerequisite skill to take Expert or Master skills.
-
-- **TRAINED SKILLS** (+10): Linguistics, Zoology, Botany, Geology, Industrial Equipment,
-Jury-Rigging, Chemistry, Computers, Zero-G, Mathematics, Art, Archaeology,
-Theology, Military Training, Rimwise, Athletics, Pharmacology (req. Chemistry).
-
-- **EXPERT SKILLS** (+15): Psychology, Pathology, Field Medicine, Ecology,
-Asteroid Mining, Mechanical Repair, Explosives, Hacking, Wilderness Survival,
-Firearms, Hand-to-Hand Combat, Piloting, Physics, Mysticism.
-
-- **MASTER SKILLS** (+20): Sophontology, Exobiology, Surgery, Planetology,
-Robotics, Engineering, Cybernetics, Artificial Intelligence, Hyperspace,
-Xenoesotericism, Command.
-
-- **NO SKILL** (+0): You can still attempt the action. Some very complex tasks
-may require Disadvantage or may not be possible without the skill at all.
-
-- **MILITARY TRAINING:** Free but requires a 6-year contract with Colonial Marines.`
-  },
+  {id:'stats',title:'STATS & SAVES',quick:'STR / SPD / INT / COMBAT \u2014 roll 2d10+25 each\nSANITY / FEAR / BODY saves \u2014 roll 2d10+10 each\nRoll 1d100 UNDER your stat/save to succeed. 90-99 always fails.',full:'STAT CHECKS: Roll 1d100 under your relevant stat.\n00 = Critical Success. Doubles on fail = Critical Failure + Panic.\n\nSTATS (2d10+25): Strength, Speed, Intellect, Combat\nSAVES (2d10+10): Sanity, Fear, Body\nSKILLS: Trained (+10), Expert (+15), Master (+20)\nADVANTAGE [+]: Roll twice, take best. DISADVANTAGE [-]: Roll twice, take worst.'},
+  {id:'health',title:'HEALTH & WOUNDS',quick:'Health Max = 1d10+10 (11\u201320)\nMax Wounds = 2 (Marine/Android = 3)\nHealth hits 0 \u2192 gain 1 Wound, reset Health\nMax Wounds reached \u2192 make a Death Save',full:'When Health drops to zero you gain a Wound and roll on the Wounds Table.\nDeath Save: Warden places 1d10 in cup face down. 00=Unconscious, 01-02=Dying, 03-04=Comatose, 05-09=Dead.'},
+  {id:'armor',title:'ARMOR',quick:'AP = Armor Points. Ignore all damage LESS than AP.\nDamage \u2265 AP destroys armor + you take remainder.\nAnti-Armor (AA) ignores and destroys armor on hit.\nDamage Reduction (DR) always reduces damage first.',full:'Standard Crew Attire AP1 \u00b7 Vaccsuit AP3 \u00b7 Hazard Suit AP5 \u00b7 Standard Battle Dress AP7 \u00b7 Advanced Battle Dress AP10 (DR3)\nCover: Insignificant AP5 \u00b7 Light AP10 \u00b7 Heavy DR5+AP20'},
+  {id:'combat',title:'COMBAT',quick:'Rounds = ~10 seconds. Make a Combat Check to attack.\nSuccess \u2192 roll weapon damage.\nFail \u2192 situation worsens + gain 1 Stress.\nSpeed Check \u2192 success = before enemies, fail = after.',full:'ON YOUR TURN: Move to Close Range AND do one thing.\nRANGE BANDS: Adjacent (<1m) \u00b7 Close (5-10m) \u00b7 Long (20-100m) \u00b7 Extreme (100m+)'},
+  {id:'stress',title:'STRESS & PANIC',quick:'Stress starts at 2. Max = 20.\nGain 1 Stress on failed Stat Check or Save.\nPanic Check: roll 1d20, must roll ABOVE current Stress.',full:'PANIC TABLE (1d20): 01 Adrenaline Rush \u00b7 02 Nervous \u00b7 03 Jumpy \u00b7 04 Overwhelmed \u00b7 05 Coward \u00b7 15 Catatonic \u00b7 20 Retire\nRest to reduce Stress (roll worst Save).'},
+  {id:'skills',title:'SKILLS',quick:'Trained (+10) \u00b7 Expert (+15) \u00b7 Master (+20)\nAdd bonus to stat before rolling.',full:'TRAINED: Linguistics, Zoology, Chemistry, Computers, Zero-G, Military Training, Athletics...\nEXPERT: Psychology, Field Medicine, Hacking, Firearms, Hand-to-Hand Combat, Piloting...\nMASTER: Surgery, Engineering, Cybernetics, Artificial Intelligence, Command...'},
 ];
-
 const ALIEN_RULES=[
-  {
-    id:'attrs',
-    title:'ATTRIBUTES & SKILLS',
-    quick:`STR / AGL / WITS / EMP — rated 1 to 5
-Roll = Attribute + Skill level in base dice. Roll a 6 to succeed.
-More 6s = better outcome. In combat, extra 6s = extra damage.`,
-    full:`ATTRIBUTES (rated 1–5):
-• Strength — raw physical power, endurance
-• Agility — speed, body control, motor skills
-• Wits — intelligence, alertness, sharpness of mind
-• Empathy — charisma, reading and affecting others
-
-MAKING A SKILL ROLL:
-1. Add skill level to linked attribute = number of base dice (black d6s)
-2. Add stress dice (yellow d6s) equal to your current stress level
-3. Roll all dice. Any 6 = success. More 6s = better result.
-4. No 6s = failure. You may push the roll once (stress +1).
-
-SKILLS (12 core):
-Strength: Heavy Machinery, Stamina, Close Combat
-Agility: Mobility, Ranged Combat, Piloting
-Wits: Observation, Comtech, Survival
-Empathy: Command, Manipulation, Medical Aid
-
-MODIFIERS: +1 die for help (up to 3 helpers), gear bonuses, situation bonuses.
-You can never go below 1 base die. Modifiers never affect stress dice.
-
-NO SKILL (level 0): Roll only your attribute dice. May get -2 dice for complex tasks.`
-  },
-  {
-    id:'health',
-    title:'HEALTH & RESOLVE',
-    quick:`Health = (STR + AGL) ÷ 2 rounded up
-Resolve = (WITS + EMP) ÷ 2 rounded up
-Health 0 = Broken. Roll Critical Injury.
-Resolve resists Panic (subtract from panic roll result).`,
-    full:`HEALTH: Your damage buffer. Calculated as (Strength + Agility) ÷ 2, rounded up.
-When Health drops to zero you are BROKEN.
-
-BROKEN: Cannot perform any actions except one movement action per round.
-Immediately roll for a Critical Injury. Cannot gain more stress or make panic rolls.
-
-CRITICAL INJURIES (D6):
-1 Focused — Relieve all stress
-2 Intense Pain — Stress +1
-3 Wounded — Movement becomes full action for D6 days
-4 Bleeding Out — LETHAL. Also Wounded. Death roll each Shift.
-5 Dying — LETHAL. Also Wounded. Death roll each Stretch.
-6 Last Breath — LETHAL. Also Wounded. Death roll each Round.
-
-DEATH ROLLS: Roll STAMINA. Cannot push. No stress dice.
-• Fail = you die.
-• Succeed = linger on, roll again after next time limit.
-• Three successes in a row = survive on your own.
-
-GETTING BACK UP:
-• First Aid: MEDICAL AID roll (full action, adjacent). Success = no longer broken, +1 Health per 6.
-• Rally: COMMAND roll (quick action, same zone). Success = no longer broken, +1 Health per 6.
-• On Your Own: After one stretch, automatically get back up with 1 Health.
-
-RESOLVE: (Wits + Empathy) ÷ 2, rounded up. Subtracted from Panic roll results.`
-  },
-  {
-    id:'armor',
-    title:'ARMOR',
-    quick:`Armor Level reduces incoming damage by that amount.
-Armor Piercing attacks count armor as 1 level lower.
-Aim for Weak Spot: -2 dice, but armor level reduced 1 on hit.`,
-    full:`ARMOR LEVEL: When you take damage, reduce it by your armor level.
-Unlike Mothership, armor in Alien RPG is not destroyed by a single hit — it reduces every hit.
-
-ARMOR PIERCING: Weapon trait. Armor level counts as 1 step lower (minimum 0).
-
-WEAK SPOTS: You can aim for gaps in armor.
-• -2 dice to your attack roll
-• On hit, armor level reduced 1 step (after piercing reduction)
-
-BARRIERS also have armor levels:
-• Furniture — Level 1
-• Inner Bulkhead — Level 2
-• Outer Bulkhead — Level 3
-• Armored Bulkhead — Level 4+
-
-COVER:
-• Partial Cover (quick action) — attacker gets -2 dice. You can still dodge.
-• Full Cover (full action) — attacker gets -3 dice. Cannot dodge. Barrier armor applies.
-
-ANDROIDS: When broken, roll Critical System Damage instead of Critical Injury.
-Androids can keep operating until System Shutdown (result 6).`
-  },
-  {
-    id:'combat',
-    title:'COMBAT & ACTIONS',
-    quick:`Rounds = ~5-10 seconds. Draw initiative cards 1-10.
-Each turn: 1 Full Action + 1 Quick Action (or 2 Quick Actions).
-Attack = CLOSE COMBAT or RANGED COMBAT skill roll.
-Hit = base damage + 1 per extra 6 rolled.`,
-    full:`INITIATIVE: Each combatant draws a numbered card (1-10). Lower = acts first.
-Xenomorphs draw one card per point of Speed.
-Holding Off: Swap initiative cards with someone who hasn't acted yet.
-
-EACH TURN:
-Full Actions (require skill roll):
-• Attack in close combat (CLOSE COMBAT)
-• Make a ranged attack (RANGED COMBAT)
-• Jump or climb (MOBILITY)
-• Give first aid (MEDICAL AID)
-• Interact with terminal (COMTECH)
-• Give orders (COMMAND) — gives target +1 die per 6 rolled
-
-Quick Actions (faster, often no roll):
-• Move to adjacent zone
-• Take partial cover
-• Defend against close combat attack (CLOSE COMBAT, interrupt)
-• Dodge a ranged attack (MOBILITY, interrupt)
-• Aim (+2 dice to next ranged attack)
-• Reload a weapon
-• Rally a broken character (COMMAND)
-
-CLOSE COMBAT: Roll CLOSE COMBAT. Hit = base damage +1 per extra 6.
-Unarmed = base 1 damage.
-Defend: Quick action, opposed roll — each 6 you roll cancels one attacker 6.
-
-RANGED COMBAT: Roll RANGED COMBAT. Need line of sight.
-Dodge: Quick action (MOBILITY), interrupt — each 6 cancels one attacker 6.
-Aiming: Quick action before attack = +2 dice.
-
-DAMAGE: Reduce incoming damage by armor level. Decrease Health by result.
-Health 0 = Broken. Roll Critical Injury.
-
-RANGE BANDS:
-Adjacent (A) — in your face
-Short (S) — same zone
-Medium (M) — adjacent zone
-Long (L) — up to 4 zones away
-Extreme (E) — farther`
-  },
-  {
-    id:'stress',
-    title:'STRESS & PANIC',
-    quick:`Stress starts at 0. Add stress dice (yellow d6) equal to stress level.
-6 on stress die = extra success. 1 on stress die = Stress Response.
-Panic Roll = D6 + Stress Level - Resolve.
-Push a roll = +1 stress level, re-roll non-6s.`,
-    full:`STRESS LEVEL: Starts at zero. Increases when:
-• You push a skill roll (+1)
-• You or a nearby PC suffers certain stress/panic responses
-• A nearby NPC panics
-• You fire full auto (2nd/3rd attack rolls)
-• You become fatigued
-• A crew member attacks you
-
-STRESS DICE (yellow d6s): Add stress level number of yellow dice to every roll.
-• Rolling 6 on a stress die = extra success (good!)
-• Rolling 1 on a stress die = trigger a Stress Response (bad!)
-• Cannot push the roll if you rolled any 1s on stress dice.
-
-STRESS RESPONSE (D6 + Stress - Resolve):
-≤0 Keeping Cool — no effect
-1 Jumpy — pushing gives +2 stress instead of +1
-2 Tunnel Vision — Wits rolls -2 dice
-3 Aggravated — Empathy rolls -2 dice
-4 Shakes — Agility rolls -2 dice
-5 Frantic — Strength rolls -2 dice
-6 Deflated — cannot push any rolls
-7+ Mess Up — action fails, +1 stress
-
-PANIC ROLL (D6 + Stress - Resolve): Triggered by witnessing a PC broken,
-first Xenomorph sighting, Xeno within Adjacent range, certain panic responses.
-≤0 Keeping Cool
-1 Spooked — +1 stress
-2 Noisy — enemies alerted
-4 Lose Item — GM decides which
-7 Freeze — lose next turn
-9 Scream — lose turn, -1 stress, nearby PCs must panic roll
-10 Flee — must move away until safe
-11 Frenzy — attack nearest creature
-12+ Catatonic — collapse until panic stops
-
-RELIEVING STRESS: 1 stress per stretch of rest in safe area.
-Also removes one stress response per stress level reduced.`
-  },
-  {
-    id:'push',
-    title:'PUSHING ROLLS',
-    quick:`Push once per roll (unless talent allows more).
-Stress +1, add one stress die, re-roll all non-6s.
-Cannot push if you rolled any 1s on stress dice.
-Cannot push passive rolls or death rolls.`,
-    full:`PUSHING YOUR ROLL: If you fail or want more successes, you can push.
-1. Stress level immediately increases by 1 (add one stress die to pool)
-2. Re-roll all dice that are NOT showing 6
-3. All dice count in the final result (including ones not re-rolled)
-4. If a stress die now shows 1, trigger a Stress Response
-
-RESTRICTIONS:
-• Only push once per roll (some talents allow a second push)
-• Cannot push if ANY stress die showed 1 in the initial roll
-• Cannot push passive rolls (like OBSERVATION in stealth)
-• Cannot push death rolls (STAMINA saves when dying)
-• NPCs never push rolls
-
-STORY POINTS: In cinematic play, spend a story point to automatically
-get one 6 on any base die in a skill roll. Can be used before or after pushing.
-Maximum 3 story points at any time. Earned by following your personal agenda.
-
-WHY PUSH? More 6s = more damage / better outcomes in combat.
-Risk vs reward — is the extra success worth the stress and possible panic?`
-  },
+  {id:'attrs',title:'ATTRIBUTES & SKILLS',quick:'STR / AGL / WITS / EMP \u2014 rated 1 to 5\nRoll = Attribute + Skill level in base dice. Roll a 6 to succeed.\nMore 6s = better outcome.',full:'SKILLS (12 core): Heavy Machinery, Stamina, Close Combat, Mobility, Ranged Combat, Piloting, Observation, Comtech, Survival, Command, Manipulation, Medical Aid'},
+  {id:'health',title:'HEALTH & RESOLVE',quick:'Health = (STR + AGL) \u00f7 2 rounded up\nResolve = (WITS + EMP) \u00f7 2 rounded up\nHealth 0 = Broken. Roll Critical Injury.',full:'CRITICAL INJURIES (D6): 1 Focused \u00b7 2 Intense Pain \u00b7 3 Wounded \u00b7 4 Bleeding Out \u00b7 5 Dying \u00b7 6 Last Breath\nDEATH ROLLS: Roll STAMINA. Fail = die. Three successes in a row = survive.'},
+  {id:'armor',title:'ARMOR',quick:'Armor Level reduces incoming damage.\nArmor Piercing: armor counts as 1 level lower.\nWeak Spot: -2 dice, armor reduced 1 on hit.',full:'BARRIERS: Furniture L1 \u00b7 Inner Bulkhead L2 \u00b7 Outer Bulkhead L3 \u00b7 Armored Bulkhead L4+\nCOVER: Partial -2 dice \u00b7 Full -3 dice (barrier armor applies)'},
+  {id:'combat',title:'COMBAT & ACTIONS',quick:'Rounds = ~5-10 seconds. Draw initiative cards 1-10.\nEach turn: 1 Full Action + 1 Quick Action.\nHit = base damage + 1 per extra 6.',full:'FULL ACTIONS: Attack, Jump/Climb, First Aid, Comtech, Command\nQUICK ACTIONS: Move zone, Partial cover, Defend, Dodge, Aim, Reload, Rally\nRANGE: Adjacent \u00b7 Short \u00b7 Medium \u00b7 Long (4 zones) \u00b7 Extreme'},
+  {id:'stress',title:'STRESS & PANIC',quick:'Stress starts at 0. Add yellow d6s equal to stress level.\n6 on stress die = extra success. 1 = Stress Response.\nPanic Roll = D6 + Stress \u2212 Resolve.',full:'STRESS RESPONSE (D6+Stress-Resolve): 1 Jumpy \u00b7 2 Tunnel Vision \u00b7 3 Aggravated \u00b7 4 Shakes \u00b7 5 Frantic \u00b7 6 Deflated\nRELIEVING STRESS: 1 stress per stretch of rest in safe area.'},
+  {id:'push',title:'PUSHING ROLLS',quick:'Push once: Stress +1, re-roll all non-6s.\nCannot push if any stress die showed 1.\nCannot push passive rolls or death rolls.',full:'STORY POINTS: Spend to get one automatic 6. Max 3 story points. Earned by following personal agenda.'},
 ];
 
 function RulesTab({t,game,homebrew,onHomebrewChange}){
   const [openSection,setOpenSection]=useState(null);
-  const isAlien=game==='alien';
-  const rules=isAlien?ALIEN_RULES:MOTHERSHIP_RULES;
-
-  const toggle=(id)=>setOpenSection(p=>p===id?null:id);
-
-  const S={
-    section:{marginBottom:'8px',border:`1px solid ${t.bd}`,borderRadius:'2px',overflow:'hidden'},
-    sectionActive:{marginBottom:'8px',border:`1px solid ${t.a}`,borderRadius:'2px',overflow:'hidden'},
-    header:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',
-      cursor:'pointer',background:t.card,transition:'background 0.15s'},
-    headerOpen:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',
-      cursor:'pointer',background:`rgba(${t.rgb},0.06)`,transition:'background 0.15s'},
-    title:{fontSize:'11px',letterSpacing:'3px',color:t.tx},
-    titleOpen:{fontSize:'11px',letterSpacing:'3px',color:t.a},
-    chevron:(open)=>({fontSize:'12px',color:open?t.a:t.mu,transition:'transform 0.2s',
-      display:'inline-block',transform:open?'rotate(90deg)':'rotate(0deg)'}),
-    quickRef:{padding:'12px 16px',background:t.bg,borderBottom:`1px solid ${t.bd}`,
-      fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.tx,
-      lineHeight:'1.8',letterSpacing:'0.5px',whiteSpace:'pre-wrap'},
-    expandBtn:{display:'block',width:'100%',padding:'8px 16px',background:'none',
-      border:'none',borderTop:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',
-      fontSize:'9px',letterSpacing:'2px',cursor:'pointer',textAlign:'left',
-      transition:'color 0.15s'},
-    fullDetail:{padding:'14px 16px',background:t.bg,
-      fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.mu,
-      lineHeight:'1.9',letterSpacing:'0.5px',whiteSpace:'pre-wrap',
-      borderTop:`1px dashed ${t.bd}`},
-    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',
-      padding:'14px 16px',marginBottom:'16px',fontSize:'10px',color:t.mu,
-      letterSpacing:'1px',lineHeight:'1.7'},
-  };
-
   const [expandedFull,setExpandedFull]=useState({});
-  const toggleFull=(id)=>setExpandedFull(p=>({...p,[id]:!p[id]}));
-
   const [hbForm,setHbForm]=useState(null);
   const [hbExpanded,setHbExpanded]=useState({});
   const [hbDeleteConfirm,setHbDeleteConfirm]=useState(null);
-
+  const isAlien=game==='alien';
+  const rules=isAlien?ALIEN_RULES:MOTHERSHIP_RULES;
+  const toggle=(id)=>setOpenSection(p=>p===id?null:id);
+  const toggleFull=(id)=>setExpandedFull(p=>({...p,[id]:!p[id]}));
   const hbEntries=homebrew||[];
-
-  const saveHb=()=>{
-    if(!hbForm||!hbForm.title?.trim())return;
-    const entries=[...hbEntries];
-    if(hbForm.id){
-      const i=entries.findIndex(x=>x.id===hbForm.id);
-      if(i>=0)entries[i]={...hbForm};
-    } else {
-      entries.push({...hbForm,id:uid(),createdAt:Date.now()});
-    }
-    onHomebrewChange(entries);
-    setHbForm(null);
-  };
-
-  const deleteHb=(id)=>{
-    onHomebrewChange(hbEntries.filter(x=>x.id!==id));
-    setHbDeleteConfirm(null);
-  };
-
+  const saveHb=()=>{if(!hbForm||!hbForm.title?.trim())return;const entries=[...hbEntries];if(hbForm.id){const i=entries.findIndex(x=>x.id===hbForm.id);if(i>=0)entries[i]={...hbForm};}else{entries.push({...hbForm,id:uid(),createdAt:Date.now()});}onHomebrewChange(entries);setHbForm(null);};
+  const deleteHb=(id)=>{onHomebrewChange(hbEntries.filter(x=>x.id!==id));setHbDeleteConfirm(null);};
   const HB_CATS=['COMBAT','SKILLS','STRESS & PANIC','ARMOR','EQUIPMENT','CREATURES','HOUSE RULE','OTHER'];
-
+  const S={
+    section:{marginBottom:'8px',border:`1px solid ${t.bd}`,borderRadius:'2px',overflow:'hidden'},
+    sectionActive:{marginBottom:'8px',border:`1px solid ${t.a}`,borderRadius:'2px',overflow:'hidden'},
+    header:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',cursor:'pointer',background:t.card},
+    headerOpen:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'12px 16px',cursor:'pointer',background:`rgba(${t.rgb},0.06)`},
+    title:{fontSize:'11px',letterSpacing:'3px',color:t.tx},
+    titleOpen:{fontSize:'11px',letterSpacing:'3px',color:t.a},
+    chevron:(open)=>({fontSize:'12px',color:open?t.a:t.mu,display:'inline-block',transform:open?'rotate(90deg)':'rotate(0deg)',transition:'transform 0.2s'}),
+    quickRef:{padding:'12px 16px',background:t.bg,borderBottom:`1px solid ${t.bd}`,fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.tx,lineHeight:'1.8',whiteSpace:'pre-wrap'},
+    expandBtn:{display:'block',width:'100%',padding:'8px 16px',background:'none',border:'none',borderTop:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer',textAlign:'left'},
+    fullDetail:{padding:'14px 16px',background:t.bg,fontFamily:"'Share Tech Mono',monospace",fontSize:'11px',color:t.mu,lineHeight:'1.9',whiteSpace:'pre-wrap',borderTop:`1px dashed ${t.bd}`},
+    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'14px 16px',marginBottom:'16px',fontSize:'10px',color:t.mu,letterSpacing:'1px',lineHeight:'1.7'},
+  };
   return React.createElement('div',null,
-    React.createElement('div',{style:S.intro},
-      isAlien
-        ? 'ALIEN RPG — Roll d6 dice equal to Attribute + Skill. Each 6 = success. Stress dice add yellow d6s — 6s help, 1s trigger responses. Roll-over system.'
-        : 'MOTHERSHIP — Roll 1d100 under your Stat or Save to succeed. 90-99 always fails. Advantage = roll twice take best. Disadvantage = roll twice take worst. Roll-under system.'
-    ),
-    ...rules.map(r=>{
-      const isOpen=openSection===r.id;
-      const isFull=expandedFull[r.id];
-      return React.createElement('div',{key:r.id,style:isOpen?S.sectionActive:S.section},
-        React.createElement('div',{style:isOpen?S.headerOpen:S.header,onClick:()=>toggle(r.id)},
-          React.createElement('span',{style:isOpen?S.titleOpen:S.title},r.title),
-          React.createElement('span',{style:S.chevron(isOpen)},'▶')
-        ),
-        isOpen&&React.createElement('div',null,
-          React.createElement('div',{style:S.quickRef},r.quick),
-          React.createElement('button',{style:{...S.expandBtn,color:isFull?t.a:t.mu},
-            onClick:(e)=>{e.stopPropagation();toggleFull(r.id);}},
-            isFull?'▲ COLLAPSE FULL RULES':'▼ EXPAND FULL RULES'
-          ),
-          isFull&&React.createElement('div',{style:S.fullDetail},r.full)
-        )
-      );
-    }),
-
+    React.createElement('div',{style:S.intro},isAlien?'ALIEN RPG \u2014 Roll d6 dice equal to Attribute + Skill. Each 6 = success. Roll-over system.':'MOTHERSHIP \u2014 Roll 1d100 under your Stat or Save to succeed. 90-99 always fails. Roll-under system.'),
+    ...rules.map(r=>{const isOpen=openSection===r.id;const isFull=expandedFull[r.id];return React.createElement('div',{key:r.id,style:isOpen?S.sectionActive:S.section},React.createElement('div',{style:isOpen?S.headerOpen:S.header,onClick:()=>toggle(r.id)},React.createElement('span',{style:isOpen?S.titleOpen:S.title},r.title),React.createElement('span',{style:S.chevron(isOpen)},'\u25b6')),isOpen&&React.createElement('div',null,React.createElement('div',{style:S.quickRef},r.quick),React.createElement('button',{style:{...S.expandBtn,color:isFull?t.a:t.mu},onClick:(e)=>{e.stopPropagation();toggleFull(r.id);}},isFull?'\u25b2 COLLAPSE FULL RULES':'\u25bc EXPAND FULL RULES'),isFull&&React.createElement('div',{style:S.fullDetail},r.full)));}),
     React.createElement('div',{style:{marginTop:'24px',borderTop:`1px solid ${t.bd}`,paddingTop:'20px'}},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'}},
-        React.createElement('div',null,
-          React.createElement('div',{style:{fontSize:'11px',letterSpacing:'4px',color:t.a}},'HOMEBREW RULES'),
-          React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginTop:'3px'}},'Your custom rules and house rules for this game')
-        ),
-        React.createElement('button',{
-          style:{padding:'5px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',
-            color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
-          onClick:()=>setHbForm({title:'',category:'HOUSE RULE',quickRef:'',fullDetail:''})
-        },'+ ADD RULE')
+        React.createElement('div',null,React.createElement('div',{style:{fontSize:'11px',letterSpacing:'4px',color:t.a}},'HOMEBREW RULES'),React.createElement('div',{style:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginTop:'3px'}},'Your custom rules and house rules for this game')),
+        React.createElement('button',{style:{padding:'5px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},onClick:()=>setHbForm({title:'',category:'HOUSE RULE',quickRef:'',fullDetail:''})},'+ ADD RULE')
       ),
-
-      hbForm&&React.createElement('div',{style:{background:t.card,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'16px',marginBottom:'14px',boxShadow:`0 0 20px rgba(${t.rgb},0.08)`}},
-        React.createElement('div',{style:{fontSize:'10px',letterSpacing:'3px',color:t.a,marginBottom:'14px'}},
-          hbForm.id?'EDIT HOMEBREW RULE':'+ NEW HOMEBREW RULE'
-        ),
-        React.createElement('div',{style:{marginBottom:'10px'}},
-          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'TITLE *'),
-          React.createElement('input',{type:'text',
-            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
-            value:hbForm.title||'',
-            onChange:e=>setHbForm(p=>({...p,title:e.target.value})),
-            placeholder:'e.g. Called Shots, Custom Panic, Variant Armor...'
-          })
-        ),
-        React.createElement('div',{style:{marginBottom:'10px'}},
-          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'CATEGORY'),
-          React.createElement('select',{
-            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},
-            value:hbForm.category||'HOUSE RULE',
-            onChange:e=>setHbForm(p=>({...p,category:e.target.value}))
-          },HB_CATS.map(c=>React.createElement('option',{key:c,value:c},c)))
-        ),
-        React.createElement('div',{style:{marginBottom:'10px'}},
-          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'QUICK REFERENCE (short summary shown when collapsed)'),
-          React.createElement('textarea',{rows:3,
-            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},
-            value:hbForm.quickRef||'',
-            onChange:e=>setHbForm(p=>({...p,quickRef:e.target.value})),
-            placeholder:'Key numbers, one-line summaries...'
-          })
-        ),
-        React.createElement('div',{style:{marginBottom:'14px'}},
-          React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'FULL DETAIL (supports markdown — **bold**, *italic*, - lists)'),
-          React.createElement('textarea',{rows:6,
-            style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},
-            value:hbForm.fullDetail||'',
-            onChange:e=>setHbForm(p=>({...p,fullDetail:e.target.value})),
-            placeholder:'Full rule explanation, examples, edge cases... Supports markdown: **bold**, *italic*, - lists, ## Headings'
-          })
-        ),
+      hbForm&&React.createElement('div',{style:{background:t.card,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'16px',marginBottom:'14px'}},
+        React.createElement('div',{style:{fontSize:'10px',letterSpacing:'3px',color:t.a,marginBottom:'14px'}},hbForm.id?'EDIT HOMEBREW RULE':'+ NEW HOMEBREW RULE'),
+        React.createElement('div',{style:{marginBottom:'10px'}},React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'TITLE *'),React.createElement('input',{type:'text',style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},value:hbForm.title||'',onChange:e=>setHbForm(p=>({...p,title:e.target.value})),placeholder:'e.g. Called Shots, Custom Panic...'})),
+        React.createElement('div',{style:{marginBottom:'10px'}},React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'CATEGORY'),React.createElement('select',{style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none'},value:hbForm.category||'HOUSE RULE',onChange:e=>setHbForm(p=>({...p,category:e.target.value}))},HB_CATS.map(c=>React.createElement('option',{key:c,value:c},c)))),
+        React.createElement('div',{style:{marginBottom:'10px'}},React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'QUICK REFERENCE'),React.createElement('textarea',{rows:3,style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},value:hbForm.quickRef||'',onChange:e=>setHbForm(p=>({...p,quickRef:e.target.value}))})),
+        React.createElement('div',{style:{marginBottom:'14px'}},React.createElement('label',{style:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'4px'}},'FULL DETAIL (supports markdown)'),React.createElement('textarea',{rows:6,style:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'7px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',resize:'vertical'},value:hbForm.fullDetail||'',onChange:e=>setHbForm(p=>({...p,fullDetail:e.target.value}))})),
         React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end'}},
-          React.createElement('button',{
-            style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-              border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},
-            onClick:()=>setHbForm(null)
-          },'CANCEL'),
-          React.createElement('button',{
-            style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-              border:`1px solid ${hbForm.title?.trim()?t.a:t.bd}`,
-              color:hbForm.title?.trim()?t.a:t.mu,background:'none',borderRadius:'2px',cursor:'pointer',
-              opacity:hbForm.title?.trim()?1:0.4},
-            onClick:saveHb,
-            disabled:!hbForm.title?.trim()
-          },'SAVE RULE')
+          React.createElement('button',{style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},onClick:()=>setHbForm(null)},'CANCEL'),
+          React.createElement('button',{style:{padding:'6px 14px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${hbForm.title?.trim()?t.a:t.bd}`,color:hbForm.title?.trim()?t.a:t.mu,background:'none',borderRadius:'2px',cursor:'pointer',opacity:hbForm.title?.trim()?1:0.4},onClick:saveHb,disabled:!hbForm.title?.trim()},'SAVE RULE')
         )
       ),
-
-      hbEntries.length===0&&!hbForm&&React.createElement('div',{style:{
-        textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px',
-        border:`1px dashed ${t.bd}`,borderRadius:'2px'
-      }},'NO HOMEBREW RULES YET -- PRESS + ADD RULE TO CREATE ONE'),
-
+      hbEntries.length===0&&!hbForm&&React.createElement('div',{style:{textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'}},'NO HOMEBREW RULES YET -- PRESS + ADD RULE TO CREATE ONE'),
       ...hbEntries.map(entry=>{
-        const isOpen=hbExpanded[entry.id];
-        const catColor={'COMBAT':'#f87171','STRESS & PANIC':'#fb923c','ARMOR':'#94a3b8','EQUIPMENT':'#c084fc'}[entry.category]||t.mu;
-        return React.createElement('div',{key:entry.id,style:{
-          border:`1px solid ${isOpen?t.a:t.bd}`,borderRadius:'2px',marginBottom:'8px',overflow:'hidden'
-        }},
-          React.createElement('div',{style:{
-            display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',
-            background:isOpen?`rgba(${t.rgb},0.05)`:t.card,cursor:'pointer'
-          },onClick:()=>setHbExpanded(p=>({...p,[entry.id]:!p[entry.id]}))},
+        const isOpen=hbExpanded[entry.id];const catColor={'COMBAT':'#f87171','STRESS & PANIC':'#fb923c','ARMOR':'#94a3b8','EQUIPMENT':'#c084fc'}[entry.category]||t.mu;
+        return React.createElement('div',{key:entry.id,style:{border:`1px solid ${isOpen?t.a:t.bd}`,borderRadius:'2px',marginBottom:'8px',overflow:'hidden'}},
+          React.createElement('div',{style:{display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',background:isOpen?`rgba(${t.rgb},0.05)`:t.card,cursor:'pointer'},onClick:()=>setHbExpanded(p=>({...p,[entry.id]:!p[entry.id]}))},
             React.createElement('span',{style:{flex:1,fontSize:'11px',letterSpacing:'1px',color:isOpen?t.a:t.tx}},entry.title),
             React.createElement('span',{style:{fontSize:'8px',letterSpacing:'1px',padding:'2px 6px',border:`1px solid ${catColor}`,color:catColor,borderRadius:'2px'}},entry.category),
-            React.createElement('span',{style:{fontSize:'11px',color:isOpen?t.a:t.mu,marginLeft:'8px',transform:isOpen?'rotate(90deg)':'none',display:'inline-block',transition:'transform 0.2s'}},'▶')
+            React.createElement('span',{style:{fontSize:'11px',color:isOpen?t.a:t.mu,marginLeft:'8px',transform:isOpen?'rotate(90deg)':'none',display:'inline-block',transition:'transform 0.2s'}},'\u25b6')
           ),
           isOpen&&React.createElement('div',null,
-            entry.quickRef&&React.createElement('div',{style:{
-              padding:'10px 14px',background:t.bg,borderTop:`1px solid ${t.bd}`,
-              fontSize:'11px',color:t.tx,lineHeight:'1.8',whiteSpace:'pre-wrap',fontFamily:'inherit'
-            }},entry.quickRef),
-            entry.fullDetail&&React.createElement('div',null,
-              React.createElement('div',{style:{padding:'10px 14px 2px',fontSize:'9px',letterSpacing:'2px',color:t.mu,borderTop:`1px dashed ${t.bd}`,background:t.bg}},'FULL DETAIL'),
-              React.createElement('div',{className:'md-view',style:{padding:'0 14px 12px',background:t.bg,fontSize:'11px',color:t.mu,lineHeight:'1.8'}},
-                React.createElement(MarkdownView,{text:entry.fullDetail,style:{color:t.mu,fontSize:'11px'}})
-              )
-            ),
+            entry.quickRef&&React.createElement('div',{style:{padding:'10px 14px',background:t.bg,borderTop:`1px solid ${t.bd}`,fontSize:'11px',color:t.tx,lineHeight:'1.8',whiteSpace:'pre-wrap',fontFamily:'inherit'}},entry.quickRef),
+            entry.fullDetail&&React.createElement('div',null,React.createElement('div',{style:{padding:'10px 14px 2px',fontSize:'9px',letterSpacing:'2px',color:t.mu,borderTop:`1px dashed ${t.bd}`,background:t.bg}},'FULL DETAIL'),React.createElement('div',{className:'md-view',style:{padding:'0 14px 12px',background:t.bg,fontSize:'11px',color:t.mu,lineHeight:'1.8'}},React.createElement(MarkdownView,{text:entry.fullDetail,style:{color:t.mu,fontSize:'11px'}}))),
             React.createElement('div',{style:{display:'flex',gap:'6px',padding:'8px 14px',borderTop:`1px solid ${t.bd}`,background:t.card}},
-              React.createElement('button',{
-                style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-                  border:`1px solid ${t.a}`,color:t.a,background:'none',borderRadius:'2px',cursor:'pointer'},
-                onClick:()=>setHbForm({...entry})
-              },'EDIT'),
-              React.createElement('button',{
-                style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-                  border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},
-                onClick:()=>setHbDeleteConfirm(entry.id)
-              },'DELETE')
+              React.createElement('button',{style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${t.a}`,color:t.a,background:'none',borderRadius:'2px',cursor:'pointer'},onClick:()=>setHbForm({...entry})},'EDIT'),
+              React.createElement('button',{style:{padding:'4px 12px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},onClick:()=>setHbDeleteConfirm(entry.id)},'DELETE')
             )
           )
         );
       }),
-
-      hbDeleteConfirm&&React.createElement('div',{style:{
-        position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',
-        alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'
-      }},
-        React.createElement('div',{style:{
-          background:t.panel,border:'1px solid #f87171',borderRadius:'2px',
-          padding:'24px',maxWidth:'320px',width:'100%',textAlign:'center'
-        }},
+      hbDeleteConfirm&&React.createElement('div',{style:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'}},
+        React.createElement('div',{style:{background:t.panel,border:'1px solid #f87171',borderRadius:'2px',padding:'24px',maxWidth:'320px',width:'100%',textAlign:'center'}},
           React.createElement('div',{style:{fontSize:'12px',letterSpacing:'3px',color:'#f87171',marginBottom:'12px'}},'DELETE RULE'),
           React.createElement('div',{style:{fontSize:'10px',color:t.mu,letterSpacing:'1px',marginBottom:'20px'}},'THIS CANNOT BE UNDONE'),
           React.createElement('div',{style:{display:'flex',gap:'8px',justifyContent:'center'}},
-            React.createElement('button',{
-              style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-                border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},
-              onClick:()=>setHbDeleteConfirm(null)
-            },'CANCEL'),
-            React.createElement('button',{
-              style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-                border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},
-              onClick:()=>deleteHb(hbDeleteConfirm)
-            },'CONFIRM DELETE')
+            React.createElement('button',{style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${t.bd}`,color:t.mu,background:'none',borderRadius:'2px',cursor:'pointer'},onClick:()=>setHbDeleteConfirm(null)},'CANCEL'),
+            React.createElement('button',{style:{padding:'6px 16px',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:'1px solid #f87171',color:'#f87171',background:'none',borderRadius:'2px',cursor:'pointer'},onClick:()=>deleteHb(hbDeleteConfirm)},'CONFIRM DELETE')
           )
         )
       )
     )
   );
 }
-
-
-// ─── MUSIC PLAYER ────────────────────────────────────────────────────────────
+// ─── MUSIC + PLAYER ─────────────────────────────────────────────────────────
 const MOOD_OPTS=['AMBIENT','EXPLORATION','TENSION','COMBAT','HORROR','OTHER'];
-
-function getYTId(url){
-  if(!url)return null;
-  const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);
-  return m?m[1]:null;
-}
+function getYTId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
 
 function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}){
-  const [addForm,setAddForm]=useState(null);
-  const [form,setForm]=useState({});
-  const [editId,setEditId]=useState(null);
-  const [delId,setDelId]=useState(null);
-  const [filterMood,setFilterMood]=useState('ALL');
-
-  const tracks=playlist||[];
-  const filtered=filterMood==='ALL'?tracks:tracks.filter(tr=>tr.mood===filterMood);
-  const activeId=activeTrackId;
-  const setActiveId=onTrackChange;
-
-  const saveTrack=()=>{
-    if(!form.title?.trim()||!form.url?.trim())return;
-    const ytId=getYTId(form.url);
-    if(!ytId){alert('Could not find a YouTube video ID in that URL. Please check the link.');return;}
-    const entry={...form,ytId,id:editId||uid(),createdAt:Date.now()};
-    let updated;
-    if(editId){
-      updated=tracks.map(t=>t.id===editId?entry:t);
-    } else {
-      updated=[...tracks,entry];
-    }
-    onPlaylistChange(updated);
-    setAddForm(null);setForm({});setEditId(null);
-  };
-
-  const del=(id)=>{
-    onPlaylistChange(tracks.filter(tr=>tr.id!==id));
-    if(activeTrackId===id)onTrackChange(null);
-    setDelId(null);
-  };
-
-  const openEdit=(track)=>{
-    setForm({...track});setEditId(track.id);setAddForm('edit');
-  };
-
+  const [addForm,setAddForm]=useState(null);const [form,setForm]=useState({});const [editId,setEditId]=useState(null);const [delId,setDelId]=useState(null);const [filterMood,setFilterMood]=useState('ALL');
+  const tracks=playlist||[];const filtered=filterMood==='ALL'?tracks:tracks.filter(tr=>tr.mood===filterMood);
+  const saveTrack=()=>{if(!form.title?.trim()||!form.url?.trim())return;const ytId=getYTId(form.url);if(!ytId){alert('Could not find a YouTube video ID.');return;}const entry={...form,ytId,id:editId||uid(),createdAt:Date.now()};let updated=editId?tracks.map(t=>t.id===editId?entry:t):[...tracks,entry];onPlaylistChange(updated);setAddForm(null);setForm({});setEditId(null);};
+  const del=(id)=>{onPlaylistChange(tracks.filter(tr=>tr.id!==id));if(activeTrackId===id)onTrackChange(null);setDelId(null);};
   const S={
-    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',
-      padding:'12px 16px',marginBottom:'16px',fontSize:'9px',color:t.mu,
-      letterSpacing:'1px',lineHeight:'1.7'},
+    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'12px 16px',marginBottom:'16px',fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.7'},
     head:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'},
-    addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',
-      color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
+    addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
     filterRow:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'14px'},
-    filterBtn:(active)=>({padding:'4px 10px',background:'none',fontFamily:'inherit',
-      fontSize:'9px',letterSpacing:'2px',border:`1px solid ${active?t.a:t.bd}`,
-      color:active?t.a:t.mu,borderRadius:'2px',cursor:'pointer',transition:'all 0.15s'}),
-    card:(isActive)=>({background:isActive?`rgba(${t.rgb},0.06)`:t.card,
-      border:`1px solid ${isActive?t.a:t.bd}`,borderRadius:'2px',
-      padding:'12px 14px',marginBottom:'8px',cursor:'pointer',transition:'all 0.2s'}),
+    filterBtn:(active)=>({padding:'4px 10px',background:'none',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${active?t.a:t.bd}`,color:active?t.a:t.mu,borderRadius:'2px',cursor:'pointer'}),
+    card:(isActive)=>({background:isActive?`rgba(${t.rgb},0.06)`:t.card,border:`1px solid ${isActive?t.a:t.bd}`,borderRadius:'2px',padding:'12px 14px',marginBottom:'8px',cursor:'pointer'}),
     cardTitle:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
     cardMeta:{fontSize:'9px',color:t.mu,letterSpacing:'1px'},
-    moodTag:(m)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',
-      border:`1px solid ${t.bd}`,color:t.mu,borderRadius:'2px',marginLeft:'6px'}),
-    playBtn:{padding:'3px 10px',background:'none',border:`1px solid ${t.a}`,
-      color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'1px',
-      borderRadius:'2px',cursor:'pointer'},
-    empty:{textAlign:'center',padding:'40px 20px',color:t.mu,fontSize:'10px',
-      letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
-    overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',
-      alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'},
-    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',
-      padding:'24px',width:'100%',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto',
-      boxShadow:`0 0 40px rgba(${t.rgb},0.15)`},
+    moodTag:(m)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',border:`1px solid ${t.bd}`,color:t.mu,borderRadius:'2px',marginLeft:'6px'}),
+    playBtn:{padding:'3px 10px',background:'none',border:`1px solid ${t.a}`,color:t.a,fontFamily:'inherit',fontSize:'9px',borderRadius:'2px',cursor:'pointer'},
+    empty:{textAlign:'center',padding:'40px 20px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'},
+    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'24px',width:'100%',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto'},
     mTitle:{fontSize:'13px',letterSpacing:'3px',color:t.a,marginBottom:'20px'},
     lbl:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'5px'},
-    inp:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',
-      padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',
-      marginBottom:'12px'},
-    sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',
-      padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',
-      marginBottom:'12px'},
+    inp:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',marginBottom:'12px'},
+    sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',marginBottom:'12px'},
     btnRow:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'8px'},
-    btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',
-      border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,
-      color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,
-      background:'none',borderRadius:'2px',cursor:'pointer'}),
+    btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,background:'none',borderRadius:'2px',cursor:'pointer'}),
   };
-
   const isValid=form.title?.trim()&&form.url?.trim();
-
   return React.createElement('div',null,
-    React.createElement('div',{style:S.intro},
-      'Paste any YouTube URL to add it to your playlist. Click a track to load it in the player at the bottom of the screen. The player persists while you navigate between tabs.'
-    ),
-    React.createElement('div',{style:S.head},
-      React.createElement('div',{style:{fontSize:'10px',letterSpacing:'4px',color:t.mu}},
-        `${tracks.length} TRACK${tracks.length!==1?'S':''}`
-      ),
-      React.createElement('button',{style:S.addBtn,onClick:()=>{setForm({mood:'AMBIENT'});setEditId(null);setAddForm('add');}},
-        '+ ADD TRACK')
-    ),
-    React.createElement('div',{style:S.filterRow},
-      ['ALL',...MOOD_OPTS].map(m=>
-        React.createElement('button',{key:m,style:S.filterBtn(filterMood===m),
-          onClick:()=>setFilterMood(m)},m)
-      )
-    ),
-    filtered.length===0
-      ? React.createElement('div',{style:S.empty},
-          tracks.length===0?'NO TRACKS YET — PRESS + ADD TRACK':'NO TRACKS IN THIS MOOD'
+    React.createElement('div',{style:S.intro},'Paste any YouTube URL to add it to your playlist. Click a track to load it in the player at the bottom.'),
+    React.createElement('div',{style:S.head},React.createElement('div',{style:{fontSize:'10px',letterSpacing:'4px',color:t.mu}},`${tracks.length} TRACK${tracks.length!==1?'S':''}`),React.createElement('button',{style:S.addBtn,onClick:()=>{setForm({mood:'AMBIENT'});setEditId(null);setAddForm('add');}},'+ ADD TRACK')),
+    React.createElement('div',{style:S.filterRow},['ALL',...MOOD_OPTS].map(m=>React.createElement('button',{key:m,style:S.filterBtn(filterMood===m),onClick:()=>setFilterMood(m)},m))),
+    filtered.length===0?React.createElement('div',{style:S.empty},tracks.length===0?'NO TRACKS YET \u2014 PRESS + ADD TRACK':'NO TRACKS IN THIS MOOD')
+    :filtered.map(track=>React.createElement('div',{key:track.id,style:S.card(activeTrackId===track.id),onClick:()=>onTrackChange(track.id)},
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
+        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},activeTrackId===track.id?'\u25b6 ':'\u25b7 ',track.title),React.createElement('div',{style:S.cardMeta},track.mood&&React.createElement('span',{style:S.moodTag(track.mood)},track.mood),track.artist&&React.createElement('span',{style:{marginLeft:'8px'}},track.artist))),
+        React.createElement('div',{style:{display:'flex',gap:'6px',flexShrink:0}},
+          React.createElement('button',{style:S.playBtn,onClick:(e)=>{e.stopPropagation();onTrackChange(track.id);}},activeTrackId===track.id?'NOW PLAYING':'PLAY'),
+          React.createElement('button',{style:{...S.btn('ghost'),padding:'3px 8px',fontSize:'8px'},onClick:(e)=>{e.stopPropagation();setForm({...track});setEditId(track.id);setAddForm('edit');}},'EDIT'),
+          React.createElement('button',{style:{...S.btn('danger'),padding:'3px 8px',fontSize:'8px'},onClick:(e)=>{e.stopPropagation();setDelId(track.id);}},'\xd7')
         )
-      : filtered.map(track=>
-          React.createElement('div',{key:track.id,style:S.card(activeId===track.id),
-            onClick:()=>setActiveId(track.id)},
-            React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-              React.createElement('div',null,
-                React.createElement('div',{style:S.cardTitle},
-                  activeId===track.id?'▶ ':'▷ ',
-                  track.title
-                ),
-                React.createElement('div',{style:S.cardMeta},
-                  track.mood&&React.createElement('span',{style:S.moodTag(track.mood)},track.mood),
-                  track.artist&&React.createElement('span',{style:{marginLeft:'8px'}},track.artist)
-                )
-              ),
-              React.createElement('div',{style:{display:'flex',gap:'6px',flexShrink:0}},
-                React.createElement('button',{style:S.playBtn,
-                  onClick:(e)=>{e.stopPropagation();setActiveId(track.id);}},
-                  activeId===track.id?'NOW PLAYING':'PLAY'
-                ),
-                React.createElement('button',{style:{...S.btn('ghost'),padding:'3px 8px',fontSize:'8px'},
-                  onClick:(e)=>{e.stopPropagation();openEdit(track);}},'EDIT'),
-                React.createElement('button',{style:{...S.btn('danger'),padding:'3px 8px',fontSize:'8px'},
-                  onClick:(e)=>{e.stopPropagation();setDelId(track.id);}},'×')
-              )
-            )
-          )
-        ),
+      )
+    )),
     addForm&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget){setAddForm(null);setForm({});setEditId(null);}}},
       React.createElement('div',{style:S.mbox},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
-          React.createElement('div',{style:S.mTitle},editId?'EDIT TRACK':'+ ADD TRACK'),
-          React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},
-            onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'x')
-        ),
-        React.createElement('label',{style:S.lbl},'YOUTUBE URL *'),
-        React.createElement('input',{style:S.inp,value:form.url||'',
-          placeholder:'https://www.youtube.com/watch?v=...',
-          onChange:e=>setForm(p=>({...p,url:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'TITLE *'),
-        React.createElement('input',{style:S.inp,value:form.title||'',
-          placeholder:'Track name...',
-          onChange:e=>setForm(p=>({...p,title:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'ARTIST / SOURCE'),
-        React.createElement('input',{style:S.inp,value:form.artist||'',
-          placeholder:'Composer or channel name...',
-          onChange:e=>setForm(p=>({...p,artist:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'MOOD CATEGORY'),
-        React.createElement('select',{style:S.sel,value:form.mood||'AMBIENT',
-          onChange:e=>setForm(p=>({...p,mood:e.target.value}))},
-          MOOD_OPTS.map(m=>React.createElement('option',{key:m,value:m},m))
-        ),
-        React.createElement('div',{style:S.btnRow},
-          React.createElement('button',{style:S.btn('ghost'),onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'CANCEL'),
-          React.createElement('button',{style:{...S.btn('primary'),opacity:isValid?1:0.4},
-            onClick:saveTrack,disabled:!isValid},editId?'UPDATE':'ADD TRACK')
-        )
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},React.createElement('div',{style:S.mTitle},editId?'EDIT TRACK':'+ ADD TRACK'),React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'x')),
+        React.createElement('label',{style:S.lbl},'YOUTUBE URL *'),React.createElement('input',{style:S.inp,value:form.url||'',placeholder:'https://www.youtube.com/watch?v=...',onChange:e=>setForm(p=>({...p,url:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'TITLE *'),React.createElement('input',{style:S.inp,value:form.title||'',placeholder:'Track name...',onChange:e=>setForm(p=>({...p,title:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'ARTIST / SOURCE'),React.createElement('input',{style:S.inp,value:form.artist||'',placeholder:'Composer or channel name...',onChange:e=>setForm(p=>({...p,artist:e.target.value}))}),
+        React.createElement('label',{style:S.lbl},'MOOD CATEGORY'),React.createElement('select',{style:S.sel,value:form.mood||'AMBIENT',onChange:e=>setForm(p=>({...p,mood:e.target.value}))},MOOD_OPTS.map(m=>React.createElement('option',{key:m,value:m},m))),
+        React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'CANCEL'),React.createElement('button',{style:{...S.btn('primary'),opacity:isValid?1:0.4},onClick:saveTrack,disabled:!isValid},editId?'UPDATE':'ADD TRACK'))
       )
     ),
-    delId&&React.createElement('div',{style:S.overlay},
-      React.createElement('div',{style:{...S.mbox,maxWidth:'320px',textAlign:'center'}},
-        React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'REMOVE TRACK'),
-        React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS CANNOT BE UNDONE'),
-        React.createElement('div',{style:S.btnRow},
-          React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelId(null)},'CANCEL'),
-          React.createElement('button',{style:S.btn('danger'),onClick:()=>del(delId)},'REMOVE')
-        )
-      )
-    )
+    delId&&React.createElement('div',{style:S.overlay},React.createElement('div',{style:{...S.mbox,maxWidth:'320px',textAlign:'center'}},React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'REMOVE TRACK'),React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS CANNOT BE UNDONE'),React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelId(null)},'CANCEL'),React.createElement('button',{style:S.btn('danger'),onClick:()=>del(delId)},'REMOVE'))))
   );
 }
 
 function YTPlayer({track,t,onClose,onNext,onPrev}){
   const S={
-    bar:{position:'fixed',bottom:0,left:0,right:0,background:t.panel,
-      borderTop:`2px solid ${t.a}`,zIndex:5000,
-      display:'flex',alignItems:'stretch',gap:'0',
-      boxShadow:`0 -6px 30px rgba(${t.rgb},0.18)`},
+    bar:{position:'fixed',bottom:0,left:0,right:0,background:t.panel,borderTop:`2px solid ${t.a}`,zIndex:5000,display:'flex',alignItems:'stretch',boxShadow:`0 -6px 30px rgba(${t.rgb},0.18)`},
     iframeWrap:{flexShrink:0,width:'280px',height:'158px',position:'relative',background:'#000'},
     iframe:{width:'100%',height:'100%',border:'none',display:'block'},
-    hint:{position:'absolute',bottom:'4px',left:0,right:0,
-      textAlign:'center',fontSize:'8px',letterSpacing:'1px',color:'rgba(255,255,255,0.5)',
-      pointerEvents:'none'},
-    right:{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',
-      padding:'10px 14px'},
-    info:{flex:1},
-    title:{fontSize:'12px',letterSpacing:'1px',color:t.tx,
-      whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',marginBottom:'4px'},
+    hint:{position:'absolute',bottom:'4px',left:0,right:0,textAlign:'center',fontSize:'8px',color:'rgba(255,255,255,0.5)',pointerEvents:'none'},
+    right:{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',padding:'10px 14px'},
+    title:{fontSize:'12px',letterSpacing:'1px',color:t.tx,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',marginBottom:'4px'},
     mood:{fontSize:'8px',letterSpacing:'2px',color:t.mu},
     controls:{display:'flex',gap:'6px',alignItems:'center',marginTop:'10px'},
-    ctrlBtn:{padding:'5px 12px',background:'none',border:`1px solid ${t.bd}`,
-      color:t.mu,fontFamily:'inherit',fontSize:'11px',letterSpacing:'1px',
-      borderRadius:'2px',cursor:'pointer'},
-    closeBtn:{padding:'5px 12px',background:'none',border:`1px solid #f87171`,
-      color:'#f87171',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',
-      borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
+    ctrlBtn:{padding:'5px 12px',background:'none',border:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',fontSize:'11px',borderRadius:'2px',cursor:'pointer'},
+    closeBtn:{padding:'5px 12px',background:'none',border:'1px solid #f87171',color:'#f87171',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
   };
-
   return React.createElement('div',{style:S.bar},
-    React.createElement('div',{style:S.iframeWrap},
-      React.createElement('iframe',{
-        key:track.ytId,
-        style:S.iframe,
-        src:`https://www.youtube.com/embed/${track.ytId}?autoplay=1&rel=0&modestbranding=1`,
-        allow:'autoplay; encrypted-media; fullscreen',
-        allowFullScreen:true,
-        title:track.title
-      }),
-      React.createElement('div',{style:S.hint},'click ▶ to play')
-    ),
+    React.createElement('div',{style:S.iframeWrap},React.createElement('iframe',{key:track.ytId,style:S.iframe,src:`https://www.youtube.com/embed/${track.ytId}?autoplay=1&rel=0&modestbranding=1`,allow:'autoplay; encrypted-media; fullscreen',allowFullScreen:true,title:track.title}),React.createElement('div',{style:S.hint},'click \u25b6 to play')),
     React.createElement('div',{style:S.right},
-      React.createElement('div',{style:S.info},
-        React.createElement('div',{style:{fontSize:'8px',letterSpacing:'3px',color:t.a,marginBottom:'4px'}},'NOW PLAYING'),
-        React.createElement('div',{style:S.title},track.title),
-        React.createElement('div',{style:S.mood},[track.mood,track.artist].filter(Boolean).join(' · '))
-      ),
-      React.createElement('div',{style:S.controls},
-        React.createElement('button',{style:S.ctrlBtn,onClick:onPrev,title:'Previous'},'◄◄ PREV'),
-        React.createElement('button',{style:S.ctrlBtn,onClick:onNext,title:'Next'},'NEXT ►►'),
-        React.createElement('button',{style:S.closeBtn,onClick:onClose},'■ STOP')
-      )
+      React.createElement('div',null,React.createElement('div',{style:{fontSize:'8px',letterSpacing:'3px',color:t.a,marginBottom:'4px'}},'NOW PLAYING'),React.createElement('div',{style:S.title},track.title),React.createElement('div',{style:S.mood},[track.mood,track.artist].filter(Boolean).join(' \u00b7 '))),
+      React.createElement('div',{style:S.controls},React.createElement('button',{style:S.ctrlBtn,onClick:onPrev},'\u25c4\u25c4 PREV'),React.createElement('button',{style:S.ctrlBtn,onClick:onNext},'NEXT \u25ba\u25ba'),React.createElement('button',{style:S.closeBtn,onClick:onClose},'\u25a0 STOP'))
     )
   );
 }
-
-// ─── PRINT / CHARACTER SHEET ─────────────────────────────────────────────────
-function loadSheetState(memberId){
-  try{
-    const raw=localStorage.getItem(SHEET_KEY);
-    const all=raw?JSON.parse(raw):{};
-    return all[memberId]||null;
-  }catch{return null;}
-}
-function saveSheetState(memberId,state){
-  try{
-    const raw=localStorage.getItem(SHEET_KEY);
-    const all=raw?JSON.parse(raw):{};
-    all[memberId]=state;
-    localStorage.setItem(SHEET_KEY,JSON.stringify(all));
-  }catch{}
-}
-function clearSheetState(memberId){
-  try{
-    const raw=localStorage.getItem(SHEET_KEY);
-    const all=raw?JSON.parse(raw):{};
-    delete all[memberId];
-    localStorage.setItem(SHEET_KEY,JSON.stringify(all));
-  }catch{}
-}
+// ─── PRINT / CHARACTER SHEET ────────────────────────────────────────────────
 const SHEET_KEY='vc-sheet-state-v1';
+function loadSheetState(memberId){try{const raw=localStorage.getItem(SHEET_KEY);const all=raw?JSON.parse(raw):{};return all[memberId]||null;}catch{return null;}}
+function saveSheetState(memberId,state){try{const raw=localStorage.getItem(SHEET_KEY);const all=raw?JSON.parse(raw):{};all[memberId]=state;localStorage.setItem(SHEET_KEY,JSON.stringify(all));}catch{}}
+function clearSheetState(memberId){try{const raw=localStorage.getItem(SHEET_KEY);const all=raw?JSON.parse(raw):{};delete all[memberId];localStorage.setItem(SHEET_KEY,JSON.stringify(all));}catch{}}
 
-function SpinField({label,value,min,max,onChange,color}){
+function SpinField({label,value,min,max,onChange}){
   return React.createElement('div',{className:'sh-field',style:{textAlign:'center',minWidth:'70px'}},
     React.createElement('span',{className:'sh-field-lbl'},label),
     React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
-      React.createElement('button',{
-        style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-          cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:color||'#000',
-          fontFamily:'inherit'},
-        onClick:()=>onChange(Math.max(min,value-1))
-      },'\u2212'),
-      React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
-        color:color||'#000',minWidth:'28px',textAlign:'center',lineHeight:1}},value),
-      React.createElement('button',{
-        style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-          cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:color||'#000',
-          fontFamily:'inherit'},
-        onClick:()=>onChange(Math.min(max,value+1))
-      },'+')
+      React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:'#000',fontFamily:'inherit'},onClick:()=>onChange(Math.max(min,value-1))},'\u2212'),
+      React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',color:'#000',minWidth:'28px',textAlign:'center',lineHeight:1}},value),
+      React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,color:'#000',fontFamily:'inherit'},onClick:()=>onChange(Math.min(max,value+1))},'+')
     )
   );
 }
@@ -1904,344 +723,134 @@ function WoundBoxes({count,checked,onToggle,label,filled_color}){
   return React.createElement('div',{className:'sh-field',style:{flex:2}},
     React.createElement('span',{className:'sh-field-lbl'},label),
     React.createElement('div',{className:'sh-wounds',style:{marginTop:'4px'}},
-      Array.from({length:count}).map((_,i)=>
-        React.createElement('div',{
-          key:i,
-          onClick:()=>onToggle(i),
-          className:'sh-wound-box',
-          style:{
-            cursor:'pointer',
-            background:checked[i]?(filled_color||'#c00'):'#fff',
-            border:`1.5px solid ${checked[i]?(filled_color||'#c00'):'#000'}`,
-            transition:'all 0.1s'
-          }
-        })
-      )
+      Array.from({length:count}).map((_,i)=>React.createElement('div',{key:i,onClick:()=>onToggle(i),className:'sh-wound-box',style:{cursor:'pointer',background:checked[i]?(filled_color||'#c00'):'#fff',border:`1.5px solid ${checked[i]?(filled_color||'#c00'):'#000'}`,transition:'all 0.1s'}}))
     )
   );
 }
 
 function CrewSheet({member,game}){
   const isMothership=game==='mothership';
-
   const initState=()=>{
     const saved=loadSheetState(member.id);
     if(isMothership){
-      const maxW=parseInt(member.maxWounds)||2;
-      const maxH=parseInt(member.healthMax)||13;
-      const maxAP=parseInt(member.armorPoints)||0;
-      return saved||{
-        currentHP:maxH,
-        wounds:Array(maxW).fill(false),
-        stressCur:parseInt(member.stressCur)||2,
-        currentAP:maxAP,
-      };
+      const maxW=parseInt(member.maxWounds)||2;const maxH=parseInt(member.healthMax)||13;const maxAP=parseInt(member.armorPoints)||0;
+      return saved||{currentHP:maxH,wounds:Array(maxW).fill(false),stressCur:parseInt(member.stressCur)||2,currentAP:maxAP};
     } else {
-      const maxH=parseInt(member.hp)||(member.strength&&member.agility
-        ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
+      const maxH=parseInt(member.hp)||(member.strength&&member.agility?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
       const maxAL=parseInt(member.armorLevel)||0;
-      return saved||{
-        healthBoxes:Array(maxH).fill(false),
-        stress:parseInt(member.stress)||0,
-        currentAL:maxAL,
-      };
+      return saved||{healthBoxes:Array(maxH).fill(false),stress:parseInt(member.stress)||0,currentAL:maxAL};
     }
   };
-
   const [ss,setSS]=useState(initState);
-
-  const updateSS=(patch)=>{
-    setSS(p=>{
-      const next={...p,...patch};
-      saveSheetState(member.id,next);
-      return next;
-    });
-  };
-
-  const resetSS=()=>{
-    clearSheetState(member.id);
-    setSS(initState());
-  };
-
-  const toggleWound=(i)=>{
-    const wounds=[...ss.wounds];
-    wounds[i]=!wounds[i];
-    updateSS({wounds});
-  };
-
-  const toggleHealth=(i)=>{
-    const healthBoxes=[...ss.healthBoxes];
-    healthBoxes[i]=!healthBoxes[i];
-    updateSS({healthBoxes});
-  };
+  const updateSS=(patch)=>{setSS(p=>{const next={...p,...patch};saveSheetState(member.id,next);return next;});};
+  const resetSS=()=>{clearSheetState(member.id);setSS(initState());};
 
   if(isMothership){
-    const maxWounds=parseInt(member.maxWounds)||2;
-    const maxHP=parseInt(member.healthMax)||13;
-
+    const maxWounds=parseInt(member.maxWounds)||2;const maxHP=parseInt(member.healthMax)||13;
     return React.createElement('div',{className:'crew-sheet'},
-      React.createElement('div',{className:'sh-title'},
-        React.createElement('span',null,member.name||'UNNAMED'),
-        React.createElement('span',{className:'sh-game'},'MOTHERSHIP RPG')
-      ),
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},
-        React.createElement('span',null,`CLASS: ${member.role||'--'}`),
-        React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
-      ),
+      React.createElement('div',{className:'sh-title'},React.createElement('span',null,member.name||'UNNAMED'),React.createElement('span',{className:'sh-game'},'MOTHERSHIP RPG')),
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},React.createElement('span',null,`CLASS: ${member.role||'--'}`),React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)),
       React.createElement('div',{className:'sh-section-lbl'},'STATS'),
-      React.createElement('div',{className:'sh-grid sh-grid-4'},
-        ['strength','speed','intellect','combat'].map(k=>
-          React.createElement('div',{key:k,className:'sh-box'},
-            React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),
-            React.createElement('span',{className:'sh-box-val'},member[k]||'--')
-          )
-        )
-      ),
+      React.createElement('div',{className:'sh-grid sh-grid-4'},['strength','speed','intellect','combat'].map(k=>React.createElement('div',{key:k,className:'sh-box'},React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),React.createElement('span',{className:'sh-box-val'},member[k]||'--')))),
       React.createElement('div',{className:'sh-section-lbl'},'SAVES'),
-      React.createElement('div',{className:'sh-grid sh-grid-3'},
-        ['sanity','fear','body'].map(k=>
-          React.createElement('div',{key:k,className:'sh-box'},
-            React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),
-            React.createElement('span',{className:'sh-box-val'},member[k]||'--')
-          )
-        )
-      ),
-      React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click wounds to mark \u00b7 use +/\u2212 for HP & stress'),
+      React.createElement('div',{className:'sh-grid sh-grid-3'},['sanity','fear','body'].map(k=>React.createElement('div',{key:k,className:'sh-box'},React.createElement('span',{className:'sh-box-lbl'},k.toUpperCase()),React.createElement('span',{className:'sh-box-val'},member[k]||'--')))),
+      React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
       React.createElement('div',{className:'sh-row'},
-        React.createElement(SpinField,{
-          label:`HEALTH (max ${maxHP})`,
-          value:ss.currentHP,
-          min:0,max:maxHP,
-          onChange:v=>updateSS({currentHP:v})
-        }),
-        React.createElement(WoundBoxes,{
-          count:maxWounds,
-          checked:ss.wounds,
-          onToggle:toggleWound,
-          label:'WOUNDS (click to mark)',
-          filled_color:'#c00'
-        }),
+        React.createElement(SpinField,{label:`HEALTH (max ${maxHP})`,value:ss.currentHP,min:0,max:maxHP,onChange:v=>updateSS({currentHP:v})}),
+        React.createElement(WoundBoxes,{count:maxWounds,checked:ss.wounds,onToggle:i=>{const w=[...ss.wounds];w[i]=!w[i];updateSS({wounds:w});},label:'WOUNDS',filled_color:'#c00'}),
         React.createElement('div',{className:'sh-field',style:{flex:'0 0 auto',minWidth:'80px',textAlign:'center'}},
           React.createElement('span',{className:'sh-field-lbl'},`AP (max ${parseInt(member.armorPoints)||0})`),
           parseInt(member.armorPoints)>0
-            ? React.createElement('div',null,
+            ?React.createElement('div',null,
                 React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
-                  React.createElement('button',{
-                    style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-                      cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',
-                      color:ss.currentAP===0?'#c00':'#000'},
-                    onClick:()=>updateSS({currentAP:Math.max(0,ss.currentAP-1)})
-                  },'−'),
-                  React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
-                    color:ss.currentAP===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},
-                    ss.currentAP
-                  ),
-                  React.createElement('button',{
-                    style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-                      cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},
-                    onClick:()=>updateSS({currentAP:Math.min(parseInt(member.armorPoints)||0,ss.currentAP+1)})
-                  },'+')
-                ),
-                ss.currentAP===0&&React.createElement('div',{
-                  style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}
-                },'DESTROYED')
-              )
-            : React.createElement('span',{className:'sh-box-val'},'--')
+                  React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',color:ss.currentAP===0?'#c00':'#000'},onClick:()=>updateSS({currentAP:Math.max(0,ss.currentAP-1)})},'\u2212'),
+                  React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',color:ss.currentAP===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},ss.currentAP),
+                  React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},onClick:()=>updateSS({currentAP:Math.min(parseInt(member.armorPoints)||0,ss.currentAP+1)})},'+')),
+                ss.currentAP===0&&React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}},'DESTROYED'))
+            :React.createElement('span',{className:'sh-box-val'},'--')
         )
       ),
       React.createElement('div',{className:'sh-row'},
-        React.createElement(SpinField,{
-          label:'STRESS CURRENT',
-          value:ss.stressCur,
-          min:0,max:20,
-          onChange:v=>updateSS({stressCur:v})
-        }),
-        React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},
-          React.createElement('span',{className:'sh-field-lbl'},'STRESS MIN'),
-          React.createElement('span',{className:'sh-box-val'},member.stressMin||'2')
-        ),
-        React.createElement('div',{className:'sh-field',style:{flex:2}},
-          React.createElement('span',{className:'sh-field-lbl'},'ARMOR'),
+        React.createElement(SpinField,{label:'STRESS CURRENT',value:ss.stressCur,min:0,max:20,onChange:v=>updateSS({stressCur:v})}),
+        React.createElement('div',{className:'sh-field',style:{textAlign:'center'}},React.createElement('span',{className:'sh-field-lbl'},'STRESS MIN'),React.createElement('span',{className:'sh-box-val'},member.stressMin||'2')),
+        React.createElement('div',{className:'sh-field',style:{flex:2}},React.createElement('span',{className:'sh-field-lbl'},'ARMOR'),
           React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},
             (member.armorType||'--').replace(/ \(AP \d+\)/,'')
           )
         )
       ),
-      member.skills&&React.createElement('div',null,
-        React.createElement('div',{className:'sh-section-lbl'},'SKILLS'),
-        React.createElement('div',{className:'sh-textarea'},member.skills)
-      ),
+      member.skills&&React.createElement('div',null,React.createElement('div',{className:'sh-section-lbl'},'SKILLS'),React.createElement('div',{className:'sh-textarea'},member.skills)),
       React.createElement('div',{className:'sh-section-lbl'},'WOUND CONDITIONS'),
       React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.wounds||''),
       React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
       React.createElement('div',{className:'sh-textarea',style:{minHeight:'32px'}},member.notes||''),
-      React.createElement('button',{
-        onClick:resetSS,
-        className:'no-print',
-        style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',
-          borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',
-          fontFamily:'inherit'}
-      },'RESET SESSION')
+      React.createElement('button',{onClick:resetSS,className:'no-print',style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',fontFamily:'inherit'}},'RESET SESSION')
     );
   }
 
-  const maxHealth=parseInt(member.hp)||
-    (member.strength&&member.agility
-      ?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
-
+  const maxHealth=parseInt(member.hp)||(member.strength&&member.agility?Math.ceil((parseInt(member.strength)+parseInt(member.agility))/2):4);
   return React.createElement('div',{className:'crew-sheet'},
-    React.createElement('div',{className:'sh-title'},
-      React.createElement('span',null,member.name||'UNNAMED'),
-      React.createElement('span',{className:'sh-game'},'ALIEN RPG')
-    ),
-    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},
-      React.createElement('span',null,`ARCHETYPE: ${member.role||'--'}`),
-      React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)
-    ),
+    React.createElement('div',{className:'sh-title'},React.createElement('span',null,member.name||'UNNAMED'),React.createElement('span',{className:'sh-game'},'ALIEN RPG')),
+    React.createElement('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'8px',fontSize:'10px'}},React.createElement('span',null,`ARCHETYPE: ${member.role||'--'}`),React.createElement('span',null,`STATUS: ${member.status||'ACTIVE'}`)),
     React.createElement('div',{className:'sh-section-lbl'},'ATTRIBUTES'),
-    React.createElement('div',{className:'sh-grid sh-grid-4'},
-      [['strength','STR'],['agility','AGL'],['wits','WITS'],['empathy','EMP']].map(([k,l])=>
-        React.createElement('div',{key:k,className:'sh-box'},
-          React.createElement('span',{className:'sh-box-lbl'},l),
-          React.createElement('span',{className:'sh-box-val'},member[k]||'--')
-        )
-      )
-    ),
-    React.createElement('div',{className:'sh-section-lbl'},'VITALS \u2014 click boxes to mark damage \u00b7 +/\u2212 for stress'),
+    React.createElement('div',{className:'sh-grid sh-grid-4'},[['strength','STR'],['agility','AGL'],['wits','WITS'],['empathy','EMP']].map(([k,l])=>React.createElement('div',{key:k,className:'sh-box'},React.createElement('span',{className:'sh-box-lbl'},l),React.createElement('span',{className:'sh-box-val'},member[k]||'--')))),
+    React.createElement('div',{className:'sh-section-lbl'},'VITALS'),
     React.createElement('div',{className:'sh-row'},
-      React.createElement(WoundBoxes,{
-        count:maxHealth,
-        checked:ss.healthBoxes,
-        onToggle:toggleHealth,
-        label:`HEALTH (max ${maxHealth}) \u2014 click to mark damage`,
-        filled_color:'#c00'
-      }),
-      React.createElement(SpinField,{
-        label:'RESOLVE',
-        value:parseInt(member.resolve)||1,
-        min:1,max:10,
-        onChange:()=>{}
-      }),
-      React.createElement(SpinField,{
-        label:'STRESS',
-        value:ss.stress,
-        min:0,max:20,
-        onChange:v=>updateSS({stress:v})
-      })
+      React.createElement(WoundBoxes,{count:maxHealth,checked:ss.healthBoxes,onToggle:i=>{const h=[...ss.healthBoxes];h[i]=!h[i];updateSS({healthBoxes:h});},label:`HEALTH (max ${maxHealth})`,filled_color:'#c00'}),
+      React.createElement(SpinField,{label:'RESOLVE',value:parseInt(member.resolve)||1,min:1,max:10,onChange:()=>{}}),
+      React.createElement(SpinField,{label:'STRESS',value:ss.stress,min:0,max:20,onChange:v=>updateSS({stress:v})})
     ),
     React.createElement('div',{className:'sh-row'},
       React.createElement('div',{className:'sh-field',style:{textAlign:'center',minWidth:'90px'}},
         React.createElement('span',{className:'sh-field-lbl'},`ARMOR LVL (max ${parseInt(member.armorLevel)||0})`),
         parseInt(member.armorLevel)>0
-          ? React.createElement('div',null,
+          ?React.createElement('div',null,
               React.createElement('div',{style:{display:'flex',alignItems:'center',justifyContent:'center',gap:'4px',marginTop:'2px'}},
-                React.createElement('button',{
-                  style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-                    cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',
-                    color:ss.currentAL===0?'#c00':'#000'},
-                  onClick:()=>updateSS({currentAL:Math.max(0,ss.currentAL-1)})
-                },'−'),
-                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',
-                  color:ss.currentAL===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},
-                  ss.currentAL
-                ),
-                React.createElement('button',{
-                  style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',
-                    cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},
-                  onClick:()=>updateSS({currentAL:Math.min(parseInt(member.armorLevel)||0,ss.currentAL+1)})
-                },'+')
-              ),
-              ss.currentAL===0&&React.createElement('div',{
-                style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}
-              },'DESTROYED')
-            )
-          : React.createElement('span',{className:'sh-box-val'},'0')
+                React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit',color:ss.currentAL===0?'#c00':'#000'},onClick:()=>updateSS({currentAL:Math.max(0,ss.currentAL-1)})},'\u2212'),
+                React.createElement('span',{style:{fontFamily:"'VT323',monospace",fontSize:'22px',color:ss.currentAL===0?'#c00':'#000',minWidth:'24px',textAlign:'center',lineHeight:1}},ss.currentAL),
+                React.createElement('button',{style:{width:'20px',height:'20px',border:'1px solid #ccc',background:'none',cursor:'pointer',fontSize:'13px',lineHeight:1,padding:0,fontFamily:'inherit'},onClick:()=>updateSS({currentAL:Math.min(parseInt(member.armorLevel)||0,ss.currentAL+1)})},'+')),
+              ss.currentAL===0&&React.createElement('div',{style:{fontSize:'8px',letterSpacing:'1px',color:'#c00',marginTop:'2px',fontWeight:'bold'}},'DESTROYED'))
+          :React.createElement('span',{className:'sh-box-val'},'0')
       ),
-      React.createElement('div',{className:'sh-field',style:{flex:3}},
-        React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),
-        React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},member.armorType||'NONE')
-      )
+      React.createElement('div',{className:'sh-field',style:{flex:3}},React.createElement('span',{className:'sh-field-lbl'},'ARMOR TYPE'),React.createElement('span',{className:'sh-field-val',style:{fontSize:'9px'}},member.armorType||'NONE'))
     ),
-    member.skills&&React.createElement('div',null,
-      React.createElement('div',{className:'sh-section-lbl'},'SKILLS & LEVELS'),
-      React.createElement('div',{className:'sh-textarea'},member.skills)
-    ),
-    member.talents&&React.createElement('div',null,
-      React.createElement('div',{className:'sh-section-lbl'},'TALENTS'),
-      React.createElement('div',{className:'sh-textarea'},member.talents)
-    ),
+    member.skills&&React.createElement('div',null,React.createElement('div',{className:'sh-section-lbl'},'SKILLS & LEVELS'),React.createElement('div',{className:'sh-textarea'},member.skills)),
+    member.talents&&React.createElement('div',null,React.createElement('div',{className:'sh-section-lbl'},'TALENTS'),React.createElement('div',{className:'sh-textarea'},member.talents)),
     React.createElement('div',{className:'sh-section-lbl'},'CRITICAL INJURY'),
     React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.criticalInjury||''),
     React.createElement('div',{className:'sh-section-lbl'},'NOTES'),
     React.createElement('div',{className:'sh-textarea',style:{minHeight:'28px'}},member.notes||''),
-    React.createElement('button',{
-      onClick:resetSS,
-      className:'no-print',
-      style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',
-        borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',
-        fontFamily:'inherit'}
-    },'RESET SESSION')
+    React.createElement('button',{onClick:resetSS,className:'no-print',style:{marginTop:'8px',padding:'4px 12px',background:'none',border:'1px solid #aaa',borderRadius:'2px',cursor:'pointer',fontSize:'9px',letterSpacing:'2px',color:'#888',fontFamily:'inherit'}},'RESET SESSION')
   );
 }
 
-
 function PrintTab({game,crew,t}){
-  const printAll=()=>{window.print();};
-
   const S={
     header:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'},
     title:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
-    printBtn:{padding:'8px 20px',background:'none',border:`2px solid ${t.a}`,borderRadius:'2px',
-      color:t.a,fontFamily:'inherit',fontSize:'11px',letterSpacing:'3px',cursor:'pointer'},
+    printBtn:{padding:'8px 20px',background:'none',border:`2px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'11px',letterSpacing:'3px',cursor:'pointer'},
     grid:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(360px,1fr))',gap:'16px'},
-    empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',
-      letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
     note:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'16px',lineHeight:'1.6'},
   };
-
   return React.createElement('div',null,
     React.createElement('div',{style:S.header},
-      React.createElement('div',null,
-        React.createElement('div',{style:S.title},'CHARACTER SHEETS'),
-        React.createElement('div',{style:{...S.note,marginTop:'4px',marginBottom:0}},
-          `${crew.length} CREW MEMBER${crew.length!==1?'S':''} · ${game==='mothership'?'MOTHERSHIP RPG':'ALIEN RPG'}`
-        )
-      ),
-      React.createElement('button',{style:S.printBtn,className:'no-print',onClick:printAll},'PRINT ALL')
+      React.createElement('div',null,React.createElement('div',{style:S.title},'CHARACTER SHEETS'),React.createElement('div',{style:{...S.note,marginTop:'4px',marginBottom:0}},`${crew.length} CREW MEMBER${crew.length!==1?'S':''} \u00b7 ${game==='mothership'?'MOTHERSHIP RPG':'ALIEN RPG'}`)),
+      React.createElement('button',{style:S.printBtn,className:'no-print',onClick:()=>window.print()},'PRINT ALL')
     ),
-    React.createElement('div',{style:S.note,className:'no-print'},
-      'Sheets are interactive — click wound boxes to mark damage, use +/− for HP and stress. Changes persist between sessions. Hit RESET SESSION on any sheet to clear it.'
-    ),
+    React.createElement('div',{style:S.note,className:'no-print'},'Sheets are interactive \u2014 click wound boxes to mark damage, use +/\u2212 for HP and stress. RESET SESSION clears session data.'),
     crew.length===0
-      ? React.createElement('div',{style:S.empty},
-          React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
-          'NO CREW ENTRIES FOUND',React.createElement('br'),
-          React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'ADD CREW IN THE CREW TAB FIRST')
-        )
-      : React.createElement('div',{style:S.grid},
-          crew.map(member=>
-            React.createElement('div',{key:member.id},
-              React.createElement(CrewSheet,{member,game})
-            )
-          )
-        )
+      ?React.createElement('div',{style:S.empty},React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),'NO CREW ENTRIES FOUND',React.createElement('br'),React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'ADD CREW IN THE CREW TAB FIRST'))
+      :React.createElement('div',{style:S.grid},crew.map(member=>React.createElement('div',{key:member.id},React.createElement(CrewSheet,{member,game}))))
   );
 }
 
 function printSingleSheet(member,game){
-  const div=document.createElement('div');
-  div.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto;';
-  div.className='print-single';
-  document.body.appendChild(div);
-  const root=ReactDOM.createRoot(div);
-  root.render(React.createElement(CrewSheet,{member,game}));
-  setTimeout(()=>{
-    window.print();
-    setTimeout(()=>{root.unmount();div.remove();},300);
-  },200);
+  const div=document.createElement('div');div.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto;';div.className='print-single';document.body.appendChild(div);
+  const root=ReactDOM.createRoot(div);root.render(React.createElement(CrewSheet,{member,game}));
+  setTimeout(()=>{window.print();setTimeout(()=>{root.unmount();div.remove();},300);},200);
 }
-
-// ─── APP ─────────────────────────────────────────────────────────────────────
+// ─── APP ────────────────────────────────────────────────────────────────────
 function App(){
   const [game,setGame]=useState('mothership');
   const [tab,setTab]=useState('sessions');
@@ -2254,55 +863,24 @@ function App(){
   const [importSuccess,setImportSuccess]=useState(false);
   const t=THEMES[game];
 
-  const exportData=()=>{
-    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url;
-    a.download=`void-chronicles-${new Date().toISOString().slice(0,10)}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  };
-
+  const exportData=()=>{const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`void-chronicles-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(url);};
   const importData=(e)=>{
-    const file=e.target.files[0];
-    if(!file)return;
+    const file=e.target.files[0];if(!file)return;
     const reader=new FileReader();
     reader.onload=(ev)=>{
       try{
         const parsed=JSON.parse(ev.target.result);
         if(!parsed.mothership||!parsed.alien)throw new Error('Invalid');
-        ['mothership','alien'].forEach(g=>{
-          if(!parsed[g].bestiary)parsed[g].bestiary=[];
-          if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();
-          if(!parsed[g].homebrew)parsed[g].homebrew=[];
-        });
-        upd(parsed);
-        setImportSuccess(true);setImportError(null);
-        setTimeout(()=>setImportSuccess(false),3000);
-      }catch{
-        setImportError('INVALID FILE -- IMPORT FAILED');
-        setTimeout(()=>setImportError(null),3000);
-      }
+        ['mothership','alien'].forEach(g=>{if(!parsed[g].bestiary)parsed[g].bestiary=[];if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();if(!parsed[g].homebrew)parsed[g].homebrew=[];});
+        upd(parsed);setImportSuccess(true);setImportError(null);setTimeout(()=>setImportSuccess(false),3000);
+      }catch{setImportError('INVALID FILE -- IMPORT FAILED');setTimeout(()=>setImportError(null),3000);}
     };
-    reader.readAsText(file);
-    e.target.value='';
+    reader.readAsText(file);e.target.value='';
   };
 
   useEffect(()=>{
     (async()=>{
-      try{
-        const r=await storage.get(STORAGE_KEY);
-        if(r){
-          const parsed=JSON.parse(r.value);
-          ['mothership','alien'].forEach(g=>{
-            if(!parsed[g].bestiary)parsed[g].bestiary=[];
-            if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();
-            if(!parsed[g].homebrew)parsed[g].homebrew=[];
-          });
-          setData(parsed);
-        }
-      }catch{}
+      try{const r=await storage.get(STORAGE_KEY);if(r){const parsed=JSON.parse(r.value);['mothership','alien'].forEach(g=>{if(!parsed[g].bestiary)parsed[g].bestiary=[];if(!parsed[g].encounter)parsed[g].encounter=defaultEncounter();if(!parsed[g].homebrew)parsed[g].homebrew=[];});setData(parsed);}}catch{}
       setLoaded(true);
     })();
   },[]);
@@ -2310,43 +888,20 @@ function App(){
   const save=async(d)=>{try{await storage.set(STORAGE_KEY,JSON.stringify(d));}catch{}};
   const upd=(d)=>{setData(d);save(d);};
   const gd=()=>data[game];
-
-  const getFields=(tid)=>{
-    if(tid==='crew')return FIELDS[`crew_${game}`]||[];
-    if(tid==='bestiary')return FIELDS[`bestiary_${game}`]||[];
-    return FIELDS[tid]||[];
-  };
-
-  const updateEncounter=(enc)=>{
-    const nd={...data,[game]:{...gd(),encounter:enc}};
-    upd(nd);
-  };
-
-  const updateHomebrew=(entries)=>{
-    const nd={...data,[game]:{...gd(),homebrew:entries}};
-    upd(nd);
-  };
-
+  const getFields=(tid)=>{if(tid==='crew')return FIELDS[`crew_${game}`]||[];if(tid==='bestiary')return FIELDS[`bestiary_${game}`]||[];return FIELDS[tid]||[];};
+  const updateEncounter=(enc)=>{const nd={...data,[game]:{...gd(),encounter:enc}};upd(nd);};
+  const updateHomebrew=(entries)=>{const nd={...data,[game]:{...gd(),homebrew:entries}};upd(nd);};
   const openAdd=()=>{setForm({});setModal({mode:'add',tab});};
   const openEdit=(item)=>{setForm({...item});setModal({mode:'edit',tab,item});};
   const openView=(item)=>{setModal({mode:'view',tab,item});};
-
   const saveItem=()=>{
-    const req=getFields(modal.tab).find(f=>f.req);
-    if(req&&!form[req.k]?.trim())return;
+    const req=getFields(modal.tab).find(f=>f.req);if(req&&!form[req.k]?.trim())return;
     const items=[...(gd()[modal.tab]||[])];
     if(modal.mode==='add')items.push({...form,id:uid(),createdAt:Date.now()});
     else{const i=items.findIndex(x=>x.id===modal.item.id);if(i>=0)items[i]={...items[i],...form};}
-    const nd={...data,[game]:{...gd(),[modal.tab]:items}};
-    upd(nd);setModal(null);
+    const nd={...data,[game]:{...gd(),[modal.tab]:items}};upd(nd);setModal(null);
   };
-
-  const delItem=(id)=>{
-    const items=(gd()[tab]||[]).filter(x=>x.id!==id);
-    const nd={...data,[game]:{...gd(),[tab]:items}};
-    upd(nd);setDelConfirm(null);setModal(null);
-  };
-
+  const delItem=(id)=>{const items=(gd()[tab]||[]).filter(x=>x.id!==id);const nd={...data,[game]:{...gd(),[tab]:items}};upd(nd);setDelConfirm(null);setModal(null);};
   const isValid=()=>{const req=getFields(tab).find(f=>f.req);return !req||!!form[req.k]?.trim();};
   const items=gd()[tab]||[];
 
@@ -2395,10 +950,7 @@ function App(){
     const isMothership=game==='mothership';
     return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}},
-        React.createElement('div',null,
-          React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN CREATURE'),
-          item.instinct&&React.createElement('div',{style:{...S.cardMeta,fontStyle:'italic',marginTop:'2px'}},`"${item.instinct.slice(0,60)}${item.instinct.length>60?'...':''}"`)
-        ),
+        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN CREATURE'),item.instinct&&React.createElement('div',{style:{...S.cardMeta,fontStyle:'italic',marginTop:'2px'}},`"${item.instinct.slice(0,60)}${item.instinct.length>60?'...':''}"`)  ),
         item.category&&React.createElement('span',{style:S.catBadge(item.category)},item.category)
       ),
       React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'6px'}},
@@ -2406,10 +958,7 @@ function App(){
         isMothership&&item.wounds&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'MAX WND'),React.createElement('div',{style:S.statVal},item.wounds)),
         item.speed&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'SPEED'),React.createElement('div',{style:S.statVal},item.speed))
       ),
-      item.combat&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px'}},
-        React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),
-        `${item.combat.slice(0,80)}${item.combat.length>80?'...':''}`
-      )
+      item.combat&&React.createElement('div',{style:{...S.cardMeta,borderTop:`1px solid ${t.bd}`,paddingTop:'6px'}},React.createElement('span',{style:{color:t.a,marginRight:'6px'}},'COMBAT:'),`${item.combat.slice(0,80)}${item.combat.length>80?'...':''}`)
     );
   };
 
@@ -2417,16 +966,11 @@ function App(){
     if(tab==='bestiary')return renderBestiaryCard(item);
     if(tab==='sessions')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-        React.createElement('div',null,
-          React.createElement('div',{style:S.cardTitle},`${item.sessionNumber?`[${String(item.sessionNumber).padStart(2,'0')}] `:''}${item.title||'UNTITLED'}`),
-          item.date&&React.createElement('div',{style:S.cardMeta},item.date)
-        ),
+        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},`${item.sessionNumber?`[${String(item.sessionNumber).padStart(2,'0')}] `:''}${item.title||'UNTITLED'}`),item.date&&React.createElement('div',{style:S.cardMeta},item.date)),
         item.casualties&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'1px'}},`X ${item.casualties}`)
       ),
       item.summary&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.summary.slice(0,130)}${item.summary.length>130?'...':''}`),
-      item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},
-        item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase()))
-      )
+      item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase())))
     );
     if(tab==='npcs')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
@@ -2435,26 +979,11 @@ function App(){
       ),
       item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
     );
-    if(tab==='locations'){
-      const threat=item.threat?parseInt(item.threat[0]):0;
-      return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},
-          React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.type||'')),
-          React.createElement('div',{style:{display:'flex',gap:'3px'}},[1,2,3,4,5].map(i=>React.createElement('div',{key:i,style:{width:'8px',height:'8px',borderRadius:'50%',background:i<=threat?'#f87171':t.bd}})))
-        ),
-        item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
-      );
-    }
+    if(tab==='locations'){const threat=item.threat?parseInt(item.threat[0]):0;return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.type||'')),React.createElement('div',{style:{display:'flex',gap:'3px'}},[1,2,3,4,5].map(i=>React.createElement('div',{key:i,style:{width:'8px',height:'8px',borderRadius:'50%',background:i<=threat?'#f87171':t.bd}})))),item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`));}
     if(tab==='crew')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
       React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-        React.createElement('div',null,
-          React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),
-          React.createElement('div',{style:S.cardMeta},item.role||'')
-        ),
-        React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}},
-          item.status&&React.createElement('span',{style:S.badge(item.status)},item.status),
-          (item.stressCur!==undefined&&item.stressCur!=='')&&React.createElement('span',{style:{fontSize:'9px',color:t.mu}},`STRESS: ${item.stressCur}`)
-        )
+        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.role||'')),
+        React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}},item.status&&React.createElement('span',{style:S.badge(item.status)},item.status),(item.stressCur!==undefined&&item.stressCur!=='')&&React.createElement('span',{style:{fontSize:'9px',color:t.mu}},`STRESS: ${item.stressCur}`))
       ),
       game==='mothership'&&React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginTop:'8px'}},
         item.combat&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'COMBAT'),React.createElement('div',{style:S.statVal},item.combat)),
@@ -2478,129 +1007,60 @@ function App(){
 
   const renderBestiaryView=(item)=>{
     const isMothership=game==='mothership';
-    const statFields=isMothership
-      ?[{k:'hp',l:'HP'},{k:'wounds',l:'MAX WOUNDS'},{k:'speed',l:'SPEED'}]
-      :[{k:'hp',l:'HP'},{k:'armor',l:'ARMOR LEVEL'},{k:'speed',l:'SPEED'}];
+    const statFields=isMothership?[{k:'hp',l:'HP'},{k:'wounds',l:'MAX WOUNDS'},{k:'speed',l:'SPEED'}]:[{k:'hp',l:'HP'},{k:'armor',l:'ARMOR LEVEL'},{k:'speed',l:'SPEED'}];
     return React.createElement('div',null,
       React.createElement('div',{style:S.statBlock},statFields.map(f=>item[f.k]?React.createElement('div',{key:f.k,style:S.statCell},React.createElement('div',{style:S.statLbl},f.l),React.createElement('div',{style:S.statVal},item[f.k])):null)),
       item.category&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('span',{style:S.catBadge(item.category)},item.category)),
       item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'INSTINCT'),React.createElement(MarkdownView,{text:item.instinct,style:{...S.viewVal,fontStyle:'italic',color:t.mu}})),
       React.createElement('div',{style:S.divider}),
-      item.combat&&React.createElement('div',{style:{marginBottom:'12px'}},
-        React.createElement('div',{style:{...S.viewLbl,color:t.a}},'COMBAT'),
-        React.createElement(MarkdownView,{text:item.combat,style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}})
-      ),
+      item.combat&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:{...S.viewLbl,color:t.a}},'COMBAT'),React.createElement(MarkdownView,{text:item.combat,style:{...S.viewVal,fontFamily:"'VT323',monospace",fontSize:'15px',letterSpacing:'1px',lineHeight:'1.8'}})),
       item.skills&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'SKILLS'),React.createElement(MarkdownView,{text:item.skills,style:S.viewVal})),
-      item.damageAbility&&React.createElement('div',null,
-        React.createElement('div',{style:S.divider}),
-        React.createElement('div',{style:{...S.viewLbl,color:t.a}},'DAMAGE & SPECIAL ABILITIES'),
-        React.createElement(MarkdownView,{text:item.damageAbility,style:S.viewVal})
-      )
+      item.damageAbility&&React.createElement('div',null,React.createElement('div',{style:S.divider}),React.createElement('div',{style:{...S.viewLbl,color:t.a}},'DAMAGE & SPECIAL ABILITIES'),React.createElement(MarkdownView,{text:item.damageAbility,style:S.viewVal}))
     );
   };
 
   const renderViewContent=(item)=>{
     if(modal?.tab==='bestiary')return[renderBestiaryView(item)];
-    return getFields(modal?.tab||tab).map(f=>{
-      const val=item[f.k];
-      if(val===undefined||val===null||val==='')return null;
-      const isMarkdown=f.type==='textarea';
-      return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
-        React.createElement('div',{style:S.lbl},f.l),
-        isMarkdown
-          ? React.createElement('div',{className:'md-view'},
-              React.createElement(MarkdownView,{
-                text:val,
-                style:{fontSize:'13px',color:t.tx}
-              })
-            )
-          : React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6'}},val)
-      );
-    });
+    return getFields(modal?.tab||tab).map(f=>{const val=item[f.k];if(val===undefined||val===null||val==='')return null;const isMarkdown=f.type==='textarea';return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},React.createElement('div',{style:S.lbl},f.l),isMarkdown?React.createElement('div',{className:'md-view'},React.createElement(MarkdownView,{text:val,style:{fontSize:'13px',color:t.tx}})):React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6'}},val));});
   };
 
-  const renderForm=()=>getFields(modal?.tab||tab).map(f=>
-    React.createElement('div',{key:f.k,style:S.field},
-      React.createElement('label',{style:S.lbl},`${f.l}${f.req?' *':''}`),
-      f.type==='textarea'
-        ?React.createElement('textarea',{rows:f.rows||4,style:S.ta,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})
-        :f.type==='select'
-          ?React.createElement('select',{style:S.sel,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))},
-              React.createElement('option',{value:''},'-- SELECT --'),
-              ...(f.opts||[]).map(o=>React.createElement('option',{key:o,value:o},o))
-            )
-          :React.createElement('input',{type:f.type,style:S.inp,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})
-    )
-  );
+  const renderForm=()=>getFields(modal?.tab||tab).map(f=>React.createElement('div',{key:f.k,style:S.field},React.createElement('label',{style:S.lbl},`${f.l}${f.req?' *':''}`),f.type==='textarea'?React.createElement('textarea',{rows:f.rows||4,style:S.ta,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))}):f.type==='select'?React.createElement('select',{style:S.sel,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))},React.createElement('option',{value:''},'-- SELECT --'),...(f.opts||[]).map(o=>React.createElement('option',{key:o,value:o},o))):React.createElement('input',{type:f.type,style:S.inp,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})));
 
-  if(!loaded)return React.createElement('div',{style:{...S.root,display:'flex',alignItems:'center',justifyContent:'center',height:'100vh'}},
-    React.createElement('div',{style:{color:t.a,fontFamily:"'VT323',monospace",fontSize:'28px',letterSpacing:'6px'}},'INITIALIZING...')
-  );
+  if(!loaded)return React.createElement('div',{style:{...S.root,display:'flex',alignItems:'center',justifyContent:'center',height:'100vh'}},React.createElement('div',{style:{color:t.a,fontFamily:"'VT323',monospace",fontSize:'28px',letterSpacing:'6px'}},'INITIALIZING...'));
 
   return React.createElement('div',{style:S.root},
     React.createElement('div',{style:S.scanline}),
-
     React.createElement('div',{style:S.header},
-      React.createElement('div',{style:S.gameSwitcher},
-        ['mothership','alien'].map(g=>React.createElement('button',{key:g,style:S.gameBtn(g),onClick:()=>{setGame(g);setTab('sessions');}},THEMES[g].name))
-      ),
+      React.createElement('div',{style:S.gameSwitcher},['mothership','alien'].map(g=>React.createElement('button',{key:g,style:S.gameBtn(g),onClick:()=>{setGame(g);setTab('sessions');}},THEMES[g].name))),
       React.createElement('div',{style:S.titleRow},
         React.createElement('div',null,React.createElement('div',{style:S.sub},t.sub)),
         React.createElement('h1',{style:S.title},'VOID CHRONICLES'),
         React.createElement('div',{style:{textAlign:'right',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'6px'}},
-          React.createElement('div',{style:S.sub},'v3.3 // ACTIVE · AUTH ENABLED'),
+          React.createElement('div',{style:S.sub},'v3.3 // ACTIVE \u00b7 AUTH ENABLED'),
           React.createElement('div',{style:{display:'flex',gap:'6px'}},
             React.createElement('button',{style:S.ioBtn,onClick:exportData},'EXPORT'),
-            React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},
-              'IMPORT',
-              React.createElement('input',{type:'file',accept:'.json',style:{display:'none'},onChange:importData})
-            )
+            React.createElement('label',{style:{...S.ioBtn,cursor:'pointer'}},'IMPORT',React.createElement('input',{type:'file',accept:'.json',style:{display:'none'},onChange:importData}))
           )
         )
       ),
-      React.createElement('div',{style:S.tabBar},
-        TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label))
-      )
+      React.createElement('div',{style:S.tabBar},TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label)))
     ),
-
     React.createElement('div',{style:S.main},
-      tab==='print'
-        ?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
-        :tab==='rules'
-        ?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
-        :tab==='dice'
-        ?React.createElement(DiceTab,{t,game})
-        :tab==='encounter'
-          ?React.createElement(EncounterTab,{
-              t,game,
-              encounter:gd().encounter,
-              crew:gd().crew||[],
-              bestiary:gd().bestiary||[],
-              onUpdate:updateEncounter
-            })
-          :React.createElement('div',null,
-              React.createElement('div',{style:S.secHead},
-                React.createElement('div',{style:S.secTitle},`${TABS.find(x=>x.id===tab)?.label} -- ${items.length} RECORDS`),
-                React.createElement('button',{style:S.addBtn,onClick:openAdd},'+ ADD ENTRY')
-              ),
-              items.length===0
-                ?React.createElement('div',{style:S.empty},
-                    React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),
-                    'NO RECORDS FOUND',React.createElement('br'),
-                    React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'PRESS + ADD ENTRY TO CREATE')
-                  )
-                :items.map(item=>renderCard(item))
-            )
+      tab==='print'?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
+      :tab==='rules'?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
+      :tab==='dice'?React.createElement(DiceTab,{t,game})
+      :tab==='encounter'?React.createElement(EncounterTab,{t,game,encounter:gd().encounter,crew:gd().crew||[],bestiary:gd().bestiary||[],onUpdate:updateEncounter})
+      :React.createElement('div',null,
+          React.createElement('div',{style:S.secHead},React.createElement('div',{style:S.secTitle},`${TABS.find(x=>x.id===tab)?.label} -- ${items.length} RECORDS`),React.createElement('button',{style:S.addBtn,onClick:openAdd},'+ ADD ENTRY')),
+          items.length===0?React.createElement('div',{style:S.empty},React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),'NO RECORDS FOUND',React.createElement('br'),React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'PRESS + ADD ENTRY TO CREATE'))
+          :items.map(item=>renderCard(item))
+        )
     ),
-
     modal&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget)setModal(null);}},
       React.createElement('div',{style:S.mbox},
         modal.mode==='view'
           ?React.createElement('div',null,
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
-                React.createElement('div',{style:S.mTitle},modal.item.title||modal.item.name||'RECORD'),
-                React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')
-              ),
+              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},React.createElement('div',{style:S.mTitle},modal.item.title||modal.item.name||'RECORD'),React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')),
               ...renderViewContent(modal.item),
               React.createElement('div',{style:S.btnRow},
                 React.createElement('button',{style:S.btn('danger'),onClick:()=>setDelConfirm(modal.item.id)},'DELETE'),
@@ -2610,32 +1070,30 @@ function App(){
               )
             )
           :React.createElement('div',null,
-              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},
-                React.createElement('div',{style:S.mTitle},modal.mode==='add'?'+ NEW ENTRY':'EDIT RECORD'),
-                React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')
-              ),
+              React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},React.createElement('div',{style:S.mTitle},modal.mode==='add'?'+ NEW ENTRY':'EDIT RECORD'),React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>setModal(null)},'x')),
               ...renderForm(),
-              React.createElement('div',{style:S.btnRow},
-                React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CANCEL'),
-                React.createElement('button',{style:{...S.btn('primary'),opacity:isValid()?1:0.4},onClick:saveItem,disabled:!isValid()},modal.mode==='add'?'SAVE ENTRY':'UPDATE')
-              )
+              React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CANCEL'),React.createElement('button',{style:{...S.btn('primary'),opacity:isValid()?1:0.4},onClick:saveItem,disabled:!isValid()},modal.mode==='add'?'SAVE ENTRY':'UPDATE'))
             )
       )
     ),
-
     delConfirm&&React.createElement('div',{style:S.overlay},
       React.createElement('div',{style:{...S.mbox,maxWidth:'340px',textAlign:'center'}},
         React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'CONFIRM DELETE'),
         React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS ACTION CANNOT BE UNDONE'),
-        React.createElement('div',{style:S.btnRow},
-          React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelConfirm(null)},'CANCEL'),
-          React.createElement('button',{style:S.btn('danger'),onClick:()=>delItem(delConfirm)},'CONFIRM DELETE')
-        )
+        React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelConfirm(null)},'CANCEL'),React.createElement('button',{style:S.btn('danger'),onClick:()=>delItem(delConfirm)},'CONFIRM DELETE'))
       )
     ),
+    (importSuccess||importError)&&React.createElement('div',{style:{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:t.panel,border:`1px solid ${importSuccess?t.a:'#f87171'}`,color:importSuccess?t.a:'#f87171',padding:'10px 20px',fontSize:'10px',letterSpacing:'2px',borderRadius:'2px',zIndex:9000}},importSuccess?'DATA IMPORTED SUCCESSFULLY':importError),
 
-    (importSuccess||importError)&&React.createElement('div',{style:{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:t.panel,border:`1px solid ${importSuccess?t.a:'#f87171'}`,color:importSuccess?t.a:'#f87171',padding:'10px 20px',fontSize:'10px',letterSpacing:'2px',borderRadius:'2px',zIndex:9000,boxShadow:`0 0 20px rgba(${importSuccess?t.rgb:'248,113,113'},0.2)`}},importSuccess?'DATA IMPORTED SUCCESSFULLY':importError),
-
+    // ── CC BY-NC 4.0 Footer ──
+    React.createElement('footer',{className:'no-print',style:{borderTop:`1px solid ${t.bd}`,padding:'14px 20px',display:'flex',alignItems:'center',justifyContent:'center',gap:'10px',marginTop:'40px'}},
+      React.createElement('img',{src:'https://licensebuttons.net/l/by-nc/4.0/80x15.png',alt:'Creative Commons BY-NC 4.0',style:{height:'15px',opacity:0.7}}),
+      React.createElement('span',{style:{fontSize:'9px',letterSpacing:'1px',color:t.mu}},
+        'VOID CHRONICLES is licensed under ',
+        React.createElement('a',{href:'https://creativecommons.org/licenses/by-nc/4.0/',target:'_blank',rel:'noopener noreferrer',style:{color:t.mu,textDecoration:'underline',opacity:0.8}},'CC BY-NC 4.0'),
+        ' \u2014 free to share and adapt for non-commercial use with credit.'
+      )
+    ),
     null
   );
 }
