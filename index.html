@@ -83,6 +83,57 @@ function MarkdownView({text,style}){
   const html=typeof marked!=='undefined'?marked.parse(String(text)):`<p>${String(text)}</p>`;
   return React.createElement('div',{style:{...style,lineHeight:'1.7'},dangerouslySetInnerHTML:{__html:html}});
 }
+// ── IMAGE URL HELPER ─────────────────────────────────────────────────────────
+// Accepts a bare URL or markdown image syntax: ![alt](url)
+function extractImageUrl(val){
+  if(!val)return null;
+  const m=val.match(/!\[.*?\]\((.*?)\)/);
+  if(m)return m[1];
+  if(/^https?:\/\//i.test(val.trim()))return val.trim();
+  return null;
+}
+// Live preview field used in the add/edit form for imageUrl
+function ImageUrlField({value,onChange,t,S}){
+  const [imgStatus,setImgStatus]=useState('idle'); // idle | loading | ok | error
+  const src=extractImageUrl(value||'');
+  useEffect(()=>{if(src){setImgStatus('loading');}else{setImgStatus('idle');}},[src]);
+  const borderColor=imgStatus==='ok'?t.a:imgStatus==='error'?'#f87171':t.bd;
+  return React.createElement('div',null,
+    React.createElement('input',{type:'text',style:{...S.inp,borderColor:borderColor},value:value||'',
+      placeholder:'https://example.com/image.jpg  or  ![alt](url)',
+      onChange:e=>onChange(e.target.value)}),
+    src&&React.createElement('div',{style:{marginTop:'8px',border:`1px solid ${borderColor}`,borderRadius:'2px',overflow:'hidden'}},
+      React.createElement('div',{style:{fontSize:'8px',letterSpacing:'2px',color:t.mu,padding:'4px 8px',background:t.card,display:'flex',justifyContent:'space-between'}},
+        React.createElement('span',null,'IMAGE PREVIEW'),
+        React.createElement('span',{style:{color:imgStatus==='ok'?t.a:imgStatus==='error'?'#f87171':t.mu}},
+          imgStatus==='loading'?'LOADING...':imgStatus==='ok'?'\u2713 OK':imgStatus==='error'?'\u26a0 FAILED':'')
+      ),
+      imgStatus!=='error'&&React.createElement('img',{src,
+        style:{display:'block',maxWidth:'100%',maxHeight:'180px',objectFit:'contain',background:'rgba(0,0,0,0.25)'},
+        onLoad:()=>setImgStatus('ok'),
+        onError:()=>setImgStatus('error')}),
+      imgStatus==='error'&&React.createElement('div',{style:{padding:'12px',color:'#f87171',fontSize:'9px',letterSpacing:'1px',lineHeight:'1.7',background:'rgba(248,113,113,0.06)'}},
+        '\u26a0 IMAGE FAILED TO LOAD',React.createElement('br'),
+        React.createElement('span',{style:{color:t.mu,fontSize:'8px'}},
+          'The URL may be blocked (CORS) or unreachable. Use a direct image host: Imgur, GitHub raw content, or Cloudinary.')
+      )
+    ),
+    !src&&value&&React.createElement('div',{style:{marginTop:'6px',fontSize:'8px',color:'#f87171',letterSpacing:'1px'}},
+      '\u26a0 Not a valid URL — must start with https:// or use ![alt](url) syntax')
+  );
+}
+// Read-only image display used in view modals
+function ImageDisplay({src,t}){
+  const [err,setErr]=useState(false);
+  if(!src)return null;
+  if(err)return React.createElement('div',{style:{padding:'10px 12px',color:'#f87171',fontSize:'9px',letterSpacing:'1px',border:'1px solid #f87171',borderRadius:'2px',lineHeight:'1.7'}},
+    '⚠ IMAGE FAILED TO LOAD',React.createElement('br'),
+    React.createElement('span',{style:{color:'rgba(248,113,113,0.7)',fontSize:'8px'}},'The URL may be blocked by browser security (CORS) or is unreachable. Use Imgur, GitHub raw, or Cloudinary.')
+  );
+  return React.createElement('img',{src,
+    style:{display:'block',maxWidth:'100%',maxHeight:'280px',objectFit:'contain',borderRadius:'2px',border:`1px solid ${t.bd}`},
+    onError:()=>setErr(true)});
+}
 const STORAGE_KEY='void-chronicles-v1';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const defaultEncounter=()=>({round:1,activeId:null,started:false,combatants:[]});
@@ -111,6 +162,7 @@ const FIELDS={
     {k:'status',l:'STATUS',type:'select',opts:['ALIVE','DEAD','HOSTILE','UNKNOWN','MIA']},
     {k:'description',l:'PROFILE',type:'textarea',rows:4},
     {k:'notes',l:'FIELD NOTES',type:'textarea',rows:3},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   locations:[
     {k:'name',l:'DESIGNATION',type:'text',req:true},
@@ -139,6 +191,7 @@ const FIELDS={
     {k:'wounds',l:'WOUND CONDITIONS',type:'textarea',rows:2},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','DEAD','PANICKING','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   crew_alien:[
     {k:'name',l:'NAME',type:'text',req:true},
@@ -157,6 +210,7 @@ const FIELDS={
     {k:'criticalInjury',l:'CRITICAL INJURY (if broken)',type:'text'},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','BROKEN','DEAD','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_mothership:[
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
@@ -167,6 +221,7 @@ const FIELDS={
     {k:'instinct',l:'INSTINCT',type:'textarea',rows:2},
     {k:'combat',l:'COMBAT (attack rolls, combat stats)',type:'textarea',rows:3},
     {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_alien:[
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
@@ -177,6 +232,7 @@ const FIELDS={
     {k:'skills',l:'SKILLS',type:'textarea',rows:2},
     {k:'combat',l:'COMBAT (attack rolls & dice)',type:'textarea',rows:3},
     {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
 };
 const TABS=[
@@ -921,7 +977,7 @@ function App(){
     secHead:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'16px'},
     secTitle:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
     addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',cursor:'pointer'},
-    card:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'14px 16px',marginBottom:'8px',cursor:'pointer'},
+    card:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'14px 16px',marginBottom:'8px',cursor:'pointer',position:'relative'},
     cardTitle:{fontSize:'14px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
     cardMeta:{fontSize:'10px',color:t.mu,letterSpacing:'1px',lineHeight:'1.6'},
     badge:(s)=>({display:'inline-block',padding:'2px 6px',fontSize:'9px',letterSpacing:'1px',border:`1px solid ${STATUS_C[s]||t.mu}`,color:STATUS_C[s]||t.mu,borderRadius:'2px'}),
@@ -946,10 +1002,24 @@ function App(){
     viewVal:{fontSize:'13px',color:t.tx,lineHeight:'1.6',whiteSpace:'pre-wrap'},
   };
 
+  // ── CARD THUMBNAIL helper ────────────────────────────────────────────────
+  const cardThumb=(item)=>{
+    const src=extractImageUrl(item.imageUrl);
+    if(!src)return null;
+    return React.createElement('img',{
+      src,
+      style:{position:'absolute',top:'10px',right:'10px',width:'52px',height:'52px',objectFit:'cover',borderRadius:'2px',border:`1px solid ${t.bd}`,opacity:0.88},
+      onError:e=>{e.target.style.display='none';}
+    });
+  };
+
   const renderBestiaryCard=(item)=>{
     const isMothership=game==='mothership';
+    const thumb=cardThumb(item);
+    const padRight=thumb?{paddingRight:'72px'}:{};
     return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px'}},
+      thumb,
+      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:'8px',...padRight}},
         React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN CREATURE'),item.instinct&&React.createElement('div',{style:{...S.cardMeta,fontStyle:'italic',marginTop:'2px'}},`"${item.instinct.slice(0,60)}${item.instinct.length>60?'...':''}"`)  ),
         item.category&&React.createElement('span',{style:S.catBadge(item.category)},item.category)
       ),
@@ -972,43 +1042,55 @@ function App(){
       item.summary&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.summary.slice(0,130)}${item.summary.length>130?'...':''}`),
       item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase())))
     );
-    if(tab==='npcs')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},[item.role,item.affiliation].filter(Boolean).join(' \u00b7 '))),
-        item.status&&React.createElement('span',{style:S.badge(item.status)},item.status)
-      ),
-      item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
-    );
-    if(tab==='locations'){const threat=item.threat?parseInt(item.threat[0]):0;return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.type||'')),React.createElement('div',{style:{display:'flex',gap:'3px'}},[1,2,3,4,5].map(i=>React.createElement('div',{key:i,style:{width:'8px',height:'8px',borderRadius:'50%',background:i<=threat?'#f87171':t.bd}})))),item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`));}
-    if(tab==='crew')return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.role||'')),
-        React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}},item.status&&React.createElement('span',{style:S.badge(item.status)},item.status),(item.stressCur!==undefined&&item.stressCur!=='')&&React.createElement('span',{style:{fontSize:'9px',color:t.mu}},`STRESS: ${item.stressCur}`))
-      ),
-      game==='mothership'&&React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginTop:'8px'}},
-        item.combat&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'COMBAT'),React.createElement('div',{style:S.statVal},item.combat)),
-        item.healthMax&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'HEALTH'),React.createElement('div',{style:S.statVal},item.healthMax)),
-        item.maxWounds&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'MAX WND'),React.createElement('div',{style:S.statVal},item.maxWounds)),
-        item.armorPoints&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'AP'),React.createElement('div',{style:S.statVal},item.armorPoints))
-      ),
-      game==='alien'&&React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginTop:'8px'}},
-        item.strength&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'STR'),React.createElement('div',{style:S.statVal},item.strength)),
-        item.agility&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'AGL'),React.createElement('div',{style:S.statVal},item.agility)),
-        item.wits&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'WITS'),React.createElement('div',{style:S.statVal},item.wits)),
-        item.empathy&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'EMP'),React.createElement('div',{style:S.statVal},item.empathy)),
-        item.hp&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'HEALTH'),React.createElement('div',{style:S.statVal},item.hp)),
-        item.resolve&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'RESOLVE'),React.createElement('div',{style:S.statVal},item.resolve)),
-        (item.stress!==undefined&&item.stress!=='')&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'STRESS'),React.createElement('div',{style:S.statVal},item.stress))
-      ),
-      item.notes&&React.createElement('div',{style:{...S.cardMeta,marginTop:'6px'}},`${item.notes.slice(0,80)}${item.notes.length>80?'...':''}`)
-    );
+    if(tab==='npcs'){
+      const thumb=cardThumb(item);
+      const padRight=thumb?{paddingRight:'72px'}:{};
+      return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+        thumb,
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',...padRight}},
+          React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},[item.role,item.affiliation].filter(Boolean).join(' \u00b7 '))),
+          item.status&&React.createElement('span',{style:S.badge(item.status)},item.status)
+        ),
+        item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px',...padRight}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`)
+      );
+    }
+    if(tab==='locations'){const threat=item.threat?parseInt(item.threat[0]):0;return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center'}},React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.type||'')),React.createElement('div',{style:{display:'flex',gap:'3px'}},[1,2,3,4,5].map(i=>React.createElement('div',{key:i,style:{width:'8px',height:'8px',borderRadius:'50%',background:i<=threat?'#f87171':t.bd}})))),item.description&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.description.slice(0,100)}${item.description.length>100?'...':''}`))}
+    if(tab==='crew'){
+      const thumb=cardThumb(item);
+      const padRight=thumb?{paddingRight:'72px'}:{};
+      return React.createElement('div',{key:item.id,style:S.card,onClick:()=>openView(item)},
+        thumb,
+        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start',...padRight}},
+          React.createElement('div',null,React.createElement('div',{style:S.cardTitle},item.name||'UNKNOWN'),React.createElement('div',{style:S.cardMeta},item.role||'')),
+          React.createElement('div',{style:{display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'4px'}},item.status&&React.createElement('span',{style:S.badge(item.status)},item.status),(item.stressCur!==undefined&&item.stressCur!=='')&&React.createElement('span',{style:{fontSize:'9px',color:t.mu}},`STRESS: ${item.stressCur}`))
+        ),
+        game==='mothership'&&React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginTop:'8px'}},
+          item.combat&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'COMBAT'),React.createElement('div',{style:S.statVal},item.combat)),
+          item.healthMax&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'HEALTH'),React.createElement('div',{style:S.statVal},item.healthMax)),
+          item.maxWounds&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'MAX WND'),React.createElement('div',{style:S.statVal},item.maxWounds)),
+          item.armorPoints&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'AP'),React.createElement('div',{style:S.statVal},item.armorPoints))
+        ),
+        game==='alien'&&React.createElement('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginTop:'8px'}},
+          item.strength&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'STR'),React.createElement('div',{style:S.statVal},item.strength)),
+          item.agility&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'AGL'),React.createElement('div',{style:S.statVal},item.agility)),
+          item.wits&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'WITS'),React.createElement('div',{style:S.statVal},item.wits)),
+          item.empathy&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'EMP'),React.createElement('div',{style:S.statVal},item.empathy)),
+          item.hp&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'HEALTH'),React.createElement('div',{style:S.statVal},item.hp)),
+          item.resolve&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'RESOLVE'),React.createElement('div',{style:S.statVal},item.resolve)),
+          (item.stress!==undefined&&item.stress!=='')&&React.createElement('div',{style:{...S.statCell,flex:'0 0 auto'}},React.createElement('div',{style:S.statLbl},'STRESS'),React.createElement('div',{style:S.statVal},item.stress))
+        ),
+        item.notes&&React.createElement('div',{style:{...S.cardMeta,marginTop:'6px'}},`${item.notes.slice(0,80)}${item.notes.length>80?'...':''}`)
+      );
+    }
     return null;
   };
 
   const renderBestiaryView=(item)=>{
     const isMothership=game==='mothership';
     const statFields=isMothership?[{k:'hp',l:'HP'},{k:'wounds',l:'MAX WOUNDS'},{k:'speed',l:'SPEED'}]:[{k:'hp',l:'HP'},{k:'armor',l:'ARMOR LEVEL'},{k:'speed',l:'SPEED'}];
+    const imgSrc=extractImageUrl(item.imageUrl);
     return React.createElement('div',null,
+      imgSrc&&React.createElement(ImageDisplay,{src:imgSrc,t}),
       React.createElement('div',{style:S.statBlock},statFields.map(f=>item[f.k]?React.createElement('div',{key:f.k,style:S.statCell},React.createElement('div',{style:S.statLbl},f.l),React.createElement('div',{style:S.statVal},item[f.k])):null)),
       item.category&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('span',{style:S.catBadge(item.category)},item.category)),
       item.instinct&&React.createElement('div',{style:{marginBottom:'12px'}},React.createElement('div',{style:S.viewLbl},'INSTINCT'),React.createElement(MarkdownView,{text:item.instinct,style:{...S.viewVal,fontStyle:'italic',color:t.mu}})),
@@ -1021,10 +1103,41 @@ function App(){
 
   const renderViewContent=(item)=>{
     if(modal?.tab==='bestiary')return[renderBestiaryView(item)];
-    return getFields(modal?.tab||tab).map(f=>{const val=item[f.k];if(val===undefined||val===null||val==='')return null;const isMarkdown=f.type==='textarea';return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},React.createElement('div',{style:S.lbl},f.l),isMarkdown?React.createElement('div',{className:'md-view'},React.createElement(MarkdownView,{text:val,style:{fontSize:'13px',color:t.tx}})):React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6'}},val));});
+    return getFields(modal?.tab||tab).map(f=>{
+      const val=item[f.k];
+      if(val===undefined||val===null||val==='')return null;
+      // ── Render imageUrl as an actual image ──────────────────────────────
+      if(f.k==='imageUrl'){
+        const src=extractImageUrl(val);
+        if(!src)return null;
+        return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
+          React.createElement('div',{style:S.lbl},'IMAGE'),
+          React.createElement(ImageDisplay,{src,t})
+        );
+      }
+      const isMarkdown=f.type==='textarea';
+      return React.createElement('div',{key:f.k,style:{marginBottom:'14px'}},
+        React.createElement('div',{style:S.lbl},f.l),
+        isMarkdown?React.createElement('div',{className:'md-view'},React.createElement(MarkdownView,{text:val,style:{fontSize:'13px',color:t.tx}})):
+        React.createElement('div',{style:{fontSize:'13px',color:t.tx,lineHeight:'1.6'}},val)
+      );
+    });
   };
 
-  const renderForm=()=>getFields(modal?.tab||tab).map(f=>React.createElement('div',{key:f.k,style:S.field},React.createElement('label',{style:S.lbl},`${f.l}${f.req?' *':''}`),f.type==='textarea'?React.createElement('textarea',{rows:f.rows||4,style:S.ta,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))}):f.type==='select'?React.createElement('select',{style:S.sel,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))},React.createElement('option',{value:''},'-- SELECT --'),...(f.opts||[]).map(o=>React.createElement('option',{key:o,value:o},o))):React.createElement('input',{type:f.type,style:S.inp,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})));
+  const renderForm=()=>getFields(modal?.tab||tab).map(f=>{
+    if(f.k==='imageUrl'){
+      return React.createElement('div',{key:f.k,style:S.field},
+        React.createElement('label',{style:S.lbl},f.l),
+        React.createElement(ImageUrlField,{value:form[f.k]||'',onChange:v=>setForm(p=>({...p,imageUrl:v})),t,S})
+      );
+    }
+    return React.createElement('div',{key:f.k,style:S.field},
+      React.createElement('label',{style:S.lbl},`${f.l}${f.req?' *':''}`),
+      f.type==='textarea'?React.createElement('textarea',{rows:f.rows||4,style:S.ta,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))}):
+      f.type==='select'?React.createElement('select',{style:S.sel,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))},React.createElement('option',{value:''},'-- SELECT --'),...(f.opts||[]).map(o=>React.createElement('option',{key:o,value:o},o))):
+      React.createElement('input',{type:f.type,style:S.inp,value:form[f.k]||'',onChange:e=>setForm(p=>({...p,[f.k]:e.target.value}))})
+    );
+  });
 
   if(!loaded)return React.createElement('div',{style:{...S.root,display:'flex',alignItems:'center',justifyContent:'center',height:'100vh'}},React.createElement('div',{style:{color:t.a,fontFamily:"'VT323',monospace",fontSize:'28px',letterSpacing:'6px'}},'INITIALIZING...'));
 
