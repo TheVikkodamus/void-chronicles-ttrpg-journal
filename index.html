@@ -143,7 +143,7 @@ const storage={
   set:async(key,value)=>{try{localStorage.setItem(key,value);return{key,value};}catch{return null;}}
 };
 const THEMES={
-  mothership:{a:'#fbbf24',rgb:'251,191,36',bg:'#020a04',panel:'#071009',card:'#0d150d',bd:'#1e3d1e',tx:'#86efac',mu:'#3a5c3a',name:'MOTHERSHIP RPG',sub:'WARDEN TERMINAL v2.1'},
+  mothership:{a:'#fbbf24',rgb:'251,191,36',bg:'#020a04',panel:'#071009',card:'#0d150d',bd:'#1e3d1e',tx:'#86efac',mu:'#3a5c3a',name:'MOTHERSHIP RPG',sub:'WARDEN TERMINAL v3.3'},
   alien:{a:'#4ade80',rgb:'74,222,128',bg:'#0c0700',panel:'#130e01',card:'#1a1200',bd:'#321d00',tx:'#fde68a',mu:'#7a5a1a',name:'ALIEN RPG',sub:'GAME MU/TH/UR. DATABANK'}
 };
 const FIELDS={
@@ -674,87 +674,6 @@ function RulesTab({t,game,homebrew,onHomebrewChange}){
           )
         )
       )
-    )
-  );
-}
-// ─── MUSIC + PLAYER ─────────────────────────────────────────────────────────
-const MOOD_OPTS=['AMBIENT','EXPLORATION','TENSION','COMBAT','HORROR','OTHER'];
-function getYTId(url){if(!url)return null;const m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([A-Za-z0-9_-]{11})/);return m?m[1]:null;}
-
-function MusicTab({t,game,playlist,onPlaylistChange,activeTrackId,onTrackChange}){
-  const [addForm,setAddForm]=useState(null);const [form,setForm]=useState({});const [editId,setEditId]=useState(null);const [delId,setDelId]=useState(null);const [filterMood,setFilterMood]=useState('ALL');
-  const tracks=playlist||[];const filtered=filterMood==='ALL'?tracks:tracks.filter(tr=>tr.mood===filterMood);
-  const saveTrack=()=>{if(!form.title?.trim()||!form.url?.trim())return;const ytId=getYTId(form.url);if(!ytId){alert('Could not find a YouTube video ID.');return;}const entry={...form,ytId,id:editId||uid(),createdAt:Date.now()};let updated=editId?tracks.map(t=>t.id===editId?entry:t):[...tracks,entry];onPlaylistChange(updated);setAddForm(null);setForm({});setEditId(null);};
-  const del=(id)=>{onPlaylistChange(tracks.filter(tr=>tr.id!==id));if(activeTrackId===id)onTrackChange(null);setDelId(null);};
-  const S={
-    intro:{background:t.card,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'12px 16px',marginBottom:'16px',fontSize:'9px',color:t.mu,letterSpacing:'1px',lineHeight:'1.7'},
-    head:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'14px'},
-    addBtn:{padding:'6px 14px',background:'none',border:`1px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',cursor:'pointer'},
-    filterRow:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'14px'},
-    filterBtn:(active)=>({padding:'4px 10px',background:'none',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',border:`1px solid ${active?t.a:t.bd}`,color:active?t.a:t.mu,borderRadius:'2px',cursor:'pointer'}),
-    card:(isActive)=>({background:isActive?`rgba(${t.rgb},0.06)`:t.card,border:`1px solid ${isActive?t.a:t.bd}`,borderRadius:'2px',padding:'12px 14px',marginBottom:'8px',cursor:'pointer'}),
-    cardTitle:{fontSize:'13px',letterSpacing:'1px',color:t.tx,marginBottom:'4px'},
-    cardMeta:{fontSize:'9px',color:t.mu,letterSpacing:'1px'},
-    moodTag:(m)=>({display:'inline-block',padding:'1px 6px',fontSize:'8px',letterSpacing:'1px',border:`1px solid ${t.bd}`,color:t.mu,borderRadius:'2px',marginLeft:'6px'}),
-    playBtn:{padding:'3px 10px',background:'none',border:`1px solid ${t.a}`,color:t.a,fontFamily:'inherit',fontSize:'9px',borderRadius:'2px',cursor:'pointer'},
-    empty:{textAlign:'center',padding:'40px 20px',color:t.mu,fontSize:'10px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
-    overlay:{position:'fixed',inset:0,background:'rgba(0,0,0,0.88)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:2000,padding:'20px'},
-    mbox:{background:t.panel,border:`1px solid ${t.a}`,borderRadius:'2px',padding:'24px',width:'100%',maxWidth:'500px',maxHeight:'85vh',overflowY:'auto'},
-    mTitle:{fontSize:'13px',letterSpacing:'3px',color:t.a,marginBottom:'20px'},
-    lbl:{display:'block',fontSize:'9px',letterSpacing:'2px',color:t.mu,marginBottom:'5px'},
-    inp:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',marginBottom:'12px'},
-    sel:{width:'100%',background:t.bg,border:`1px solid ${t.bd}`,borderRadius:'2px',padding:'8px 10px',color:t.tx,fontFamily:'inherit',fontSize:'12px',outline:'none',marginBottom:'12px'},
-    btnRow:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'8px'},
-    btn:(v)=>({padding:'7px 16px',fontFamily:'inherit',fontSize:'10px',letterSpacing:'2px',border:`1px solid ${v==='primary'?t.a:v==='danger'?'#f87171':t.bd}`,color:v==='primary'?t.a:v==='danger'?'#f87171':t.mu,background:'none',borderRadius:'2px',cursor:'pointer'}),
-  };
-  const isValid=form.title?.trim()&&form.url?.trim();
-  return React.createElement('div',null,
-    React.createElement('div',{style:S.intro},'Paste any YouTube URL to add it to your playlist. Click a track to load it in the player at the bottom.'),
-    React.createElement('div',{style:S.head},React.createElement('div',{style:{fontSize:'10px',letterSpacing:'4px',color:t.mu}},`${tracks.length} TRACK${tracks.length!==1?'S':''}`),React.createElement('button',{style:S.addBtn,onClick:()=>{setForm({mood:'AMBIENT'});setEditId(null);setAddForm('add');}},'+ ADD TRACK')),
-    React.createElement('div',{style:S.filterRow},['ALL',...MOOD_OPTS].map(m=>React.createElement('button',{key:m,style:S.filterBtn(filterMood===m),onClick:()=>setFilterMood(m)},m))),
-    filtered.length===0?React.createElement('div',{style:S.empty},tracks.length===0?'NO TRACKS YET \u2014 PRESS + ADD TRACK':'NO TRACKS IN THIS MOOD')
-    :filtered.map(track=>React.createElement('div',{key:track.id,style:S.card(activeTrackId===track.id),onClick:()=>onTrackChange(track.id)},
-      React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'flex-start'}},
-        React.createElement('div',null,React.createElement('div',{style:S.cardTitle},activeTrackId===track.id?'\u25b6 ':'\u25b7 ',track.title),React.createElement('div',{style:S.cardMeta},track.mood&&React.createElement('span',{style:S.moodTag(track.mood)},track.mood),track.artist&&React.createElement('span',{style:{marginLeft:'8px'}},track.artist))),
-        React.createElement('div',{style:{display:'flex',gap:'6px',flexShrink:0}},
-          React.createElement('button',{style:S.playBtn,onClick:(e)=>{e.stopPropagation();onTrackChange(track.id);}},activeTrackId===track.id?'NOW PLAYING':'PLAY'),
-          React.createElement('button',{style:{...S.btn('ghost'),padding:'3px 8px',fontSize:'8px'},onClick:(e)=>{e.stopPropagation();setForm({...track});setEditId(track.id);setAddForm('edit');}},'EDIT'),
-          React.createElement('button',{style:{...S.btn('danger'),padding:'3px 8px',fontSize:'8px'},onClick:(e)=>{e.stopPropagation();setDelId(track.id);}},'\xd7')
-        )
-      )
-    )),
-    addForm&&React.createElement('div',{style:S.overlay,onClick:e=>{if(e.target===e.currentTarget){setAddForm(null);setForm({});setEditId(null);}}},
-      React.createElement('div',{style:S.mbox},
-        React.createElement('div',{style:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'}},React.createElement('div',{style:S.mTitle},editId?'EDIT TRACK':'+ ADD TRACK'),React.createElement('button',{style:{...S.btn('ghost'),fontSize:'18px',padding:'0 8px',border:'none'},onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'x')),
-        React.createElement('label',{style:S.lbl},'YOUTUBE URL *'),React.createElement('input',{style:S.inp,value:form.url||'',placeholder:'https://www.youtube.com/watch?v=...',onChange:e=>setForm(p=>({...p,url:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'TITLE *'),React.createElement('input',{style:S.inp,value:form.title||'',placeholder:'Track name...',onChange:e=>setForm(p=>({...p,title:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'ARTIST / SOURCE'),React.createElement('input',{style:S.inp,value:form.artist||'',placeholder:'Composer or channel name...',onChange:e=>setForm(p=>({...p,artist:e.target.value}))}),
-        React.createElement('label',{style:S.lbl},'MOOD CATEGORY'),React.createElement('select',{style:S.sel,value:form.mood||'AMBIENT',onChange:e=>setForm(p=>({...p,mood:e.target.value}))},MOOD_OPTS.map(m=>React.createElement('option',{key:m,value:m},m))),
-        React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>{setAddForm(null);setForm({});setEditId(null);}},'CANCEL'),React.createElement('button',{style:{...S.btn('primary'),opacity:isValid?1:0.4},onClick:saveTrack,disabled:!isValid},editId?'UPDATE':'ADD TRACK'))
-      )
-    ),
-    delId&&React.createElement('div',{style:S.overlay},React.createElement('div',{style:{...S.mbox,maxWidth:'320px',textAlign:'center'}},React.createElement('div',{style:{...S.mTitle,color:'#f87171'}},'REMOVE TRACK'),React.createElement('div',{style:{color:t.mu,fontSize:'11px',letterSpacing:'1px',marginBottom:'24px'}},'THIS CANNOT BE UNDONE'),React.createElement('div',{style:S.btnRow},React.createElement('button',{style:S.btn('ghost'),onClick:()=>setDelId(null)},'CANCEL'),React.createElement('button',{style:S.btn('danger'),onClick:()=>del(delId)},'REMOVE'))))
-  );
-}
-
-function YTPlayer({track,t,onClose,onNext,onPrev}){
-  const S={
-    bar:{position:'fixed',bottom:0,left:0,right:0,background:t.panel,borderTop:`2px solid ${t.a}`,zIndex:5000,display:'flex',alignItems:'stretch',boxShadow:`0 -6px 30px rgba(${t.rgb},0.18)`},
-    iframeWrap:{flexShrink:0,width:'280px',height:'158px',position:'relative',background:'#000'},
-    iframe:{width:'100%',height:'100%',border:'none',display:'block'},
-    hint:{position:'absolute',bottom:'4px',left:0,right:0,textAlign:'center',fontSize:'8px',color:'rgba(255,255,255,0.5)',pointerEvents:'none'},
-    right:{flex:1,display:'flex',flexDirection:'column',justifyContent:'space-between',padding:'10px 14px'},
-    title:{fontSize:'12px',letterSpacing:'1px',color:t.tx,whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',marginBottom:'4px'},
-    mood:{fontSize:'8px',letterSpacing:'2px',color:t.mu},
-    controls:{display:'flex',gap:'6px',alignItems:'center',marginTop:'10px'},
-    ctrlBtn:{padding:'5px 12px',background:'none',border:`1px solid ${t.bd}`,color:t.mu,fontFamily:'inherit',fontSize:'11px',borderRadius:'2px',cursor:'pointer'},
-    closeBtn:{padding:'5px 12px',background:'none',border:'1px solid #f87171',color:'#f87171',fontFamily:'inherit',fontSize:'9px',letterSpacing:'2px',borderRadius:'2px',cursor:'pointer',marginLeft:'auto'},
-  };
-  return React.createElement('div',{style:S.bar},
-    React.createElement('div',{style:S.iframeWrap},React.createElement('iframe',{key:track.ytId,style:S.iframe,src:`https://www.youtube.com/embed/${track.ytId}?autoplay=1&rel=0&modestbranding=1`,allow:'autoplay; encrypted-media; fullscreen',allowFullScreen:true,title:track.title}),React.createElement('div',{style:S.hint},'click \u25b6 to play')),
-    React.createElement('div',{style:S.right},
-      React.createElement('div',null,React.createElement('div',{style:{fontSize:'8px',letterSpacing:'3px',color:t.a,marginBottom:'4px'}},'NOW PLAYING'),React.createElement('div',{style:S.title},track.title),React.createElement('div',{style:S.mood},[track.mood,track.artist].filter(Boolean).join(' \u00b7 '))),
-      React.createElement('div',{style:S.controls},React.createElement('button',{style:S.ctrlBtn,onClick:onPrev},'\u25c4\u25c4 PREV'),React.createElement('button',{style:S.ctrlBtn,onClick:onNext},'NEXT \u25ba\u25ba'),React.createElement('button',{style:S.closeBtn,onClick:onClose},'\u25a0 STOP'))
     )
   );
 }
