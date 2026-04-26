@@ -1,3 +1,30 @@
+
+Void Chronicles
+/
+What can I help you with today?
+
+You're out of extra usage ∙ Your limit resets Monday at 9:00 PM
+Buy more
+
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>VOID CHRONICLES</title> <style> @import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap'); *{box-sizing:border-box;
+
+pasted
+
+
+Let's remove the print tab.
+
+
+
+Here is the code:
+
+
+Claude is AI and can make mistakes. Please double-check responses.
+
+Pasted content
+108.27 KB •1,137 lines
+•
+Formatting may be inconsistent from source
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -195,7 +222,6 @@ const FIELDS={
   ],
   crew_alien:[
     {k:'name',l:'NAME',type:'text',req:true},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'role',l:'ARCHETYPE',type:'select',opts:['COLONIAL MARINE','ROUGHNECK','COMPANY AGENT','PILOT','MEDIC','SCIENTIST','ANDROID','OTHER']},
     {k:'strength',l:'STRENGTH (1-5)',type:'number'},
     {k:'agility',l:'AGILITY (1-5)',type:'number'},
@@ -211,6 +237,7 @@ const FIELDS={
     {k:'criticalInjury',l:'CRITICAL INJURY (if broken)',type:'text'},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','BROKEN','DEAD','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_mothership:[
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
@@ -236,9 +263,10 @@ const FIELDS={
   ],
 };
 const TABS=[
-  {id:'bestiary',label:'BESTIARY'}, {id:'npcs',label:'CONTACTS'}, {id:'crew',label:'CREW'}, {id:'dice',label:'DICE'},
-  {id:'encounter',label:'ENCOUNTER'}, {id:'locations',label:'SECTORS'}, {id:'sessions',label:'SESSIONS'},
- ];
+  {id:'sessions',label:'SESSIONS'},{id:'npcs',label:'CONTACTS'},{id:'locations',label:'SECTORS'},
+  {id:'crew',label:'CREW'},{id:'bestiary',label:'BESTIARY'},{id:'encounter',label:'ENCOUNTER'},
+  {id:'dice',label:'DICE'},{id:'rules',label:'RULES'},{id:'print',label:'PRINT'},
+];
 const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',PANICKING:'#fb923c',BROKEN:'#fb923c',UNKNOWN:'#94a3b8',MIA:'#94a3b8'};
 const CATEGORY_C={XENOMORPH:'#f87171',FACEHUGGER:'#fb923c',PARASITE:'#fb923c',SYNTHETIC:'#94a3b8',ALIEN:'#c084fc',PREDATOR:'#f87171',MUTANT:'#fb923c',INFECTED:'#f87171',UNKNOWN:'#94a3b8',UNDEAD:'#c084fc'};
 const TYPE_C={crew:'#4ade80',monster:'#f87171',npc:'#94a3b8'};
@@ -259,7 +287,6 @@ function performRoll(sides,quantity,mode){
   return{rolls,kept:rolls,dropped:[],total:rolls.reduce((a,b)=>a+b,0),mode,sides,quantity};
 }
 function parseHitBoxes(val){if(!val)return 4;const n=parseInt(val);if(!isNaN(n)&&n>0)return n;return 4;}
-  
 // ─── DICE TAB ───────────────────────────────────────────────────────────────
 function DiceTab({t,game}){
   const isAlien=game==='alien';
@@ -501,7 +528,6 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     sourceName:{fontSize:'11px',color:t.tx,letterSpacing:'1px'},sourceMeta:{fontSize:'9px',color:t.mu},
     empty:{textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px'},
   };
-  
   const statTag=(label,val)=>val?React.createElement('span',{style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'2px 6px',borderRadius:'2px',letterSpacing:'1px'}},React.createElement('span',{style:{color:t.mu,marginRight:'3px'}},label+':'),React.createElement('span',{style:{color:t.tx}},val)):null;
 
   const renderCombatant=(c)=>{
@@ -800,6 +826,32 @@ function CrewSheet({member,game}){
   );
 }
 
+function PrintTab({game,crew,t}){
+  const S={
+    header:{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'20px'},
+    title:{fontSize:'10px',letterSpacing:'4px',color:t.mu},
+    printBtn:{padding:'8px 20px',background:'none',border:`2px solid ${t.a}`,borderRadius:'2px',color:t.a,fontFamily:'inherit',fontSize:'11px',letterSpacing:'3px',cursor:'pointer'},
+    grid:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(360px,1fr))',gap:'16px'},
+    empty:{textAlign:'center',padding:'60px 20px',color:t.mu,fontSize:'11px',letterSpacing:'2px',border:`1px dashed ${t.bd}`,borderRadius:'2px'},
+    note:{fontSize:'9px',color:t.mu,letterSpacing:'1px',marginBottom:'16px',lineHeight:'1.6'},
+  };
+  return React.createElement('div',null,
+    React.createElement('div',{style:S.header},
+      React.createElement('div',null,React.createElement('div',{style:S.title},'CHARACTER SHEETS'),React.createElement('div',{style:{...S.note,marginTop:'4px',marginBottom:0}},`${crew.length} CREW MEMBER${crew.length!==1?'S':''} \u00b7 ${game==='mothership'?'MOTHERSHIP RPG':'ALIEN RPG'}`)),
+      React.createElement('button',{style:S.printBtn,className:'no-print',onClick:()=>window.print()},'PRINT ALL')
+    ),
+    React.createElement('div',{style:S.note,className:'no-print'},'Sheets are interactive \u2014 click wound boxes to mark damage, use +/\u2212 for HP and stress. RESET SESSION clears session data.'),
+    crew.length===0
+      ?React.createElement('div',{style:S.empty},React.createElement('div',{style:{fontSize:'28px',marginBottom:'12px',opacity:0.3}},'[  ]'),'NO CREW ENTRIES FOUND',React.createElement('br'),React.createElement('span',{style:{fontSize:'10px',opacity:0.5}},'ADD CREW IN THE CREW TAB FIRST'))
+      :React.createElement('div',{style:S.grid},crew.map(member=>React.createElement('div',{key:member.id},React.createElement(CrewSheet,{member,game}))))
+  );
+}
+
+function printSingleSheet(member,game){
+  const div=document.createElement('div');div.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;padding:20px;overflow:auto;';div.className='print-single';document.body.appendChild(div);
+  const root=ReactDOM.createRoot(div);root.render(React.createElement(CrewSheet,{member,game}));
+  setTimeout(()=>{window.print();setTimeout(()=>{root.unmount();div.remove();},300);},200);
+}
 // ─── APP ────────────────────────────────────────────────────────────────────
 function App(){
   const [game,setGame]=useState('mothership');
@@ -1000,7 +1052,6 @@ function App(){
     return getFields(modal?.tab||tab).map(f=>{
       const val=item[f.k];
       if(val===undefined||val===null||val==='')return null;
-      
       // ── Render imageUrl as an actual image ──────────────────────────────
       if(f.k==='imageUrl'){
         const src=extractImageUrl(val);
@@ -1054,7 +1105,7 @@ function App(){
       React.createElement('div',{style:S.tabBar},TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label)))
     ),
     React.createElement('div',{style:S.main},
-      :tab==='print'?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
+      tab==='print'?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
       :tab==='rules'?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
       :tab==='dice'?React.createElement(DiceTab,{t,game})
       :tab==='encounter'?React.createElement(EncounterTab,{t,game,encounter:gd().encounter,crew:gd().crew||[],bestiary:gd().bestiary||[],onUpdate:updateEncounter})
