@@ -195,6 +195,7 @@ const FIELDS={
   ],
   crew_alien:[
     {k:'name',l:'NAME',type:'text',req:true},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'role',l:'ARCHETYPE',type:'select',opts:['COLONIAL MARINE','ROUGHNECK','COMPANY AGENT','PILOT','MEDIC','SCIENTIST','ANDROID','OTHER']},
     {k:'strength',l:'STRENGTH (1-5)',type:'number'},
     {k:'agility',l:'AGILITY (1-5)',type:'number'},
@@ -210,7 +211,6 @@ const FIELDS={
     {k:'criticalInjury',l:'CRITICAL INJURY (if broken)',type:'text'},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','BROKEN','DEAD','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_mothership:[
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
@@ -259,6 +259,7 @@ function performRoll(sides,quantity,mode){
   return{rolls,kept:rolls,dropped:[],total:rolls.reduce((a,b)=>a+b,0),mode,sides,quantity};
 }
 function parseHitBoxes(val){if(!val)return 4;const n=parseInt(val);if(!isNaN(n)&&n>0)return n;return 4;}
+  
 // ─── DICE TAB ───────────────────────────────────────────────────────────────
 function DiceTab({t,game}){
   const isAlien=game==='alien';
@@ -500,6 +501,7 @@ function EncounterTab({t,game,encounter,crew,bestiary,onUpdate}){
     sourceName:{fontSize:'11px',color:t.tx,letterSpacing:'1px'},sourceMeta:{fontSize:'9px',color:t.mu},
     empty:{textAlign:'center',padding:'30px',color:t.mu,fontSize:'10px',letterSpacing:'2px'},
   };
+  
   const statTag=(label,val)=>val?React.createElement('span',{style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'2px 6px',borderRadius:'2px',letterSpacing:'1px'}},React.createElement('span',{style:{color:t.mu,marginRight:'3px'}},label+':'),React.createElement('span',{style:{color:t.tx}},val)):null;
 
   const renderCombatant=(c)=>{
@@ -998,6 +1000,7 @@ function App(){
     return getFields(modal?.tab||tab).map(f=>{
       const val=item[f.k];
       if(val===undefined||val===null||val==='')return null;
+      
       // ── Render imageUrl as an actual image ──────────────────────────────
       if(f.k==='imageUrl'){
         const src=extractImageUrl(val);
@@ -1051,7 +1054,7 @@ function App(){
       React.createElement('div',{style:S.tabBar},TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label)))
     ),
     React.createElement('div',{style:S.main},
-      tab==='print'?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
+     
       :tab==='rules'?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
       :tab==='dice'?React.createElement(DiceTab,{t,game})
       :tab==='encounter'?React.createElement(EncounterTab,{t,game,encounter:gd().encounter,crew:gd().crew||[],bestiary:gd().bestiary||[],onUpdate:updateEncounter})
@@ -1069,7 +1072,6 @@ function App(){
               ...renderViewContent(modal.item),
               React.createElement('div',{style:S.btnRow},
                 React.createElement('button',{style:S.btn('danger'),onClick:()=>setDelConfirm(modal.item.id)},'DELETE'),
-                modal.tab==='crew'&&React.createElement('button',{style:{...S.btn('ghost'),borderColor:'#94a3b8',color:'#94a3b8'},onClick:()=>printSingleSheet(modal.item,game)},'PRINT'),
                 React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CLOSE'),
                 React.createElement('button',{style:S.btn('primary'),onClick:()=>openEdit(modal.item)},'EDIT')
               )
