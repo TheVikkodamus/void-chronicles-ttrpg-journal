@@ -1072,6 +1072,7 @@ function App(){
               ...renderViewContent(modal.item),
               React.createElement('div',{style:S.btnRow},
                 React.createElement('button',{style:S.btn('danger'),onClick:()=>setDelConfirm(modal.item.id)},'DELETE'),
+                modal.tab==='crew'&&React.createElement('button',{style:{...S.btn('ghost'),borderColor:'#94a3b8',color:'#94a3b8'},onClick:()=>printSingleSheet(modal.item,game)},'PRINT'),
                 React.createElement('button',{style:S.btn('ghost'),onClick:()=>setModal(null)},'CLOSE'),
                 React.createElement('button',{style:S.btn('primary'),onClick:()=>openEdit(modal.item)},'EDIT')
               )
