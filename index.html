@@ -25,10 +25,10 @@
   }
   .print-only { display: none; }
   .print-sheet-wrap { display: none; }
-  .crew-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
-  .crew-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
-  .crew-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
-  .crew-sheet .sh-grid{display:grid;gap:6px;margin-bottom:10px;}
+  .-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
+  .-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
+  .-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
+  .-sheet .sh-grid{display:grid;gap:6px;margin-bottom:10px;}
   .crew-sheet .sh-grid-4{grid-template-columns:repeat(4,1fr);}
   .crew-sheet .sh-grid-3{grid-template-columns:repeat(3,1fr);}
   .crew-sheet .sh-grid-2{grid-template-columns:repeat(2,1fr);}
@@ -173,6 +173,7 @@ const FIELDS={
   ],
   crew_mothership:[
     {k:'name',l:'NAME',type:'text',req:true},
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'role',l:'CLASS',type:'select',opts:['MARINE','SCIENTIST','TEAMSTER','ANDROID','WARDEN NPC','OTHER']},
     {k:'strength',l:'STRENGTH (2d10+25)',type:'number'},
     {k:'speed',l:'SPEED (2d10+25)',type:'number'},
@@ -191,7 +192,6 @@ const FIELDS={
     {k:'wounds',l:'WOUND CONDITIONS',type:'textarea',rows:2},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','DEAD','PANICKING','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   crew_alien:[
     {k:'name',l:'NAME',type:'text',req:true},
