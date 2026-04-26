@@ -1054,7 +1054,7 @@ function App(){
       React.createElement('div',{style:S.tabBar},TABS.map(t2=>React.createElement('button',{key:t2.id,style:S.tabBtn(t2.id),onClick:()=>setTab(t2.id)},t2.label)))
     ),
     React.createElement('div',{style:S.main},
-     
+      :tab==='print'?React.createElement(PrintTab,{game,crew:gd().crew||[],t})
       :tab==='rules'?React.createElement(RulesTab,{t,game,homebrew:gd().homebrew||[],onHomebrewChange:updateHomebrew})
       :tab==='dice'?React.createElement(DiceTab,{t,game})
       :tab==='encounter'?React.createElement(EncounterTab,{t,game,encounter:gd().encounter,crew:gd().crew||[],bestiary:gd().bestiary||[],onUpdate:updateEncounter})
