@@ -25,10 +25,11 @@
   }
   .print-only { display: none; }
   .print-sheet-wrap { display: none; }
-  .-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
-  .-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
-  .-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
-  .-sheet .sh-grid{display:grid;gap:6px;margin-bottom:10px;}
+  /* FIX 1: was .-sheet — selector never matched className="crew-sheet" */
+  .crew-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
+  .crew-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
+  .crew-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
+  .crew-sheet .sh-grid{display:grid;gap:6px;margin-bottom:10px;}
   .crew-sheet .sh-grid-4{grid-template-columns:repeat(4,1fr);}
   .crew-sheet .sh-grid-3{grid-template-columns:repeat(3,1fr);}
   .crew-sheet .sh-grid-2{grid-template-columns:repeat(2,1fr);}
@@ -77,7 +78,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 const {useState,useEffect,useCallback}=React;
-if(typeof marked!=='undefined'){marked.setOptions({breaks:true,gfm:true,pedantic:false});}
+/* FIX 3: marked.setOptions is deprecated in marked v9+ — use marked.use() instead */
+if(typeof marked!=='undefined'){marked.use({breaks:true,gfm:true,pedantic:false});}
 function MarkdownView({text,style}){
   if(!text)return null;
   const html=typeof marked!=='undefined'?marked.parse(String(text)):`<p>${String(text)}</p>`;
@@ -958,7 +960,8 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.cardTitle},`${item.sessionNumber?`[${String(item.sessionNumber).padStart(2,'0')}] `:''}${item.title||'UNTITLED'}`),item.date&&React.createElement('div',{style:S.cardMeta},item.date)),
         item.casualties&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'1px'}},`X ${item.casualties}`)
       ),
-      item.summary&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.summary.slice(0,130)}${item.summary.length>130?'...':''}`),
+      /* FIX 2: sessions schema uses 'notes', not 'summary' */
+      item.notes&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.notes.slice(0,130)}${item.notes.length>130?'...':''}`),
       item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase())))
     );
     if(tab==='npcs'){
@@ -1025,7 +1028,6 @@ function App(){
     return getFields(modal?.tab||tab).map(f=>{
       const val=item[f.k];
       if(val===undefined||val===null||val==='')return null;
-      // ── Render imageUrl as an actual image ──────────────────────────────
       if(f.k==='imageUrl'){
         const src=extractImageUrl(val);
         if(!src)return null;
