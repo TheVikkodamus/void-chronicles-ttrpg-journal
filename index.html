@@ -25,7 +25,6 @@
   }
   .print-only { display: none; }
   .print-sheet-wrap { display: none; }
-  /* FIX 1: was .-sheet — selector never matched className="crew-sheet" */
   .crew-sheet {font-family:'Share Tech Mono','Courier New',monospace;border:1.5px solid #000;padding:14px;page-break-inside:avoid;break-inside:avoid;background:#fff;color:#000;font-size:11px;line-height:1.4;}
   .crew-sheet .sh-title{font-size:15px;font-weight:bold;letter-spacing:2px;border-bottom:1.5px solid #000;padding-bottom:6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:flex-end;}
   .crew-sheet .sh-game{font-size:9px;letter-spacing:3px;opacity:0.6;}
@@ -78,7 +77,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 const {useState,useEffect,useCallback}=React;
-/* FIX 3: marked.setOptions is deprecated in marked v9+ — use marked.use() instead */
 if(typeof marked!=='undefined'){marked.use({breaks:true,gfm:true,pedantic:false});}
 function MarkdownView({text,style}){
   if(!text)return null;
@@ -960,7 +958,7 @@ function App(){
         React.createElement('div',null,React.createElement('div',{style:S.cardTitle},`${item.sessionNumber?`[${String(item.sessionNumber).padStart(2,'0')}] `:''}${item.title||'UNTITLED'}`),item.date&&React.createElement('div',{style:S.cardMeta},item.date)),
         item.casualties&&React.createElement('span',{style:{fontSize:'9px',color:'#f87171',letterSpacing:'1px'}},`X ${item.casualties}`)
       ),
-      /* FIX 2: sessions schema uses 'notes', not 'summary' */
+      // FIX 2: was item.summary — sessions schema uses 'notes'
       item.notes&&React.createElement('div',{style:{...S.cardMeta,marginTop:'8px'}},`${item.notes.slice(0,130)}${item.notes.length>130?'...':''}`),
       item.tags&&React.createElement('div',{style:{marginTop:'8px',display:'flex',gap:'4px',flexWrap:'wrap'}},item.tags.split(',').map(tag=>tag.trim()).filter(Boolean).map(tag=>React.createElement('span',{key:tag,style:{fontSize:'9px',color:t.mu,border:`1px solid ${t.bd}`,padding:'1px 5px'}},tag.toUpperCase())))
     );
