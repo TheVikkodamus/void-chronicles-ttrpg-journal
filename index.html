@@ -172,8 +172,8 @@ const FIELDS={
     {k:'notes',l:'FIELD NOTES',type:'textarea',rows:3},
   ],
   crew_mothership:[
-    {k:'name',l:'NAME',type:'text',req:true},
     {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
+    {k:'name',l:'NAME',type:'text',req:true},
     {k:'role',l:'CLASS',type:'select',opts:['MARINE','SCIENTIST','TEAMSTER','ANDROID','WARDEN NPC','OTHER']},
     {k:'strength',l:'STRENGTH (2d10+25)',type:'number'},
     {k:'speed',l:'SPEED (2d10+25)',type:'number'},
@@ -194,6 +194,7 @@ const FIELDS={
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
   ],
   crew_alien:[
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'name',l:'NAME',type:'text',req:true},
     {k:'role',l:'ARCHETYPE',type:'select',opts:['COLONIAL MARINE','ROUGHNECK','COMPANY AGENT','PILOT','MEDIC','SCIENTIST','ANDROID','OTHER']},
     {k:'strength',l:'STRENGTH (1-5)',type:'number'},
@@ -210,9 +211,9 @@ const FIELDS={
     {k:'criticalInjury',l:'CRITICAL INJURY (if broken)',type:'text'},
     {k:'status',l:'STATUS',type:'select',opts:['ACTIVE','BROKEN','DEAD','MIA','INFECTED']},
     {k:'notes',l:'NOTES',type:'textarea',rows:2},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_mothership:[
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
     {k:'category',l:'CATEGORY',type:'select',opts:['ALIEN','PARASITE','UNDEAD','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
     {k:'hp',l:'HP (hit points)',type:'number'},
@@ -221,18 +222,17 @@ const FIELDS={
     {k:'instinct',l:'INSTINCT',type:'textarea',rows:2},
     {k:'combat',l:'COMBAT (attack rolls, combat stats)',type:'textarea',rows:3},
     {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
   bestiary_alien:[
+    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
     {k:'name',l:'CREATURE DESIGNATION',type:'text',req:true},
-    {k:'category',l:'CATEGORY',type:'select',opts:['XENOMORPH','FACEHUGGER','PREDATOR','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
+    {k:'category',l:'CATEGORY',type:'select',opts:['XENOMORPH','PREDATOR','SYNTHETIC','MUTANT','INFECTED','UNKNOWN']},
     {k:'hp',l:'HP (hit points)',type:'number'},
     {k:'speed',l:'SPEED',type:'text'},
     {k:'armor',l:'ARMOR LEVEL (reduces incoming damage)',type:'text'},
     {k:'skills',l:'SKILLS',type:'textarea',rows:2},
     {k:'combat',l:'COMBAT (attack rolls & dice)',type:'textarea',rows:3},
     {k:'damageAbility',l:'DAMAGE & SPECIAL ABILITIES',type:'textarea',rows:4},
-    {k:'imageUrl',l:'IMAGE URL (paste direct URL or markdown: ![alt](url))',type:'text'},
   ],
 };
 const TABS=[
@@ -241,7 +241,7 @@ const TABS=[
   {id:'dice',label:'DICE'},{id:'rules',label:'RULES'},{id:'print',label:'PRINT'},
 ];
 const STATUS_C={ACTIVE:'#4ade80',ALIVE:'#4ade80',DEAD:'#f87171',HOSTILE:'#f87171',INFECTED:'#f87171',PANICKING:'#fb923c',BROKEN:'#fb923c',UNKNOWN:'#94a3b8',MIA:'#94a3b8'};
-const CATEGORY_C={XENOMORPH:'#f87171',FACEHUGGER:'#fb923c',PARASITE:'#fb923c',SYNTHETIC:'#94a3b8',ALIEN:'#c084fc',PREDATOR:'#f87171',MUTANT:'#fb923c',INFECTED:'#f87171',UNKNOWN:'#94a3b8',UNDEAD:'#c084fc'};
+const CATEGORY_C={XENOMORPH:'#f87171', PARASITE:'#fb923c',SYNTHETIC:'#94a3b8',ALIEN:'#c084fc',PREDATOR:'#f87171',MUTANT:'#fb923c',INFECTED:'#f87171',UNKNOWN:'#94a3b8',UNDEAD:'#c084fc'};
 const TYPE_C={crew:'#4ade80',monster:'#f87171',npc:'#94a3b8'};
 const DICE_TYPES=[5,6,10,20,100];
 const QUANTITY_OPTS=[1,2,3,4,5,6,8,10];
